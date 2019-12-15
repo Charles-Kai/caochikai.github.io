@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>Springboot整合Quartz定时器 | 天道酬勤 | 劳逸结合</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="spring,quartz">
+    <meta name="description" content="Spring boot整合Quartz定时器一、概念 quartz官网是一个完全由 Java 编写的开源作业调度框架，结合数据库甚至可以做到分布式调度。目前参考的RuoYi后台脚手架的定时任务模块，支持在线（添加、修改、删除)任务调度，并记录执行日志作业结果。  3w原则： question what：定时任务，比如定时答题、商家结算等需求，并且支持立即运行、暂停和禁止。 question why">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Springboot整合Quartz定时器">
+<meta property="og:url" content="https:&#x2F;&#x2F;caochikai.github.io&#x2F;2019&#x2F;05&#x2F;20&#x2F;Spring%20boot%E6%95%B4%E5%90%88Quartz%E5%AE%9A%E6%97%B6%E5%99%A8&#x2F;index.html">
+<meta property="og:site_name" content="天道酬勤">
+<meta property="og:description" content="Spring boot整合Quartz定时器一、概念 quartz官网是一个完全由 Java 编写的开源作业调度框架，结合数据库甚至可以做到分布式调度。目前参考的RuoYi后台脚手架的定时任务模块，支持在线（添加、修改、删除)任务调度，并记录执行日志作业结果。  3w原则： question what：定时任务，比如定时答题、商家结算等需求，并且支持立即运行、暂停和禁止。 question why">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-05-20T12:25:37.000Z">
+<meta property="article:modified_time" content="2019-05-21T13:26:20.000Z">
+<meta property="article:author" content="ChiKai">
+<meta property="article:tag" content="spring">
+<meta property="article:tag" content="quartz">
+<meta name="twitter:card" content="summary">
+    
+        <link rel="alternate" type="application/atom+xml" title="天道酬勤" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+<meta name="generator" content="Hexo 4.1.1"></head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">ChiKai</h5>
+          <a href="mailto:992691009@qq.com" title="992691009@qq.com" class="mail">992691009@qq.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/caochikai" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://caochikai.github.io/" target="_blank" >
+                <i class="icon icon-lg icon-weibo"></i>
+                Weibo
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/custom"  >
+                <i class="icon icon-lg icon-link"></i>
+                测试
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Springboot整合Quartz定时器</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">Springboot整合Quartz定时器</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2019-05-20T12:25:37.000Z" itemprop="datePublished" class="page-time">
+  2019-05-20
+</time>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#Spring-boot整合Quartz定时器"><span class="post-toc-number">1.</span> <span class="post-toc-text">Spring boot整合Quartz定时器</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#一、概念"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">一、概念</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#3w原则："><span class="post-toc-number">1.1.1.</span> <span class="post-toc-text">3w原则：</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#二、落地实现"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">二、落地实现</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#1、添加依赖"><span class="post-toc-number">1.2.0.1.</span> <span class="post-toc-text">1、添加依赖</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#2、配置引导类"><span class="post-toc-number">1.2.0.2.</span> <span class="post-toc-text">2、配置引导类</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#3、注册JobDetail和Trigger"><span class="post-toc-number">1.2.0.3.</span> <span class="post-toc-text">3、注册JobDetail和Trigger</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#4、任务详情继承QuartzJobBean或者实现Job接口"><span class="post-toc-number">1.2.0.4.</span> <span class="post-toc-text">4、任务详情继承QuartzJobBean或者实现Job接口</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#5、立即执行"><span class="post-toc-number">1.2.0.5.</span> <span class="post-toc-text">5、立即执行</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#反馈与建议"><span class="post-toc-number">1.2.1.</span> <span class="post-toc-text">反馈与建议</span></a></li></ol></li></ol></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-Spring boot整合Quartz定时器"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Springboot整合Quartz定时器</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2019-05-20 20:25:37" datetime="2019-05-20T12:25:37.000Z"  itemprop="datePublished">2019-05-20</time>
+
+            
+
+
+            
+<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
+    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+</span>
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h1 id="Spring-boot整合Quartz定时器"><a href="#Spring-boot整合Quartz定时器" class="headerlink" title="Spring boot整合Quartz定时器"></a>Spring boot整合Quartz定时器</h1><h2 id="一、概念"><a href="#一、概念" class="headerlink" title="一、概念"></a>一、概念</h2><blockquote>
+<p><a href="http://www.quartz-scheduler.org" target="_blank" rel="noopener">quartz官网</a>是一个完全由 Java 编写的开源作业调度框架，结合数据库甚至可以做到分布式调度。目前参考的<a href="https://gitee.com/y_project/RuoYi" target="_blank" rel="noopener">RuoYi后台脚手架</a>的定时任务模块，支持在线（添加、修改、删除)任务调度，并记录执行日志作业结果。</p>
+</blockquote>
+<h3 id="3w原则："><a href="#3w原则：" class="headerlink" title="3w原则："></a>3w原则：</h3><ol>
+<li>question what：定时任务，比如定时答题、商家结算等需求，并且支持立即运行、暂停和禁止。</li>
+<li>question why：借助quartz springboot生态和后台脚手架，快速实现定时调度功能。</li>
+<li>how：实现<strong>JobDetail</strong>运行任务详情，<strong>Trigger</strong> 触发器定义触发规则，<strong>Scheduler</strong> 调度中心/容器注册多个 JobDetail 和 Trigger。Trigger 与 JobDetail 组合即可被Scheduler调用。</li>
+</ol>
+<h2 id="二、落地实现"><a href="#二、落地实现" class="headerlink" title="二、落地实现"></a>二、落地实现</h2><blockquote>
+<p>根据<a href="http://doc.ruoyi.vip/#/standard/htsc?id=定时任务" target="_blank" rel="noopener">若依脚手架</a>的文档可知，定时任务工程模块为ruoyi-quartz，结合sql/quartz.sql导入关于定时器数据库表。当然这种做法需要数据库和bootstrap，为了简化，我采取的替代方案是保留定时和立即执行功能，抛弃手动在代码硬编码新加定时器，web管理面板则通过swagger触发任务调度立即执行一次。极端偷懒方式，@Scheduled(cron = “”)放在在cotroller方法，同事推荐给我的😀。</p>
+</blockquote>
+<h4 id="1、添加依赖"><a href="#1、添加依赖" class="headerlink" title="1、添加依赖"></a>1、添加依赖</h4><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;spring-boot-starter-quartz&lt;/artifactId&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
+
+<h4 id="2、配置引导类"><a href="#2、配置引导类" class="headerlink" title="2、配置引导类"></a>2、配置引导类</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//模块加载</span></span><br><span class="line"><span class="meta">@EnableScheduling</span></span><br><span class="line"><span class="meta">@EnableSwagger</span>2</span><br><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WeixinApplication</span> </span>&#123;</span><br><span class="line">......</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="3、注册JobDetail和Trigger"><a href="#3、注册JobDetail和Trigger" class="headerlink" title="3、注册JobDetail和Trigger"></a>3、注册JobDetail和Trigger</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 在线表达式：http://cron.qqe2.com/</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Slf</span>4j</span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">QuartzConfig</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String TASK_CLASS_NAME = <span class="string">"reportNowTask"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> JobDetail <span class="title">reportNowTask</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> JobBuilder.newJob(reportNowTask<span class="class">.<span class="keyword">class</span>).<span class="title">withIdentity</span>(<span class="title">TASK_CLASS_NAME</span>).<span class="title">storeDurably</span>().<span class="title">build</span>()</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Trigger <span class="title">reportNowTaskTrigger</span><span class="params">(JobDetail reportNowTask)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//cronSchedule等于@Scheduled(cron = ""),但是通过注解无法配置jobkey</span></span><br><span class="line">        <span class="keyword">return</span> TriggerBuilder.newTrigger().forJob(reportNowTask)</span><br><span class="line">                .withIdentity(<span class="string">"reportNowTaskTrigger"</span>)</span><br><span class="line">                .withSchedule(CronScheduleBuilder.cronSchedule(<span class="string">"9 0 19 * * ?"</span>))</span><br><span class="line">                .build();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="4、任务详情继承QuartzJobBean或者实现Job接口"><a href="#4、任务详情继承QuartzJobBean或者实现Job接口" class="headerlink" title="4、任务详情继承QuartzJobBean或者实现Job接口"></a>4、任务详情继承QuartzJobBean或者实现Job接口</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Slf</span>4j</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">reportNowTask</span> <span class="keyword">extends</span> <span class="title">QuartzJobBean</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">executeInternal</span><span class="params">(JobExecutionContext context)</span> <span class="keyword">throws</span> JobExecutionException </span>&#123;</span><br><span class="line">        ......<span class="comment">//任务内容</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="5、立即执行"><a href="#5、立即执行" class="headerlink" title="5、立即执行"></a>5、立即执行</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Slf</span>4j</span><br><span class="line"><span class="meta">@Api</span>(tags = <span class="string">"问题模块"</span>)</span><br><span class="line"><span class="meta">@RequestMapping</span>(value = <span class="string">"question"</span>)</span><br><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">QuestionController</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 任务调度立即执行一次</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@PostMapping</span>(<span class="string">"/run"</span>)</span><br><span class="line">    <span class="meta">@ResponseBody</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> ResponseEntity <span class="title">run</span><span class="params">()</span> <span class="keyword">throws</span> SchedulerException </span>&#123;</span><br><span class="line">        <span class="comment">//api秘诀就在这里根据QuartzConfig jobKey触发作业调度</span></span><br><span class="line">        scheduler.triggerJob(JobKey.jobKey(QuartzConfig.TASK_CLASS_NAME));</span><br><span class="line">        <span class="keyword">return</span> ResponseEntity.ok(<span class="string">"执行成功！"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="反馈与建议"><a href="#反馈与建议" class="headerlink" title="反馈与建议"></a>反馈与建议</h3><ul>
+<li>今天粗略简易版的定时任务,功能强大的请查看若依后台脚手架,github和码云有很多类似脚手架,但是我们有选择性copy学习才是重点😊。</li>
+<li>邮箱：<a href="mailto:caochikai@qq.com">caochikai@qq.com</a></li>
+</ul>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2019-05-21T13:26:20.000Z" itemprop="dateUpdated">2019-05-21 21:26:20</time>
+</span><br>
+
+
+        
+        留言和分享第三方功能待实现，请各位疯狂star我的笔记，私活私聊我😘
+        
+    </div>
+    
+    <footer>
+        <a href="https://caochikai.github.io">
+            <img src="/img/avatar.jpg" alt="ChiKai">
+            ChiKai
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/quartz/" rel="tag">quartz</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/spring/" rel="tag">spring</a></li></ul>
+
+
+            
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2019/05/21/springboot%E6%95%B4%E5%90%88elasticsearch/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">springboot整合elasticsearch</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2019/05/19/springboot%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%E4%B9%8B%E5%90%AF%E5%8A%A8%E8%BF%87%E7%A8%8B/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">springboot源码分析之启动过程</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+<section class="comments" id="comments">
+    <div id="disqus_thread"></div>
+    <script>
+    var disqus_shortname = 'true';
+    lazyScripts.push('//' + disqus_shortname + '.disqus.com/embed.js')
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a></noscript>
+</section>
+
+
+
+
+<section class="comments" id="comments">
+    <!-- UY BEGIN -->
+    <div id="uyan_frame"></div>
+    <script src="http://v2.uyan.cc/code/uyan.js?uid=true"></script>
+    <!-- UY END -->
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        谢谢大爷~
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/img/wechat.jpg" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="/img/wechat.jpg" data-alipay="/img/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p>
+    <span id="busuanzi_container_site_uv" style='display:none'>
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style='display:none'>
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>ChiKai &copy; 2018 - 2019</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: false, REWARD: true };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '死鬼去哪里了！';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '(つェ⊂)咦!又好了!';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>

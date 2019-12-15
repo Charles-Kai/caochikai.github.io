@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>初探缓存 | 天道酬勤 | 劳逸结合</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="spring">
+    <meta name="description" content="多级缓存架构缓存设计理念：  缓存常用的对象或者数据，减少系统开销提高效率。  缓存命中率 即从缓存中读取数据的次数 与 总读取次数的比率，命中率越高越好：  缓存策略： 移除策略：FIFO（First In First Out），LRU（Least Recently Used），LFU（Least Frequently Used）。  TTL（Time To Live）：缓存存活期  TTI（T">
+<meta property="og:type" content="article">
+<meta property="og:title" content="初探缓存">
+<meta property="og:url" content="https:&#x2F;&#x2F;caochikai.github.io&#x2F;2019&#x2F;05&#x2F;17&#x2F;%E5%88%9D%E6%8E%A2%E7%BC%93%E5%AD%98&#x2F;index.html">
+<meta property="og:site_name" content="天道酬勤">
+<meta property="og:description" content="多级缓存架构缓存设计理念：  缓存常用的对象或者数据，减少系统开销提高效率。  缓存命中率 即从缓存中读取数据的次数 与 总读取次数的比率，命中率越高越好：  缓存策略： 移除策略：FIFO（First In First Out），LRU（Least Recently Used），LFU（Least Frequently Used）。  TTL（Time To Live）：缓存存活期  TTI（T">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-05-17T15:34:21.000Z">
+<meta property="article:modified_time" content="2019-05-17T15:46:48.000Z">
+<meta property="article:author" content="ChiKai">
+<meta property="article:tag" content="spring">
+<meta name="twitter:card" content="summary">
+    
+        <link rel="alternate" type="application/atom+xml" title="天道酬勤" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+<meta name="generator" content="Hexo 4.1.1"></head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">ChiKai</h5>
+          <a href="mailto:992691009@qq.com" title="992691009@qq.com" class="mail">992691009@qq.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/caochikai" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://caochikai.github.io/" target="_blank" >
+                <i class="icon icon-lg icon-weibo"></i>
+                Weibo
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/custom"  >
+                <i class="icon icon-lg icon-link"></i>
+                测试
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">初探缓存</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">初探缓存</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2019-05-17T15:34:21.000Z" itemprop="datePublished" class="page-time">
+  2019-05-17
+</time>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#多级缓存架构"><span class="post-toc-number">1.</span> <span class="post-toc-text">多级缓存架构</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#缓存设计理念："><span class="post-toc-number">1.1.</span> <span class="post-toc-text">缓存设计理念：</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#缓存命中率"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">缓存命中率</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#缓存策略："><span class="post-toc-number">1.3.</span> <span class="post-toc-text">缓存策略：</span></a></li></ol></li></ol></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#spring-cache"><span class="post-toc-number"></span> <span class="post-toc-text">spring cache</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#一、概念"><span class="post-toc-number">0.1.</span> <span class="post-toc-text">一、概念</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#二、入门代码"><span class="post-toc-number">0.2.</span> <span class="post-toc-text">二、入门代码</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#三、主要注解"><span class="post-toc-number">0.3.</span> <span class="post-toc-text">三、主要注解</span></a></li></ol></li></ol></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#ehcache"><span class="post-toc-number"></span> <span class="post-toc-text">ehcache</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#一、概念-1"><span class="post-toc-number">0.1.</span> <span class="post-toc-text">一、概念</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#二、入门代码-1"><span class="post-toc-number">0.2.</span> <span class="post-toc-text">二、入门代码</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#三、总结"><span class="post-toc-number">0.3.</span> <span class="post-toc-text">三、总结</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#四、一二级缓存"><span class="post-toc-number">0.4.</span> <span class="post-toc-text">四、一二级缓存</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#反馈与建议"><span class="post-toc-number">1.</span> <span class="post-toc-text">反馈与建议</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-初探缓存"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">初探缓存</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2019-05-17 23:34:21" datetime="2019-05-17T15:34:21.000Z"  itemprop="datePublished">2019-05-17</time>
+
+            
+
+
+            
+<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
+    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+</span>
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="多级缓存架构"><a href="#多级缓存架构" class="headerlink" title="多级缓存架构"></a>多级缓存架构</h2><h3 id="缓存设计理念："><a href="#缓存设计理念：" class="headerlink" title="缓存设计理念："></a>缓存设计理念：</h3><blockquote>
+<p> 缓存常用的对象或者数据，减少系统开销提高效率。</p>
+</blockquote>
+<h3 id="缓存命中率"><a href="#缓存命中率" class="headerlink" title="缓存命中率"></a>缓存命中率</h3><blockquote>
+<p>即从缓存中读取数据的次数 与 总读取次数的比率，命中率越高越好：</p>
+</blockquote>
+<h3 id="缓存策略："><a href="#缓存策略：" class="headerlink" title="缓存策略："></a>缓存策略：</h3><ol>
+<li><p>移除策略：FIFO（First In First Out），LRU（Least Recently Used），LFU（Least Frequently Used）。</p>
+</li>
+<li><p>TTL（Time To Live）：缓存存活期</p>
+</li>
+<li><p>TTI（Time To Idle）：空闲存活期</p>
+</li>
+</ol>
+<h1 id="spring-cache"><a href="#spring-cache" class="headerlink" title="spring cache"></a>spring cache</h1><hr>
+<h3 id="一、概念"><a href="#一、概念" class="headerlink" title="一、概念"></a>一、概念</h3><blockquote>
+<p>自Spring 3.1起，提供注解缓存，并且提供事务回滚时也自动回滚缓存，并且支持SPEL表达式。</p>
+</blockquote>
+<h3 id="二、入门代码"><a href="#二、入门代码" class="headerlink" title="二、入门代码"></a>二、入门代码</h3><p>1、添加依赖，例如maven的pom.xml(Springboot);</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;org.springframework.boot&lt;&#x2F;groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;spring-boot-starter-cache&lt;&#x2F;artifactId&gt;</span><br><span class="line">&lt;&#x2F;dependency&gt;</span><br></pre></td></tr></table></figure>
+
+<p>2、添加一种cacheManager的bean实现类，常见ConcurrentMapCache、EhCacheCache、RedisCache；</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">@Bean</span><br><span class="line">public CacheManager cacheManager() &#123;</span><br><span class="line">    SimpleCacheManager cacheManager &#x3D; new SimpleCacheManager();</span><br><span class="line">    cacheManager.setCaches(Collections.singletonList(new ConcurrentMapCache(&quot;models&quot;)));</span><br><span class="line">    return cacheManager;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>3、配置模块加载注解@EnableCaching</p>
+<h3 id="三、主要注解"><a href="#三、主要注解" class="headerlink" title="三、主要注解"></a>三、主要注解</h3><p>1、@Cacheable：将方法返回值作为缓存</p>
+<ul>
+<li><p>value (也可使用 cacheNames) : 可看做命名空间，表示存到哪个缓存里了。</p>
+</li>
+<li><p>key : 表示命名空间下缓存唯一key,使用Spring Expression Language(简称SpEL,详见参考文献[5])生成。</p>
+</li>
+<li><p>condition : 表示在哪种情况下才缓存结果(对应的还有unless,哪种情况不缓存),同样使用SpEL</p>
+</li>
+</ul>
+<p>2、@CacheEvict：删除缓存注解</p>
+<p>3、@CachePut：刷新注解</p>
+<h1 id="ehcache"><a href="#ehcache" class="headerlink" title="ehcache"></a>ehcache</h1><hr>
+<h3 id="一、概念-1"><a href="#一、概念-1" class="headerlink" title="一、概念"></a>一、概念</h3><h3 id="二、入门代码-1"><a href="#二、入门代码-1" class="headerlink" title="二、入门代码"></a>二、入门代码</h3><p>1、缓存分组，要对分组进行全新CacheConfiguration ，为了高效使用配置自定义属性提取器。默认的属性处理器是JavaBeanAttributeExtractor。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">@Bean</span><br><span class="line">    public EhCacheGroupBeanPostProcessor addCache() &#123;</span><br><span class="line">        System.out.println(&quot;.......添加缓存组........&quot;);</span><br><span class="line">        return new EhCacheGroupBeanPostProcessor();</span><br><span class="line">    &#125;</span><br><span class="line">        &#x2F;&#x2F;后置处理器</span><br><span class="line">    public static class EhCacheGroupBeanPostProcessor implements BeanPostProcessor &#123;</span><br><span class="line">        @Override</span><br><span class="line">        public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException &#123;</span><br><span class="line">                      &#x2F;&#x2F;根据前面初始化完成的beanName进一步操作</span><br><span class="line">           if(beanName.equals(&quot;appEhCacheCacheManager&quot;) ) &#123;</span><br><span class="line">                EhCacheCacheManager manager &#x3D; (EhCacheCacheManager)bean;</span><br><span class="line">                CacheManager cacheManager &#x3D; manager.getCacheManager();</span><br><span class="line">&#x2F;&#x2F;              文章缓存命中配置needUpdate</span><br><span class="line">                CacheConfiguration configuration &#x3D; new CacheConfiguration(ReadCacheNames.文章缓存,10000);</span><br><span class="line">                Searchable searchable &#x3D; new Searchable();</span><br><span class="line">                searchable.setKeys(false);</span><br><span class="line">                searchable.setValues(false);</span><br><span class="line">                                &#x2F;&#x2F;动态索引</span><br><span class="line">                searchable.setAllowDynamicIndexing(true);</span><br><span class="line">                searchable.addSearchAttribute(new SearchAttribute().name(&quot;needUpdate&quot;).className(&quot;com.dwalk.social.common.util.ArticlesAttributeExtractor&quot;));</span><br><span class="line">                configuration.eternal(true).addSearchable(searchable);</span><br><span class="line">                Cache articlesCache &#x3D; new Cache(configuration);</span><br><span class="line">                cacheManager.addCache(articlesCache);</span><br><span class="line">                cacheManager.addCache(ReadCacheNames.热点文章缓存);</span><br><span class="line">            &#125;</span><br><span class="line">            return bean;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>2、使用spring内置定时器，并使用ehcache查询api进行缓存查询。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">        @Scheduled(cron &#x3D; &quot;0 0&#x2F;1 * * * ?&quot;)</span><br><span class="line">    private void synchronize() &#123;</span><br><span class="line">        Cache cache &#x3D; cacheManager.getCache(ReadCacheNames.文章缓存);</span><br><span class="line">        int size &#x3D; cache.getSize();</span><br><span class="line">        if (size &gt; 0) &#123;</span><br><span class="line">            Query query &#x3D; cache.createQuery();</span><br><span class="line">            Attribute searchAttribute &#x3D; cache.getSearchAttribute(&quot;needUpdate&quot;);</span><br><span class="line">                        &#x2F;&#x2F;指定查询的</span><br><span class="line">            query.includeAttribute(searchAttribute);</span><br><span class="line">            query.includeValues();</span><br><span class="line">            Results execute &#x3D; query.addCriteria(searchAttribute.eq(true)).execute();</span><br><span class="line">            List all &#x3D; execute.all();</span><br><span class="line">            log.info(&quot;查询文章缓存的大小：&#123;&#125;&quot;, all.size());</span><br><span class="line">            for (Result result : all) &#123;</span><br><span class="line">                ArticlesDTO articles &#x3D; (ArticlesDTO) result.getValue();</span><br><span class="line">                articles.setNeedUpdate(false);</span><br><span class="line">                Articles target &#x3D; new Articles();</span><br><span class="line">&#x2F;&#x2F;              同步浏览量、视频播放量、评论数、点赞数、收藏数</span><br><span class="line">                target.setVisitorNum(articles.getVisitorNum()).setCommentNum(articles.getCommentNum()).</span><br><span class="line">                        setPlayNum(articles.getPlayNum()).setLikeNum(articles.getLikeNum()).setCollectNum(articles.getCollectNum());</span><br><span class="line">                articlesService.updateById(target);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="三、总结"><a href="#三、总结" class="headerlink" title="三、总结"></a>三、总结</h3><p>1、需要熟悉spring接口设计，以接口使用框架，要不然官方api使用需了解诸多细节。</p>
+<h3 id="四、一二级缓存"><a href="#四、一二级缓存" class="headerlink" title="四、一二级缓存"></a>四、一二级缓存</h3><blockquote>
+<p>当遇到@Cacheable返回为null记录，为了成功序列化null，使用了org.springframework.cache.support.NullValue对象代替null。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br></pre></td><td class="code"><pre><span class="line">com.alibaba.fastjson.JSONException: autoType is not support. org.springframework.cache.support.NullValue</span><br><span class="line">1、起源一二级缓存重写get()方法</span><br><span class="line">public class EhRedisCache extends AbstractValueAdaptingCache &#123;</span><br><span class="line">            部分代码省略……</span><br><span class="line">        @Override</span><br><span class="line">    public  T get(Object key, Callable valueLoader) &#123;</span><br><span class="line">                    try &#123;</span><br><span class="line">                lock.lock();</span><br><span class="line">                value &#x3D; lookup(key);</span><br><span class="line">                if(value !&#x3D; null) &#123;</span><br><span class="line">                    return (T) value;</span><br><span class="line">                &#125;</span><br><span class="line">                value &#x3D; valueLoader.call();</span><br><span class="line">                        &#x2F;&#x2F;toStoreValue是AbstractValueAdaptingCache抽象类的方法</span><br><span class="line">                Object storeValue &#x3D; toStoreValue(value);</span><br><span class="line">                put(key, storeValue);</span><br><span class="line">                return (T) value;</span><br><span class="line">            &#125; catch (Exception e) &#123;</span><br><span class="line">                throw new ValueRetrievalException(key, valueLoader, e.getCause());</span><br><span class="line">            &#125; finally &#123;</span><br><span class="line">                lock.unlock();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br><span class="line">2、toStoreValue判断userValue &#x3D;&#x3D; null 则return NullValue.INSTANCE </span><br><span class="line">-&gt; public static final Object INSTANCE &#x3D; new NullValue();</span><br><span class="line"></span><br><span class="line">public abstract class AbstractValueAdaptingCache implements Cache &#123;</span><br><span class="line">    protected Object toStoreValue(@Nullable Object userValue) &#123;</span><br><span class="line">        if (userValue &#x3D;&#x3D; null) &#123;</span><br><span class="line">            if (this.allowNullValues) &#123;</span><br><span class="line">                return NullValue.INSTANCE;</span><br><span class="line">            &#125;</span><br><span class="line">            throw new IllegalArgumentException(</span><br><span class="line">                    &quot;Cache &#39;&quot; + getName() + &quot;&#39; is configured to not allow null values but null was provided&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">        return userValue;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">3、序列化反序列化</span><br><span class="line">public class FastJsonRedisSerializer implements RedisSerializer &#123;</span><br><span class="line">        @Override</span><br><span class="line">    public T deserialize(byte[] bytes) throws SerializationException &#123;</span><br><span class="line">        if (null &#x3D;&#x3D; bytes || bytes.length &lt;&#x3D; 0) &#123;</span><br><span class="line">            return null;</span><br><span class="line">        &#125;</span><br><span class="line">        String str &#x3D; new String(bytes, DEFAULT_CHARSET);</span><br><span class="line">        return (T) JSON.parseObject(str, clazz);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">4、jsonParser解析类型</span><br><span class="line">public class com.alibaba.fastjson.parser.DefaultJSONParser implements Closeable &#123;</span><br><span class="line">    public final Object parseObject(final Map object, Object fieldName) &#123;</span><br><span class="line">                    部分代码省略……</span><br><span class="line">                                            Class clazz &#x3D; null;</span><br><span class="line">                        if (object !&#x3D; null</span><br><span class="line">                                &amp;&amp; object.getClass().getName().equals(typeName)) &#123;</span><br><span class="line">                            clazz &#x3D; object.getClass();</span><br><span class="line">                        &#125; else &#123;</span><br><span class="line">            &#x2F;&#x2F;com.alibaba.fastjson.parser.DefaultJSONParser#config执行</span><br><span class="line">                            clazz &#x3D; config.checkAutoType(typeName, null, lexer.getFeatures());</span><br><span class="line">                        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">5、异常抛出点TypeUtils.getClassFromMapping(typeName) -》 typeName为org.springframework.cache.support.NullValue</span><br><span class="line">public Class checkAutoType(String typeName, Class expectClass, int features) &#123;</span><br><span class="line">    if (Arrays.binarySearch(denyHashCodes, hash) &gt;&#x3D; 0 &amp;&amp; TypeUtils.getClassFromMapping(typeName) &#x3D;&#x3D; null) &#123;</span><br><span class="line">                        throw new JSONException(&quot;autoType is not support. &quot; + typeName);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">6、TypeUtils的getClassFromMapping方法返回null</span><br><span class="line">        public static Class getClassFromMapping(String className)&#123;</span><br><span class="line">        return mappings.get(className);</span><br><span class="line">    &#125;</span><br><span class="line">7、TypeUtils不支持org.springframework.cache.support.NullValue</span><br><span class="line">private static ConcurrentMap&gt; mappings &#x3D; new ConcurrentHashMap&gt;(16, 0.75f, 1);</span><br><span class="line">&#x2F;&#x2F;mappings类型白名单</span><br><span class="line">private static void addBaseClassMappings()&#123;</span><br><span class="line">        mappings.put(&quot;byte&quot;, byte.class);</span><br><span class="line">        mappings.put(&quot;short&quot;, short.class);</span><br><span class="line">        mappings.put(&quot;int&quot;, int.class);</span><br><span class="line">        mappings.put(&quot;long&quot;, long.class);</span><br><span class="line">        mappings.put(&quot;float&quot;, float.class);</span><br><span class="line">        mappings.put(&quot;double&quot;, double.class);</span><br><span class="line">        mappings.put(&quot;boolean&quot;, boolean.class);</span><br><span class="line">                部分代码省略……</span><br><span class="line">                fastJson官方没有支持org.springframework.cache.support.NullValue</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="反馈与建议"><a href="#反馈与建议" class="headerlink" title="反馈与建议"></a>反馈与建议</h2><ul>
+<li>今天复出写博客，一是感觉懒了期望进步，二是为了积累知识方便copy😂。</li>
+<li>邮箱：<a href="mailto:&#99;&#97;&#x6f;&#99;&#x68;&#x69;&#x6b;&#97;&#x69;&#x40;&#113;&#x71;&#x2e;&#99;&#x6f;&#109;">&#99;&#97;&#x6f;&#99;&#x68;&#x69;&#x6b;&#97;&#x69;&#x40;&#113;&#x71;&#x2e;&#99;&#x6f;&#109;</a></li>
+</ul>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2019-05-17T15:46:48.000Z" itemprop="dateUpdated">2019-05-17 23:46:48</time>
+</span><br>
+
+
+        
+        留言和分享第三方功能待实现，请各位疯狂star我的笔记，私活私聊我😘
+        
+    </div>
+    
+    <footer>
+        <a href="https://caochikai.github.io">
+            <img src="/img/avatar.jpg" alt="ChiKai">
+            ChiKai
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/spring/" rel="tag">spring</a></li></ul>
+
+
+            
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2019/05/18/%E5%9C%B0%E7%90%86%E5%AE%9A%E4%BD%8D%E4%B8%9A%E5%8A%A1%E5%AE%9E%E7%8E%B0/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">地理定位业务实现</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2017/02/05/AndroidAdb/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">AndroidAdb</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+<section class="comments" id="comments">
+    <div id="disqus_thread"></div>
+    <script>
+    var disqus_shortname = 'true';
+    lazyScripts.push('//' + disqus_shortname + '.disqus.com/embed.js')
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a></noscript>
+</section>
+
+
+
+
+<section class="comments" id="comments">
+    <!-- UY BEGIN -->
+    <div id="uyan_frame"></div>
+    <script src="http://v2.uyan.cc/code/uyan.js?uid=true"></script>
+    <!-- UY END -->
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        谢谢大爷~
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/img/wechat.jpg" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="/img/wechat.jpg" data-alipay="/img/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p>
+    <span id="busuanzi_container_site_uv" style='display:none'>
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style='display:none'>
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>ChiKai &copy; 2018 - 2019</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: false, REWARD: true };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '死鬼去哪里了！';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '(つェ⊂)咦!又好了!';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>

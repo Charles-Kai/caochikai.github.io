@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>AndroidAdb | 天道酬勤 | 劳逸结合</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="">
+    <meta name="description" content="Android adb调试工具–清除锁屏密码误解@(Android)[调试工具|实用教程|adb命令] Android Studio ADB官方文档 ADB全称为 Android Debug Bridge, 是android 里的一个调试工具, 用这个工具可以直接操作管理android模拟器或者真实的andriod设备手机。如果你安装了Android SDK（或者下载adb工具包，体积小）,存放s">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AndroidAdb">
+<meta property="og:url" content="https:&#x2F;&#x2F;caochikai.github.io&#x2F;2017&#x2F;02&#x2F;05&#x2F;AndroidAdb&#x2F;index.html">
+<meta property="og:site_name" content="天道酬勤">
+<meta property="og:description" content="Android adb调试工具–清除锁屏密码误解@(Android)[调试工具|实用教程|adb命令] Android Studio ADB官方文档 ADB全称为 Android Debug Bridge, 是android 里的一个调试工具, 用这个工具可以直接操作管理android模拟器或者真实的andriod设备手机。如果你安装了Android SDK（或者下载adb工具包，体积小）,存放s">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2017-02-05T12:49:09.000Z">
+<meta property="article:modified_time" content="2017-02-05T13:27:22.000Z">
+<meta property="article:author" content="ChiKai">
+<meta name="twitter:card" content="summary">
+    
+        <link rel="alternate" type="application/atom+xml" title="天道酬勤" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+<meta name="generator" content="Hexo 4.1.1"></head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">ChiKai</h5>
+          <a href="mailto:992691009@qq.com" title="992691009@qq.com" class="mail">992691009@qq.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/caochikai" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://caochikai.github.io/" target="_blank" >
+                <i class="icon icon-lg icon-weibo"></i>
+                Weibo
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/custom"  >
+                <i class="icon icon-lg icon-link"></i>
+                测试
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">AndroidAdb</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">AndroidAdb</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2017-02-05T12:49:09.000Z" itemprop="datePublished" class="page-time">
+  2017-02-05
+</time>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#Android-adb调试工具–清除锁屏密码误解"><span class="post-toc-number">1.</span> <span class="post-toc-text">Android adb调试工具–清除锁屏密码误解</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#关于清除解锁图案"><span class="post-toc-number">1.0.1.</span> <span class="post-toc-text">关于清除解锁图案</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#1-破解条件"><span class="post-toc-number">1.0.1.1.</span> <span class="post-toc-text">1. 破解条件</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#2-破解步骤"><span class="post-toc-number">1.0.1.2.</span> <span class="post-toc-text">2. 破解步骤</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#3-注意事项"><span class="post-toc-number">1.0.1.3.</span> <span class="post-toc-text">3. 注意事项</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#4-题外话（今年好东西都挂了）"><span class="post-toc-number">1.0.1.4.</span> <span class="post-toc-text">4. 题外话（今年好东西都挂了）</span></a></li></ol></li></ol></li></ol></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-AndroidAdb"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">AndroidAdb</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2017-02-05 20:49:09" datetime="2017-02-05T12:49:09.000Z"  itemprop="datePublished">2017-02-05</time>
+
+            
+
+
+            
+<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
+    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+</span>
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h1 id="Android-adb调试工具–清除锁屏密码误解"><a href="#Android-adb调试工具–清除锁屏密码误解" class="headerlink" title="Android adb调试工具–清除锁屏密码误解"></a>Android adb调试工具–清除锁屏密码误解</h1><p>@(Android)[调试工具|实用教程|adb命令]</p>
+<p><a href="https://developer.android.com/studio/command-line/adb.html" target="_blank" rel="noopener">Android Studio ADB官方文档</a></p>
+<p><strong>ADB</strong>全称为 Android Debug Bridge, 是android 里的一个调试工具, 用这个工具可以直接操作管理android模拟器或者真实的andriod设备手机。如果你安装了<strong>Android SDK</strong>（或者下载adb工具包，体积小）,存放sdk的platform-tools目录下，在 命令行cmd使用需要配置路径（<strong>android_sdk/platform-tools/adb.exe</strong> ）到环境变量里。它可为各种设备操作提供便利，如安装和调试应用，例如查看android中的数据库，提供对 Unix shell（可用来在模拟器或连接的设备上运行各种命令）的访问。该工具作为一个客户端-服务器程序，包括三个组件：</p>
+<ul>
+<li><strong>客户端</strong> ：该组件发送命令。客户端在开发计算机上运行。您可以通过发出 adb 命令从命令行终端调用客户端；</li>
+<li><strong>后台程序</strong> ：该组件在设备上运行命令。后台程序在每个模拟器或设备实例上作为后台进程运行；</li>
+<li><strong>服务器</strong> ：该组件管理客户端和后台程序之间的通信。服务器在开发计算机上作为后台进程运行。</li>
+</ul>
+<h3 id="关于清除解锁图案"><a href="#关于清除解锁图案" class="headerlink" title="关于清除解锁图案"></a>关于清除解锁图案</h3><blockquote>
+<p>用户相关的文件accounts.db（gmail账号管理），gesture.key（手势识别文件），password.key（密码文件）。<br>不同品牌手机系统相关文件名也会不同,例如我的手机，华为4x文件为locksettings.db（数据库文件）。<br>修理店里的师傅使用一个工具叫星海神器（高通平台强刷），功能超乎想象，几乎支持所有手机品牌（特别是苹果）<br>淘宝上有卖，网上大部分加密过！小米手机叫丢失解锁神器！</p>
+</blockquote>
+<h4 id="1-破解条件"><a href="#1-破解条件" class="headerlink" title="1. 破解条件"></a>1. 破解条件</h4><ul>
+<li><strong>手机打开USB并连接电脑</strong> </li>
+<li><strong>手机被ROOT，并且ADB可以直接升级为ROOT用户</strong> </li>
+<li><strong>配置adb路径到环境变量或者直接在cmd命令行里面切换到adb所在路径</strong> </li>
+</ul>
+<h4 id="2-破解步骤"><a href="#2-破解步骤" class="headerlink" title="2. 破解步骤"></a>2. 破解步骤</h4><ul>
+<li>*<em>打开cmd命令行，用【adb shell】命令进入shell *</em> </li>
+<li><strong>利用su命令将adb提升为root用户，如果成功，行首由$变成 #，#表示root用户</strong> </li>
+<li>*<em>进入data/system目录 *</em> </li>
+<li>*<em>ls查看当前目录 *</em> </li>
+<li>*<em>用ls命令查看密码文件 *</em>  </li>
+<li><strong>用rm命令删除密码文件，若是$（不是root），则会提示”rm failed for … Permission denied”，权限不足</strong>   </li>
+</ul>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ adb shell	</span><br><span class="line">$ su</span><br><span class="line"># cd /data/system</span><br><span class="line"># ls</span><br><span class="line"># rm locksettings.db</span><br></pre></td></tr></table></figure>
+<p>输入reboot或手动重启手机生效。亲测华为荣耀4X有效，删除锁屏密码后，指纹解锁自动失效，所以此方法也可以破解指纹解锁！！重新设置锁屏密码后，以前设置的指纹解锁又可以用了。</p>
+<h4 id="3-注意事项"><a href="#3-注意事项" class="headerlink" title="3. 注意事项"></a>3. 注意事项</h4><pre><code>看到这儿就明白了，即便手机Root+打开USB调试，也是无法通过ADB解锁手机的。因为想要想要解锁，就得删除/data/system 下的相关文件，可删除需要由Superuser或者kingroot授予ADB shell权限，而授权需要解锁打开手机后操作Superuser程序。即解锁需要用到解锁后的手机操作，就像春晚小品《开锁》中，业主黄宏要求开锁师傅林永健开锁，林永健要求黄宏出示有效证件，可证件就在锁着的箱子里头。  
+我进行了测试后发现，在授权过一次后，下次手机用USB数据线连接电脑，再次进行解锁，即便同台电脑，也是需要再次授权的。这就说明，即便你用你的电脑经过手机授权解锁过，过后想要在忘记密码时使用ADB方式解锁，也是不可能的。  
+我觉得这是高版本的安卓系统（eg. Android 4.2 Jelly Bean 安卓果冻豆）新有的安全特性，低版本的Android如安卓2.3.8是可以通过这种方法解锁的。因为我实际测试，我的固件版本为安卓2.3.8的三星S5570（已经Root，打开USB调试），执行命令rm gesture.key，无需授权，直接即可解锁。现在我有个问题，低版本安卓系统如 Android2.3.8的手机解锁屏幕锁定密码，是否的确必须Root，还是只要打开USB调试即可？我手头没有没Root的Android2.3手机，也懒得折腾了，就不管它了。 这样看来，高版本的安卓系统也就不存在被非手机所有者恶意解锁的BUG了。</code></pre><h4 id="4-题外话（今年好东西都挂了）"><a href="#4-题外话（今年好东西都挂了）" class="headerlink" title="4. 题外话（今年好东西都挂了）"></a>4. 题外话（今年好东西都挂了）</h4><p><a href="http://itwusun.com/offer.html" target="_blank" rel="noopener">收费音乐神器官网</a>，<a href="http://www.btjson.com/index.html" target="_blank" rel="noopener">服务器接口平台AnyListen</a></p>
+<p><strong>音乐间谍</strong>为window PC版，<strong>音乐助手</strong>Android版，<a href="http://weibo.com/shelher?is_hot=1" target="_blank" rel="noopener">Shelher微博</a>分享出来3.3版源码<a href="https://pan.baidu.com/share/init?shareid=976327165&uk=4145536040" target="_blank" rel="noopener">百度云 ​​​​</a>密码gria！尴尬的是朋友云免流量也不干了！</p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2017-02-05T13:27:22.000Z" itemprop="dateUpdated">2017-02-05 21:27:22</time>
+</span><br>
+
+
+        
+        留言和分享第三方功能待实现，请各位疯狂star我的笔记，私活私聊我😘
+        
+    </div>
+    
+    <footer>
+        <a href="https://caochikai.github.io">
+            <img src="/img/avatar.jpg" alt="ChiKai">
+            ChiKai
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+
+            
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2019/05/17/%E5%88%9D%E6%8E%A2%E7%BC%93%E5%AD%98/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">初探缓存</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2017/01/30/SpiderWebMagic/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">SpiderWebMagic</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+<section class="comments" id="comments">
+    <div id="disqus_thread"></div>
+    <script>
+    var disqus_shortname = 'true';
+    lazyScripts.push('//' + disqus_shortname + '.disqus.com/embed.js')
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a></noscript>
+</section>
+
+
+
+
+<section class="comments" id="comments">
+    <!-- UY BEGIN -->
+    <div id="uyan_frame"></div>
+    <script src="http://v2.uyan.cc/code/uyan.js?uid=true"></script>
+    <!-- UY END -->
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        谢谢大爷~
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/img/wechat.jpg" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="/img/wechat.jpg" data-alipay="/img/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p>
+    <span id="busuanzi_container_site_uv" style='display:none'>
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style='display:none'>
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>ChiKai &copy; 2018 - 2019</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: false, REWARD: true };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '死鬼去哪里了！';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '(つェ⊂)咦!又好了!';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>

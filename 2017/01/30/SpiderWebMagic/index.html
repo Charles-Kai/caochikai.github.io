@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>SpiderWebMagic | 天道酬勤 | 劳逸结合</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="">
+    <meta name="description" content="WebMagic爬虫框架–京东图书@(爬虫)[框架|爬虫|Demo总结] WebMagic!项目代码分为核心(webmagic-core)和扩展(webmagic-extension)两部分(jar包)。Downloader、PageProcessor、Scheduler、Pipeline这四大组件对应爬虫生命周期中的下载、处理、管理和持久化等功能。    名称 功能    Downloader">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpiderWebMagic">
+<meta property="og:url" content="https:&#x2F;&#x2F;caochikai.github.io&#x2F;2017&#x2F;01&#x2F;30&#x2F;SpiderWebMagic&#x2F;index.html">
+<meta property="og:site_name" content="天道酬勤">
+<meta property="og:description" content="WebMagic爬虫框架–京东图书@(爬虫)[框架|爬虫|Demo总结] WebMagic!项目代码分为核心(webmagic-core)和扩展(webmagic-extension)两部分(jar包)。Downloader、PageProcessor、Scheduler、Pipeline这四大组件对应爬虫生命周期中的下载、处理、管理和持久化等功能。    名称 功能    Downloader">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2017-01-30T12:50:27.000Z">
+<meta property="article:modified_time" content="2017-01-30T12:57:40.000Z">
+<meta property="article:author" content="ChiKai">
+<meta name="twitter:card" content="summary">
+    
+        <link rel="alternate" type="application/atom+xml" title="天道酬勤" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+<meta name="generator" content="Hexo 4.1.1"></head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">ChiKai</h5>
+          <a href="mailto:992691009@qq.com" title="992691009@qq.com" class="mail">992691009@qq.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/caochikai" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://caochikai.github.io/" target="_blank" >
+                <i class="icon icon-lg icon-weibo"></i>
+                Weibo
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/custom"  >
+                <i class="icon icon-lg icon-link"></i>
+                测试
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">SpiderWebMagic</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">SpiderWebMagic</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2017-01-30T12:50:27.000Z" itemprop="datePublished" class="page-time">
+  2017-01-30
+</time>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#WebMagic爬虫框架–京东图书"><span class="post-toc-number">1.</span> <span class="post-toc-text">WebMagic爬虫框架–京东图书</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#WebMagic官方链接："><span class="post-toc-number">1.0.1.</span> <span class="post-toc-text">WebMagic官方链接：</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#爬取京东图书-https-book-jd-com"><span class="post-toc-number">1.0.1.1.</span> <span class="post-toc-text">爬取京东图书(https:&#x2F;&#x2F;book.jd.com&#x2F;)</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#在商品列表网页抓取如下商品信息"><span class="post-toc-number">1.0.1.1.1.</span> <span class="post-toc-text">在商品列表网页抓取如下商品信息</span></a></li><li class="post-toc-item post-toc-level-5"><a class="post-toc-link" href="#关于ajax价格链接地址格式：http-p-3-cn-prices-mgets-skuIds-J-商品ID，抓取格式为json。"><span class="post-toc-number">1.0.1.1.2.</span> <span class="post-toc-text">关于ajax价格链接地址格式：http:&#x2F;&#x2F;p.3.cn&#x2F;prices&#x2F;mgets?skuIds&#x3D;J_ + 商品ID，抓取格式为json。</span></a></li></ol></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#代码块"><span class="post-toc-number">1.0.2.</span> <span class="post-toc-text">代码块</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#以后将会坚持更新"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">以后将会坚持更新!</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#反馈与建议"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">反馈与建议</span></a></li></ol></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-SpiderWebMagic"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">SpiderWebMagic</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2017-01-30 20:50:27" datetime="2017-01-30T12:50:27.000Z"  itemprop="datePublished">2017-01-30</time>
+
+            
+
+
+            
+<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
+    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+</span>
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h1 id="WebMagic爬虫框架–京东图书"><a href="#WebMagic爬虫框架–京东图书" class="headerlink" title="WebMagic爬虫框架–京东图书"></a>WebMagic爬虫框架–京东图书</h1><p>@(爬虫)[框架|爬虫|Demo总结]</p>
+<p><strong>WebMagic</strong>!项目代码分为核心(webmagic-core)和扩展(webmagic-extension)两部分(jar包)。Downloader、PageProcessor、Scheduler、Pipeline这四大组件对应爬虫生命周期中的下载、处理、管理和持久化等功能。</p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th align="center">功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Downloader</td>
+<td align="center">基础。利用httpClient作为下载工具，下载页面内容便于后续处理解析;</td>
+</tr>
+<tr>
+<td>Page</td>
+<td align="center">网页内容对象。 指根据url下载到的页面内容，包括页面dom元素，css样式，javascript等;</td>
+</tr>
+<tr>
+<td>Pageprocess</td>
+<td align="center">爬虫的核心。 负责解析页面，抽取有用信息，可采用css(),$(),xpath()方法对特定页面元素进行抽取;</td>
+</tr>
+<tr>
+<td>Site</td>
+<td align="center">网站设置。设置网站domain，cookies,header,重试次数,访问间隔时间等;</td>
+</tr>
+<tr>
+<td>Scheduler</td>
+<td align="center">抓取页面队列。 管理待抓取的URL，以及一些去重的工作，将目标url内容push到抓取队列中;</td>
+</tr>
+<tr>
+<td>Pipeline</td>
+<td align="center">输出，收尾。 负责抽取结果的处理，包括计算、持久化到文件、数据库;</td>
+</tr>
+<tr>
+<td>Spider</td>
+<td align="center">爬虫的入口类 采用链式设计，通过它来设定多线程，页面解析器，调度以及输出方式等。</td>
+</tr>
+</tbody></table>
+<h3 id="WebMagic官方链接："><a href="#WebMagic官方链接：" class="headerlink" title="WebMagic官方链接："></a>WebMagic官方链接：</h3><ul>
+<li><a href="http://webmagic.io/" target="_blank" rel="noopener">官网</a> 包含官方文档和源码,以及相应的实例；</li>
+<li><a href="https://github.com/code4craft/webmagic" target="_blank" rel="noopener">github</a> 仓库保存最新版本；</li>
+<li><a href="http://git.oschina.net/flashsword20/webmagic" target="_blank" rel="noopener">oschinamayun码云</a> 包含所有编译好的依赖包；</li>
+</ul>
+<h4 id="爬取京东图书-https-book-jd-com"><a href="#爬取京东图书-https-book-jd-com" class="headerlink" title="爬取京东图书(https://book.jd.com/)"></a>爬取京东图书(<a href="https://book.jd.com/" target="_blank" rel="noopener">https://book.jd.com/</a>)</h4><h5 id="在商品列表网页抓取如下商品信息"><a href="#在商品列表网页抓取如下商品信息" class="headerlink" title="在商品列表网页抓取如下商品信息"></a>在商品列表网页抓取如下商品信息</h5><ul>
+<li>商品名：商品名称</li>
+<li>商品网页：显示商品详细信息的网页地址。</li>
+<li>市场价格：京东给出的市面价格</li>
+<li>京东价格：京东的优惠价。</li>
+</ul>
+<h5 id="关于ajax价格链接地址格式：http-p-3-cn-prices-mgets-skuIds-J-商品ID，抓取格式为json。"><a href="#关于ajax价格链接地址格式：http-p-3-cn-prices-mgets-skuIds-J-商品ID，抓取格式为json。" class="headerlink" title="关于ajax价格链接地址格式：http://p.3.cn/prices/mgets?skuIds=J_ + 商品ID，抓取格式为json。"></a>关于ajax价格链接地址格式：<a href="http://p.3.cn/prices/mgets?skuIds=J" target="_blank" rel="noopener">http://p.3.cn/prices/mgets?skuIds=J</a>_ + 商品ID，抓取格式为json。</h5><ul>
+<li><a href="https://item.jd.com/12087016.html" target="_blank" rel="noopener">https://item.jd.com/12087016.html</a> ：图书详情页；</li>
+<li><a href="http://p.3.cn/prices/mgets?skuIds=J_12087016" target="_blank" rel="noopener">http://p.3.cn/prices/mgets?skuIds=J_12087016</a>  （例）价格ajax请求链接；</li>
+<li>[{“id”:”J_12087016”,”p”:”60.80”,”m”:”90.00”,”op”:”60.80”}]  抓取结果 id + 京东实际价格+市场价格</li>
+</ul>
+<hr>
+<h3 id="代码块"><a href="#代码块" class="headerlink" title="代码块"></a>代码块</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> us.codecraft.webmagic.Page;</span><br><span class="line"><span class="keyword">import</span> us.codecraft.webmagic.Site;</span><br><span class="line"><span class="keyword">import</span> us.codecraft.webmagic.Spider;</span><br><span class="line"><span class="keyword">import</span> us.codecraft.webmagic.processor.PageProcessor;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.ArrayList;</span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">JDPageProcesser</span> <span class="keyword">implements</span> <span class="title">PageProcessor</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Site site = Site.me().setRetryTimes(<span class="number">3</span>).setSleepTime(<span class="number">3000</span>).setCharset(<span class="string">"GBK"</span>);</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> size = <span class="number">0</span>;<span class="comment">// 共抓取到的图书数量</span></span><br><span class="line">    <span class="comment">//抓取商品信息集合</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> List&lt;String&gt; name = <span class="keyword">new</span> ArrayList&lt;String&gt;();<span class="comment">//所有的书名</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> List&lt;String&gt; author = <span class="keyword">new</span> ArrayList&lt;String&gt;();<span class="comment">//所有的作者</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> List&lt;Double&gt; prices = <span class="keyword">new</span> ArrayList&lt;Double&gt;();<span class="comment">//所有的价格</span></span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">process</span><span class="params">(Page page)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//图书主页</span></span><br><span class="line">		<span class="comment">// https://item.jd.com/12004057.html</span></span><br><span class="line">        <span class="keyword">if</span> (!page.getUrl().regex(<span class="string">"https://item.jd.com/\\d&#123;8&#125;.html"</span>).match()&amp;!page.getUrl().regex(<span class="string">"p.3.cn/prices/mgets"</span>).match()) &#123;</span><br><span class="line">            <span class="comment">// 主页中添加商品详情页到计划url</span></span><br><span class="line">            List&lt;String&gt; detail = page.getHtml().links().regex(<span class="string">"//item.jd.com/\\d&#123;8&#125;.html"</span>).replace(<span class="string">"//"</span>, <span class="string">"https://"</span>).all();</span><br><span class="line">            <span class="comment">//控制抓取商品的数量</span></span><br><span class="line">            <span class="keyword">if</span> (detail.size()&gt;<span class="number">0</span>) &#123;</span><br><span class="line">                <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">4</span>; i++) &#123;</span><br><span class="line">                    String url = detail.get(i);</span><br><span class="line">                    System.out.println(<span class="string">"url:"</span> + url.replace(<span class="string">"https://item.jd.com"</span>, <span class="string">""</span>).replace(<span class="string">"/"</span>, <span class="string">"http://p.3.cn/prices/mgets?skuIds=J_"</span>).replace(<span class="string">".html"</span>, <span class="string">""</span>));</span><br><span class="line">                    <span class="comment">//列队添加一条详情页后面追加一条价格ajax链接</span></span><br><span class="line">                    page.addTargetRequest(url);</span><br><span class="line">                    page.addTargetRequest(url.replace(<span class="string">"https://item.jd.com"</span>, <span class="string">""</span>).replace(<span class="string">"/"</span>, <span class="string">"http://p.3.cn/prices/mgets?skuIds=J_"</span>).replace(<span class="string">".html"</span>, <span class="string">""</span>));</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (page.getUrl().regex(<span class="string">"https://item.jd.com/\\d&#123;8&#125;.html"</span>).match()) &#123;</span><br><span class="line">            <span class="comment">// 商品详情页</span></span><br><span class="line">            size++;</span><br><span class="line">            name.add(page.getHtml().xpath(<span class="string">"//div[@id=name]/h1/text()"</span>).get());<span class="comment">//添加书名</span></span><br><span class="line">            author.add(page.getHtml().xpath(<span class="string">"//div[@id=p-author]/a/text()"</span>).get());<span class="comment">//添加作者</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (page.getUrl().regex(<span class="string">"p.3.cn/prices/mgets"</span>).match()) &#123;</span><br><span class="line">            <span class="comment">//ajax商品id对应价格json接口</span></span><br><span class="line">            prices.add(Double.parseDouble(page.getHtml().replace(<span class="string">"&amp;quot"</span>, <span class="string">""</span>).regex(<span class="string">"p;:;.+;,;m"</span>).regex(<span class="string">"\\d+\\.\\d+"</span>).get()));<span class="comment">//添加价格</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Site <span class="title">getSite</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> site;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//获取所有信息导入DAO,持久化层待实现</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">getAll</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"Size"</span>  + name.size() + author.size() + prices.size());</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; name.size(); i++) &#123;</span><br><span class="line">            JDLog model = <span class="keyword">new</span> JDLog();</span><br><span class="line">            model.setName(name.get(i));</span><br><span class="line">            model.setAuthor(author.get(i));</span><br><span class="line">            model.setPrices(prices.get(i));</span><br><span class="line">            System.out.println(<span class="string">"书名:"</span> + model.getName());</span><br><span class="line">            System.out.println(<span class="string">"作者:"</span> + model.getAuthor());</span><br><span class="line">            System.out.println(<span class="string">"价格:"</span> + model.getPrices());</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">long</span> startTime, endTime;</span><br><span class="line">        System.out.println(<span class="string">"【爬虫开始】请耐心等待一大波数据到你碗里来..."</span>);</span><br><span class="line">        startTime = System.currentTimeMillis();</span><br><span class="line">        <span class="comment">// 从京东图书开始抓，开启5个线程，启动爬虫</span></span><br><span class="line">        Spider.create(<span class="keyword">new</span> JDPageProcesser()).addUrl(<span class="string">"https://book.jd.com/"</span>).thread(<span class="number">3</span>).run();</span><br><span class="line">        endTime = System.currentTimeMillis();</span><br><span class="line">        getAll();</span><br><span class="line">        System.out.println(<span class="string">"【爬虫结束】共抓取"</span> + size + <span class="string">"本图书，耗时约"</span> + ((endTime - startTime) / <span class="number">1000</span>) + <span class="string">"秒，已保存到数据库，请查收！"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="以后将会坚持更新"><a href="#以后将会坚持更新" class="headerlink" title="以后将会坚持更新!"></a>以后将会坚持更新!</h2><h2 id="反馈与建议"><a href="#反馈与建议" class="headerlink" title="反馈与建议"></a>反馈与建议</h2><ul>
+<li>邮箱：<a href="mailto:&#x63;&#97;&#x6f;&#99;&#104;&#x69;&#107;&#97;&#x69;&#x40;&#113;&#113;&#46;&#x63;&#x6f;&#x6d;">&#x63;&#97;&#x6f;&#99;&#104;&#x69;&#107;&#97;&#x69;&#x40;&#113;&#113;&#46;&#x63;&#x6f;&#x6d;</a></li>
+</ul>
+<hr>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2017-01-30T12:57:40.000Z" itemprop="dateUpdated">2017-01-30 20:57:40</time>
+</span><br>
+
+
+        
+        留言和分享第三方功能待实现，请各位疯狂star我的笔记，私活私聊我😘
+        
+    </div>
+    
+    <footer>
+        <a href="https://caochikai.github.io">
+            <img src="/img/avatar.jpg" alt="ChiKai">
+            ChiKai
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+
+            
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2017/02/05/AndroidAdb/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">AndroidAdb</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2016/12/24/First%20Wirte/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">My New Post</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+<section class="comments" id="comments">
+    <div id="disqus_thread"></div>
+    <script>
+    var disqus_shortname = 'true';
+    lazyScripts.push('//' + disqus_shortname + '.disqus.com/embed.js')
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a></noscript>
+</section>
+
+
+
+
+<section class="comments" id="comments">
+    <!-- UY BEGIN -->
+    <div id="uyan_frame"></div>
+    <script src="http://v2.uyan.cc/code/uyan.js?uid=true"></script>
+    <!-- UY END -->
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        谢谢大爷~
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/img/wechat.jpg" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="/img/wechat.jpg" data-alipay="/img/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p>
+    <span id="busuanzi_container_site_uv" style='display:none'>
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style='display:none'>
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>ChiKai &copy; 2018 - 2019</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: false, REWARD: true };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '死鬼去哪里了！';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '(つェ⊂)咦!又好了!';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
