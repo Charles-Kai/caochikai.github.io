@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>Mybatis技术内幕--第二章：基础层 | 天道酬勤 | 劳逸结合</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="">
+    <meta name="description" content="第二章：基础支持层 Mybatis以SqlSessionFactory为核心，通过SqlSessionFactoryBuilder解析xml配置文件或Configration实例构建出SqlSessionFactory的实例。  一、重要概念 命名空间（Namespaces）：通常包名加类目组成完全限定名（com.MyMapper.selectAll），实现语句隔离确定唯一性。 作用域（Scope">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Mybatis技术内幕--第二章：基础层">
+<meta property="og:url" content="https:&#x2F;&#x2F;caochikai.github.io&#x2F;2019&#x2F;12&#x2F;19&#x2F;Mybatis%E6%8A%80%E6%9C%AF%E5%86%85%E5%B9%95-%E7%AC%AC%E4%BA%8C%E7%AB%A0%EF%BC%9A%E5%9F%BA%E7%A1%80%E5%B1%82&#x2F;index.html">
+<meta property="og:site_name" content="天道酬勤">
+<meta property="og:description" content="第二章：基础支持层 Mybatis以SqlSessionFactory为核心，通过SqlSessionFactoryBuilder解析xml配置文件或Configration实例构建出SqlSessionFactory的实例。  一、重要概念 命名空间（Namespaces）：通常包名加类目组成完全限定名（com.MyMapper.selectAll），实现语句隔离确定唯一性。 作用域（Scope">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;www.notion.so&#x2F;image&#x2F;https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2Fdc4e7dee-2462-406e-9552-a4edd7490d72%2FDefaultReflectorFactory.png?table&#x3D;block&amp;id&#x3D;4a657166-3f82-41f7-9880-e5bab737fa5b&amp;width&#x3D;970&amp;cache&#x3D;v2">
+<meta property="article:published_time" content="2019-12-19T13:24:00.000Z">
+<meta property="article:modified_time" content="2019-12-19T13:33:27.070Z">
+<meta property="article:author" content="ChiKai">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;www.notion.so&#x2F;image&#x2F;https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2Fdc4e7dee-2462-406e-9552-a4edd7490d72%2FDefaultReflectorFactory.png?table&#x3D;block&amp;id&#x3D;4a657166-3f82-41f7-9880-e5bab737fa5b&amp;width&#x3D;970&amp;cache&#x3D;v2">
+    
+        <link rel="alternate" type="application/atom+xml" title="天道酬勤" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+<meta name="generator" content="Hexo 4.1.1"></head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">ChiKai</h5>
+          <a href="mailto:992691009@qq.com" title="992691009@qq.com" class="mail">992691009@qq.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/caochikai" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://caochikai.github.io/" target="_blank" >
+                <i class="icon icon-lg icon-weibo"></i>
+                Weibo
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/custom"  >
+                <i class="icon icon-lg icon-link"></i>
+                测试
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Mybatis技术内幕--第二章：基础层</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">Mybatis技术内幕--第二章：基础层</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2019-12-19T13:24:00.000Z" itemprop="datePublished" class="page-time">
+  2019-12-19
+</time>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#第二章：基础支持层"><span class="post-toc-number">1.</span> <span class="post-toc-text">第二章：基础支持层</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#一、重要概念"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">一、重要概念</span></a></li></ol></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#2-2、反射工具箱"><span class="post-toc-number">2.</span> <span class="post-toc-text">2.2、反射工具箱</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2-2-1-Reflector-amp-ReflectorFactory"><span class="post-toc-number">2.0.1.</span> <span class="post-toc-text">2.2.1 Reflector&amp;ReflectorFactory</span></a></li></ol></li></ol></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-Mybatis技术内幕-第二章：基础层"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Mybatis技术内幕--第二章：基础层</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2019-12-19 21:24:00" datetime="2019-12-19T13:24:00.000Z"  itemprop="datePublished">2019-12-19</time>
+
+            
+
+
+            
+<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
+    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+</span>
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h1 id="第二章：基础支持层"><a href="#第二章：基础支持层" class="headerlink" title="第二章：基础支持层"></a>第二章：基础支持层</h1><blockquote>
+<p>Mybatis以SqlSessionFactory为核心，通过SqlSessionFactoryBuilder解析xml配置文件或Configration实例构建出SqlSessionFactory的实例。</p>
+</blockquote>
+<h2 id="一、重要概念"><a href="#一、重要概念" class="headerlink" title="一、重要概念"></a>一、重要概念</h2><ul>
+<li>命名空间（Namespaces）：通常包名加类目组成完全限定名（com.MyMapper.selectAll），实现语句隔离确定唯一性。</li>
+<li>作用域（Scope）和生命周期</li>
+<li>SqlSessionFactoryBuilder：完成创建SqlSessionFactory后就不再需要。</li>
+<li>SqlSessionFactory：最佳作用域是应用作用域，最优解是使用单例模式或者静态单例模式。</li>
+<li>SqlSession：最佳的作用域是请求或方法作用域</li>
+</ul>
+<h1 id="2-2、反射工具箱"><a href="#2-2、反射工具箱" class="headerlink" title="2.2、反射工具箱"></a>2.2、反射工具箱</h1><blockquote>
+<p>Mybatis进行参数处理、结果映射会涉及到大量的反射操作。Java反射功能虽然强大，但是代码复杂易错，所以在mybaits源码包org.apache.ibatis.reflection有专门的反射模块。</p>
+</blockquote>
+<h3 id="2-2-1-Reflector-amp-ReflectorFactory"><a href="#2-2-1-Reflector-amp-ReflectorFactory" class="headerlink" title="2.2.1 Reflector&amp;ReflectorFactory"></a>2.2.1 Reflector&amp;ReflectorFactory</h3><blockquote>
+<p>Reflector是反射模块的基础类，一个reflecotr实例对应一个类的元信息。更具Java Bean规范，封装的对getter、setter属性方法映射。</p>
+</blockquote>
+<p><strong>Reflector成员字段</strong>分析如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">package org.apache.ibatis.reflection;</span><br><span class="line"></span><br><span class="line">import ....</span><br><span class="line">（省略导入类）</span><br><span class="line">&#x2F;**</span><br><span class="line"> * This class represents a cached set of class definition information that</span><br><span class="line"> * allows for easy mapping between property names and getter&#x2F;setter methods.</span><br><span class="line"> *</span><br><span class="line"> * @author Clinton Begin</span><br><span class="line"> *&#x2F;</span><br><span class="line">public class Reflector &#123;</span><br><span class="line">  &#x2F;&#x2F;对应的class类型</span><br><span class="line">  private final Class&lt;?&gt; type;</span><br><span class="line">  &#x2F;&#x2F;getter方法对应的属性名称数组</span><br><span class="line">  private final String[] readablePropertyNames;</span><br><span class="line">  &#x2F;&#x2F;setter方法对应的属性名称数组</span><br><span class="line">  private final String[] writablePropertyNames;</span><br><span class="line">	&#x2F;&#x2F;属性对应的setter方法集合，key是属性名称，value是Invoker对象</span><br><span class="line">  private final Map&lt;String, Invoker&gt; setMethods &#x3D; new HashMap&lt;&gt;();</span><br><span class="line">  &#x2F;&#x2F;属性对应的getter方法集合，key是属性名称，value是Invoker对象</span><br><span class="line">  private final Map&lt;String, Invoker&gt; getMethods &#x3D; new HashMap&lt;&gt;();</span><br><span class="line">  &#x2F;&#x2F;记录了属性相应的setter方法的参数值类型，key是属性名称，value是setter方法的参数类型</span><br><span class="line">  private final Map&lt;String, Class&lt;?&gt;&gt; setTypes &#x3D; new HashMap&lt;&gt;();</span><br><span class="line">  &#x2F;&#x2F;记录了属性相应的getter方法的参数值类型，key是属性名称，value是setter方法的参数类型</span><br><span class="line">  private final Map&lt;String, Class&lt;?&gt;&gt; getTypes &#x3D; new HashMap&lt;&gt;();</span><br><span class="line">  &#x2F;&#x2F;记录默认构造器</span><br><span class="line">  private Constructor&lt;?&gt; defaultConstructor;</span><br><span class="line">  &#x2F;&#x2F;所有属性名称集合</span><br><span class="line">  private Map&lt;String, String&gt; caseInsensitivePropertyMap &#x3D; new HashMap&lt;&gt;();</span><br><span class="line"></span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>ReflectorFactory接口定义了Reflector对象创建或者缓存</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">package org.apache.ibatis.reflection;</span><br><span class="line"></span><br><span class="line">public interface ReflectorFactory &#123;</span><br><span class="line">	&#x2F;&#x2F;确定是否需要缓存该Reflector对象</span><br><span class="line">  boolean isClassCacheEnabled();</span><br><span class="line">	&#x2F;&#x2F;设置是否缓存该Reflector对象</span><br><span class="line">  void setClassCacheEnabled(boolean classCacheEnabled);</span><br><span class="line">	&#x2F;&#x2F;刘建指定Class对应的Reflector对象</span><br><span class="line">  Reflector findForClass(Class&lt;?&gt; type);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>DefaultReflectorFactory默认实现ReflectorFactory，而CustomReflectorFactory继承DefaultReflectorFactory并且空实现，其关系图如下</p>
+</blockquote>
+<p><img src="https://www.notion.so/image/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2Fdc4e7dee-2462-406e-9552-a4edd7490d72%2FDefaultReflectorFactory.png?table=block&id=4a657166-3f82-41f7-9880-e5bab737fa5b&width=970&cache=v2" alt="DefaultReflectorFactory"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">package org.apache.ibatis.reflection;</span><br><span class="line"></span><br><span class="line">import java.util.concurrent.ConcurrentHashMap;</span><br><span class="line">import java.util.concurrent.ConcurrentMap;</span><br><span class="line"></span><br><span class="line">public class DefaultReflectorFactory implements ReflectorFactory &#123;</span><br><span class="line">  &#x2F;&#x2F;该字段决定是否开启对Reflector对象</span><br><span class="line">  private boolean classCacheEnabled &#x3D; true;</span><br><span class="line">  &#x2F;&#x2F;使用ConcurrentMap集合实现对Reflector对象的缓存</span><br><span class="line">  private final ConcurrentMap&lt;Class&lt;?&gt;, Reflector&gt; reflectorMap &#x3D; new ConcurrentHashMap&lt;&gt;();</span><br><span class="line"></span><br><span class="line">  public DefaultReflectorFactory() &#123;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  @Override</span><br><span class="line">  public boolean isClassCacheEnabled() &#123;</span><br><span class="line">    return classCacheEnabled;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  @Override</span><br><span class="line">  public void setClassCacheEnabled(boolean classCacheEnabled) &#123;</span><br><span class="line">    this.classCacheEnabled &#x3D; classCacheEnabled;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  @Override</span><br><span class="line">  public Reflector findForClass(Class&lt;?&gt; type) &#123;</span><br><span class="line">    if (classCacheEnabled) &#123;&#x2F;&#x2F;检测是否开启缓存</span><br><span class="line">      &#x2F;&#x2F; synchronized (type) removed see issue #461</span><br><span class="line">			&#x2F;&#x2F;通过线程安全ConcurrentHashMap获取缓存Reflector，没有则通过lambada调用构造新建对象</span><br><span class="line">      return reflectorMap.computeIfAbsent(type, Reflector::new);</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">			&#x2F;&#x2F;未开启缓存则直接new Reflector对象</span><br><span class="line">      return new Reflector(type);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2019-12-19T13:33:27.070Z" itemprop="dateUpdated">2019-12-19 21:33:27</time>
+</span><br>
+
+
+        
+        留言和分享第三方功能待实现，请各位疯狂star我的笔记，私活私聊我😘
+        
+    </div>
+    
+    <footer>
+        <a href="https://caochikai.github.io">
+            <img src="/img/avatar.jpg" alt="ChiKai">
+            ChiKai
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+
+            
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between flex-row-reverse">
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2019/12/18/HttpServletRequest%E6%B5%81%E9%87%8D%E5%A4%8D%E8%AF%BB/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">HttpServletRequest流重复读</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+<section class="comments" id="comments">
+    <div id="disqus_thread"></div>
+    <script>
+    var disqus_shortname = 'true';
+    lazyScripts.push('//' + disqus_shortname + '.disqus.com/embed.js')
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a></noscript>
+</section>
+
+
+
+
+<section class="comments" id="comments">
+    <!-- UY BEGIN -->
+    <div id="uyan_frame"></div>
+    <script src="http://v2.uyan.cc/code/uyan.js?uid=true"></script>
+    <!-- UY END -->
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        谢谢大爷~
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/img/wechat.jpg" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="/img/wechat.jpg" data-alipay="/img/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p>
+    <span id="busuanzi_container_site_uv" style='display:none'>
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style='display:none'>
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>ChiKai &copy; 2018 - 2019</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: false, REWARD: true };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '死鬼去哪里了！';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '(つェ⊂)咦!又好了!';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
