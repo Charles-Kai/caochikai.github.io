@@ -30,7 +30,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https:&#x2F;&#x2F;mubu.com&#x2F;document_image&#x2F;b61624c1-2eaa-4e3f-9e21-904b98cce861-2286202.jpg">
 <meta property="article:published_time" content="2019-12-19T13:24:00.000Z">
-<meta property="article:modified_time" content="2019-12-19T13:45:24.514Z">
+<meta property="article:modified_time" content="2019-12-19T13:55:26.639Z">
 <meta property="article:author" content="ChiKai">
 <meta property="article:tag" content="Mybatis">
 <meta name="twitter:card" content="summary">
@@ -208,7 +208,7 @@
 <p>Mybatis进行参数处理、结果映射会涉及到大量的反射操作。Java反射功能虽然强大，但是代码复杂易错，所以在mybaits源码包org.apache.ibatis.reflection有专门的反射模块。</p>
 </blockquote>
 <h3 id="2-2-1-Reflector-amp-ReflectorFactory"><a href="#2-2-1-Reflector-amp-ReflectorFactory" class="headerlink" title="2.2.1 Reflector&amp;ReflectorFactory"></a>2.2.1 Reflector&amp;ReflectorFactory</h3><blockquote>
-<p>Reflector是反射模块的基础类，一个reflecotr实例对应一个类的元信息。更具Java Bean规范，封装的对getter、setter属性方法映射。</p>
+<p>Reflector是反射模块的基础类，一个reflecotr实例对应一个类的元信息。根据Java Bean规范，封装的对getter、setter属性方法映射。</p>
 </blockquote>
 <p><strong>Reflector成员字段</strong>分析如下：</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">package org.apache.ibatis.reflection;</span><br><span class="line"></span><br><span class="line">import ....</span><br><span class="line">（省略导入类）</span><br><span class="line">&#x2F;**</span><br><span class="line"> * This class represents a cached set of class definition information that</span><br><span class="line"> * allows for easy mapping between property names and getter&#x2F;setter methods.</span><br><span class="line"> *</span><br><span class="line"> * @author Clinton Begin</span><br><span class="line"> *&#x2F;</span><br><span class="line">public class Reflector &#123;</span><br><span class="line">  &#x2F;&#x2F;对应的class类型</span><br><span class="line">  private final Class&lt;?&gt; type;</span><br><span class="line">  &#x2F;&#x2F;getter方法对应的属性名称数组</span><br><span class="line">  private final String[] readablePropertyNames;</span><br><span class="line">  &#x2F;&#x2F;setter方法对应的属性名称数组</span><br><span class="line">  private final String[] writablePropertyNames;</span><br><span class="line">	&#x2F;&#x2F;属性对应的setter方法集合，key是属性名称，value是Invoker对象</span><br><span class="line">  private final Map&lt;String, Invoker&gt; setMethods &#x3D; new HashMap&lt;&gt;();</span><br><span class="line">  &#x2F;&#x2F;属性对应的getter方法集合，key是属性名称，value是Invoker对象</span><br><span class="line">  private final Map&lt;String, Invoker&gt; getMethods &#x3D; new HashMap&lt;&gt;();</span><br><span class="line">  &#x2F;&#x2F;记录了属性相应的setter方法的参数值类型，key是属性名称，value是setter方法的参数类型</span><br><span class="line">  private final Map&lt;String, Class&lt;?&gt;&gt; setTypes &#x3D; new HashMap&lt;&gt;();</span><br><span class="line">  &#x2F;&#x2F;记录了属性相应的getter方法的参数值类型，key是属性名称，value是setter方法的参数类型</span><br><span class="line">  private final Map&lt;String, Class&lt;?&gt;&gt; getTypes &#x3D; new HashMap&lt;&gt;();</span><br><span class="line">  &#x2F;&#x2F;记录默认构造器</span><br><span class="line">  private Constructor&lt;?&gt; defaultConstructor;</span><br><span class="line">  &#x2F;&#x2F;所有属性名称集合</span><br><span class="line">  private Map&lt;String, String&gt; caseInsensitivePropertyMap &#x3D; new HashMap&lt;&gt;();</span><br><span class="line"></span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
@@ -237,7 +237,7 @@
     <div class="content">
         
 <span class="post-time">
-    最后更新时间：<time datetime="2019-12-19T13:45:24.514Z" itemprop="dateUpdated">2019-12-19 21:45:24</time>
+    最后更新时间：<time datetime="2019-12-19T13:55:26.639Z" itemprop="dateUpdated">2019-12-19 21:55:26</time>
 </span><br>
 
 
