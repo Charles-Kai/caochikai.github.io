@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>Mybatis技术内幕源码解析：日志模块 | 天道酬勤 | 劳逸结合</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Mybatis">
+    <meta name="description" content="2.4、日志模块 Mybatis日志模块使用了适配器模式，内部调用org.apache.ibatis.logging.Log 接口。为了整合第三方的日志组件Log4J2、Log4J，mybatis提供了多种Adapter适配这些日志组件的API，并遵守Log 接口标准。在日志级别支持中，Mybatis提供了trace、debug、warn、eror四个级别，只能说基本满足绝大多数场景的日志。  1">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Mybatis技术内幕源码解析：日志模块">
+<meta property="og:url" content="https:&#x2F;&#x2F;caochikai.github.io&#x2F;2019&#x2F;12&#x2F;21&#x2F;Mybatis%E6%8A%80%E6%9C%AF%E5%86%85%E5%B9%95%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90%EF%BC%9A%E6%97%A5%E5%BF%97%E6%A8%A1%E5%9D%97&#x2F;index.html">
+<meta property="og:site_name" content="天道酬勤">
+<meta property="og:description" content="2.4、日志模块 Mybatis日志模块使用了适配器模式，内部调用org.apache.ibatis.logging.Log 接口。为了整合第三方的日志组件Log4J2、Log4J，mybatis提供了多种Adapter适配这些日志组件的API，并遵守Log 接口标准。在日志级别支持中，Mybatis提供了trace、debug、warn、eror四个级别，只能说基本满足绝大多数场景的日志。  1">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;caochikai.github.io&#x2F;images&#x2F;jdbc_log.png">
+<meta property="article:published_time" content="2019-12-21T13:19:00.000Z">
+<meta property="article:modified_time" content="2019-12-21T13:23:59.656Z">
+<meta property="article:author" content="ChiKai">
+<meta property="article:tag" content="Mybatis">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;caochikai.github.io&#x2F;images&#x2F;jdbc_log.png">
+    
+        <link rel="alternate" type="application/atom+xml" title="天道酬勤" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+<meta name="generator" content="Hexo 4.1.1"></head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">ChiKai</h5>
+          <a href="mailto:992691009@qq.com" title="992691009@qq.com" class="mail">992691009@qq.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/caochikai" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://caochikai.github.io/" target="_blank" >
+                <i class="icon icon-lg icon-weibo"></i>
+                Weibo
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/custom"  >
+                <i class="icon icon-lg icon-link"></i>
+                测试
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Mybatis技术内幕源码解析：日志模块</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">Mybatis技术内幕源码解析：日志模块</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2019-12-21T13:19:00.000Z" itemprop="datePublished" class="page-time">
+  2019-12-21
+</time>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#2-4、日志模块"><span class="post-toc-number">1.</span> <span class="post-toc-text">2.4、日志模块</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2-4-4、JDBC调试日志"><span class="post-toc-number">1.0.1.</span> <span class="post-toc-text">2.4.4、JDBC调试日志</span></a></li></ol></li></ol></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-Mybatis技术内幕源码解析：日志模块"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Mybatis技术内幕源码解析：日志模块</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2019-12-21 21:19:00" datetime="2019-12-21T13:19:00.000Z"  itemprop="datePublished">2019-12-21</time>
+
+            
+
+
+            
+<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
+    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+</span>
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h1 id="2-4、日志模块"><a href="#2-4、日志模块" class="headerlink" title="2.4、日志模块"></a>2.4、日志模块</h1><blockquote>
+<p>Mybatis日志模块使用了适配器模式，内部调用org.apache.ibatis.logging.Log 接口。为了整合第三方的日志组件Log4J2、Log4J，mybatis提供了多种Adapter适配这些日志组件的API，并遵守Log 接口标准。在日志级别支持中，Mybatis提供了trace、debug、warn、eror四个级别，只能说基本满足绝大多数场景的日志。</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> org.apache.ibatis.logging;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Clinton Begin</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Log</span> </span>&#123;</span><br><span class="line">	<span class="comment">//is开头方法为判断登记方法</span></span><br><span class="line">  <span class="function"><span class="keyword">boolean</span> <span class="title">isDebugEnabled</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">boolean</span> <span class="title">isTraceEnabled</span><span class="params">()</span></span>;</span><br><span class="line">	<span class="comment">//下面四个分别支持四种等级日志调用</span></span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">error</span><span class="params">(String s, Throwable e)</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">error</span><span class="params">(String s)</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">debug</span><span class="params">(String s)</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">trace</span><span class="params">(String s)</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">warn</span><span class="params">(String s)</span></span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>LogFactory负责创建对应的日志组件的适配器，其内部逻辑基本公共静态代码块加载支持的日志适配器，然后使用logConstructor集合记录所有支持的日志适配器。</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> org.apache.ibatis.logging;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.lang.reflect.Constructor;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Clinton Begin</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Eduardo Macarron</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">LogFactory</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * Marker to be used by logging implementations that support markers.</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String MARKER = <span class="string">"MYBATIS"</span>;</span><br><span class="line">	<span class="comment">//第三方日志组件的集合</span></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">static</span> Constructor&lt;? extends Log&gt; logConstructor;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">static</span> &#123;</span><br><span class="line">    tryImplementation(LogFactory::useSlf4jLogging);</span><br><span class="line">    tryImplementation(LogFactory::useCommonsLogging);</span><br><span class="line">    tryImplementation(LogFactory::useLog4J2Logging);</span><br><span class="line">    tryImplementation(LogFactory::useLog4JLogging);</span><br><span class="line">    tryImplementation(LogFactory::useJdkLogging);</span><br><span class="line">    tryImplementation(LogFactory::useNoLogging);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">private</span> <span class="title">LogFactory</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// disable construction</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Log <span class="title">getLog</span><span class="params">(Class&lt;?&gt; aClass)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> getLog(aClass.getName());</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Log <span class="title">getLog</span><span class="params">(String logger)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">			<span class="comment">//返回logger对象</span></span><br><span class="line">      <span class="keyword">return</span> logConstructor.newInstance(logger);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Throwable t) &#123;</span><br><span class="line">      <span class="keyword">throw</span> <span class="keyword">new</span> LogException(<span class="string">"Error creating logger for logger "</span> + logger + <span class="string">".  Cause: "</span> + t, t);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"> ...use开头方法省略都会走下面方法setImplementation（对应适配器类）</span><br><span class="line">	<span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">tryImplementation</span><span class="params">(Runnable runnable)</span> </span>&#123;</span><br><span class="line">	    <span class="keyword">if</span> (logConstructor == <span class="keyword">null</span>) &#123;</span><br><span class="line">	      <span class="keyword">try</span> &#123;</span><br><span class="line">	        runnable.run();</span><br><span class="line">	      &#125; <span class="keyword">catch</span> (Throwable t) &#123;</span><br><span class="line">	        <span class="comment">// ignore</span></span><br><span class="line">	      &#125;</span><br><span class="line">	    &#125;</span><br><span class="line">	  &#125;</span><br><span class="line">	</span><br><span class="line">	  <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">setImplementation</span><span class="params">(Class&lt;? extends Log&gt; implClass)</span> </span>&#123;</span><br><span class="line">	    <span class="keyword">try</span> &#123;</span><br><span class="line">				<span class="comment">//获取指定适配器的构造方法</span></span><br><span class="line">	      Constructor&lt;? extends Log&gt; candidate = implClass.getConstructor(String<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">				<span class="comment">//实例化适配器</span></span><br><span class="line">	      Log log = candidate.newInstance(LogFactory<span class="class">.<span class="keyword">class</span>.<span class="title">getName</span>())</span>;</span><br><span class="line">	      <span class="keyword">if</span> (log.isDebugEnabled()) &#123;</span><br><span class="line">	        log.debug(<span class="string">"Logging initialized using '"</span> + implClass + <span class="string">"' adapter."</span>);</span><br><span class="line">	      &#125;</span><br><span class="line">				<span class="comment">//初始化logConstructor</span></span><br><span class="line">	      logConstructor = candidate;</span><br><span class="line">	    &#125; <span class="keyword">catch</span> (Throwable t) &#123;</span><br><span class="line">	      <span class="keyword">throw</span> <span class="keyword">new</span> LogException(<span class="string">"Error setting Log implementation.  Cause: "</span> + t, t);</span><br><span class="line">	    &#125;</span><br><span class="line">	  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-4-4、JDBC调试日志"><a href="#2-4-4、JDBC调试日志" class="headerlink" title="2.4.4、JDBC调试日志"></a>2.4.4、JDBC调试日志</h3><blockquote>
+<p>org.apache.ibatis.logging.jdbc是Mybatis通过动态代理的方式，将JDBC操作通过指定的日志框架打印出来，输出内容包含sql语句、绑定参数、影响行数等等。BaseJdbcLogger是jdbc下所有logger类的父类，继承树如下：</p>
+</blockquote>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/jdbc_log.png" alt="upload successful" title="">
+                </div>
+                <div class="image-caption">upload successful</div>
+            </figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> org.apache.ibatis.logging.jdbc;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> ...省略部分导入</span><br><span class="line"><span class="keyword">import</span> org.apache.ibatis.logging.Log;</span><br><span class="line"><span class="keyword">import</span> org.apache.ibatis.reflection.ArrayUtil;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Base class for proxies to do logging.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Clinton Begin</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Eduardo Macarron</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">BaseJdbcLogger</span> </span>&#123;</span><br><span class="line">	<span class="comment">//PreparedStatement接口中定义的常用的set*（）方法名</span></span><br><span class="line">  <span class="keyword">protected</span> <span class="keyword">static</span> <span class="keyword">final</span> Set&lt;StrinSg&gt; SET_METHODS;</span><br><span class="line">	<span class="comment">//Statement接口和PreparedStatement接口中与执行SQL语句相关的方法名</span></span><br><span class="line">  <span class="keyword">protected</span> <span class="keyword">static</span> <span class="keyword">final</span> Set&lt;String&gt; EXECUTE_METHODS = <span class="keyword">new</span> HashSet&lt;&gt;();</span><br><span class="line">	<span class="comment">//PreparedStatement.set*（）方法设置的键值对，key为parameterIndex下标，value为列值</span></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">final</span> Map&lt;Object, Object&gt; columnMap = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">	<span class="comment">//parameterIndex集合</span></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">final</span> List&lt;Object&gt; columnNames = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">	<span class="comment">//value集合</span></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">final</span> List&lt;Object&gt; columnValues = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">	<span class="comment">//当前支持的适配器实例</span></span><br><span class="line">  <span class="keyword">protected</span> <span class="keyword">final</span> Log statementLog;</span><br><span class="line">	<span class="comment">//Sql层数，用于格式化sql，buffer堆栈的深度-&gt;char[] buffer = new char[queryStack * 2 + 2];</span></span><br><span class="line">  <span class="keyword">protected</span> <span class="keyword">final</span> <span class="keyword">int</span> queryStack;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/*</span></span><br><span class="line"><span class="comment">   * Default constructor，传入适配器实例</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="title">BaseJdbcLogger</span><span class="params">(Log log, <span class="keyword">int</span> queryStack)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.statementLog = log;</span><br><span class="line">    <span class="keyword">if</span> (queryStack == <span class="number">0</span>) &#123;</span><br><span class="line">      <span class="keyword">this</span>.queryStack = <span class="number">1</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">this</span>.queryStack = queryStack;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">static</span> &#123;</span><br><span class="line">		<span class="comment">//lambada获取PreparedStatement开通setXXX方法名称集合</span></span><br><span class="line">    SET_METHODS = Arrays.stream(PreparedStatement<span class="class">.<span class="keyword">class</span>.<span class="title">getDeclaredMethods</span>())</span></span><br><span class="line">            .filter(method -&gt; method.getName().startsWith("set"))</span><br><span class="line">            .filter(method -&gt; method.getParameterCount() &gt; <span class="number">1</span>)</span><br><span class="line">            .map(Method::getName)</span><br><span class="line">            .collect(Collectors.toSet());</span><br><span class="line">		<span class="comment">//执行方法代理目标</span></span><br><span class="line">    EXECUTE_METHODS.add(<span class="string">"execute"</span>);</span><br><span class="line">    EXECUTE_METHODS.add(<span class="string">"executeUpdate"</span>);</span><br><span class="line">    EXECUTE_METHODS.add(<span class="string">"executeQuery"</span>);</span><br><span class="line">    EXECUTE_METHODS.add(<span class="string">"addBatch"</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">static</span> &#123;</span><br><span class="line">		<span class="comment">//往SET_METHODS集合添加记录</span></span><br><span class="line">    SET_METHODS.add(<span class="string">"setString"</span>);</span><br><span class="line">    SET_METHODS.add(<span class="string">"setNString"</span>);</span><br><span class="line">    SET_METHODS.add(<span class="string">"setInt"</span>);</span><br><span class="line">    SET_METHODS.add(<span class="string">"setByte"</span>);</span><br><span class="line">    SET_METHODS.add(<span class="string">"setShort"</span>);</span><br><span class="line">    SET_METHODS.add(<span class="string">"setLong"</span>);</span><br><span class="line">    SET_METHODS.add(<span class="string">"setDouble"</span>);</span><br><span class="line">    SET_METHODS.add(<span class="string">"setFloat"</span>);</span><br><span class="line">    SET_METHODS.add(<span class="string">"setTimestamp"</span>);</span><br><span class="line">    SET_METHODS.add(<span class="string">"setDate"</span>);</span><br><span class="line">    SET_METHODS.add(<span class="string">"setTime"</span>);</span><br><span class="line">    SET_METHODS.add(<span class="string">"setArray"</span>);</span><br><span class="line">    SET_METHODS.add(<span class="string">"setBigDecimal"</span>);</span><br><span class="line">    SET_METHODS.add(<span class="string">"setAsciiStream"</span>);</span><br><span class="line">    SET_METHODS.add(<span class="string">"setBinaryStream"</span>);</span><br><span class="line">    SET_METHODS.add(<span class="string">"setBlob"</span>);</span><br><span class="line">    SET_METHODS.add(<span class="string">"setBoolean"</span>);</span><br><span class="line">    SET_METHODS.add(<span class="string">"setBytes"</span>);</span><br><span class="line">    SET_METHODS.add(<span class="string">"setCharacterStream"</span>);</span><br><span class="line">    SET_METHODS.add(<span class="string">"setNCharacterStream"</span>);</span><br><span class="line">    SET_METHODS.add(<span class="string">"setClob"</span>);</span><br><span class="line">    SET_METHODS.add(<span class="string">"setNClob"</span>);</span><br><span class="line">    SET_METHODS.add(<span class="string">"setObject"</span>);</span><br><span class="line">    SET_METHODS.add(<span class="string">"setNull"</span>);</span><br><span class="line"></span><br><span class="line">    EXECUTE_METHODS.add(<span class="string">"execute"</span>);</span><br><span class="line">    EXECUTE_METHODS.add(<span class="string">"executeUpdate"</span>);</span><br><span class="line">    EXECUTE_METHODS.add(<span class="string">"executeQuery"</span>);</span><br><span class="line">    EXECUTE_METHODS.add(<span class="string">"addBatch"</span>);</span><br><span class="line">  &#125;</span><br><span class="line">	</span><br><span class="line">	<span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">setColumn</span><span class="params">(Object key, Object value)</span> </span>&#123;</span><br><span class="line">    columnMap.put(key, value);</span><br><span class="line">    columnNames.add(key);</span><br><span class="line">    columnValues.add(value);</span><br><span class="line">  &#125;</span><br><span class="line">	...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>PreparedStatementLogger继承了BaseJdbcLogger并实现了InvocationHandler接口。PreparedStatementLogger.invoke方法会为EXECUTE_METHODS集合中的方法、SET_METHODS集合中的方法、getResultSet等方法提供代理，具体代码如下：</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> org.apache.ibatis.logging.jdbc;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.lang.reflect.InvocationHandler;</span><br><span class="line"><span class="keyword">import</span> java.lang.reflect.Method;</span><br><span class="line"><span class="keyword">import</span> java.lang.reflect.Proxy;</span><br><span class="line"><span class="keyword">import</span> java.sql.CallableStatement;</span><br><span class="line"><span class="keyword">import</span> java.sql.PreparedStatement;</span><br><span class="line"><span class="keyword">import</span> java.sql.ResultSet;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.apache.ibatis.logging.Log;</span><br><span class="line"><span class="keyword">import</span> org.apache.ibatis.reflection.ExceptionUtil;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * PreparedStatement proxy to add logging.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Clinton Begin</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Eduardo Macarron</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">PreparedStatementLogger</span> <span class="keyword">extends</span> <span class="title">BaseJdbcLogger</span> <span class="keyword">implements</span> <span class="title">InvocationHandler</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">final</span> PreparedStatement statement;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">private</span> <span class="title">PreparedStatementLogger</span><span class="params">(PreparedStatement stmt, Log statementLog, <span class="keyword">int</span> queryStack)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>(statementLog, queryStack);</span><br><span class="line">    <span class="keyword">this</span>.statement = stmt;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> Object <span class="title">invoke</span><span class="params">(Object proxy, Method method, Object[] params)</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      <span class="keyword">if</span> (Object<span class="class">.<span class="keyword">class</span>.<span class="title">equals</span>(<span class="title">method</span>.<span class="title">getDeclaringClass</span>())) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> method.invoke(<span class="keyword">this</span>, params);</span><br><span class="line">      &#125;</span><br><span class="line">			<span class="comment">//调用了EXECUTE_METHODS集合中的方法</span></span><br><span class="line">      <span class="keyword">if</span> (EXECUTE_METHODS.contains(method.getName())) &#123;</span><br><span class="line">        <span class="keyword">if</span> (isDebugEnabled()) &#123;</span><br><span class="line">					<span class="comment">//日志输出，输出的是参数值以及参数类型-&gt;()</span></span><br><span class="line">          debug(<span class="string">"Parameters: "</span> + getParameterValueString(), <span class="keyword">true</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        clearColumnInfo();<span class="comment">//清空BaseJdbcLogger中定义的三个column*集合</span></span><br><span class="line">				<span class="comment">//如果是executeQuery方法，则为ResultSet创建代理对象，不是则直接返回结果</span></span><br><span class="line">        <span class="keyword">if</span> (<span class="string">"executeQuery"</span>.equals(method.getName())) &#123;</span><br><span class="line">          ResultSet rs = (ResultSet) method.invoke(statement, params);</span><br><span class="line">          <span class="keyword">return</span> rs == <span class="keyword">null</span> ? <span class="keyword">null</span> : ResultSetLogger.newInstance(rs, statementLog, queryStack);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">          <span class="keyword">return</span> method.invoke(statement, params);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (SET_METHODS.contains(method.getName())) &#123;</span><br><span class="line">				<span class="comment">//如果是SET_METHODS集合中的方法，则通过setColumn记录到</span></span><br><span class="line">				<span class="comment">//BaseJdbcLogger的三个column*集合</span></span><br><span class="line">        <span class="keyword">if</span> (<span class="string">"setNull"</span>.equals(method.getName())) &#123;</span><br><span class="line">          setColumn(params[<span class="number">0</span>], <span class="keyword">null</span>);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">          setColumn(params[<span class="number">0</span>], params[<span class="number">1</span>]);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> method.invoke(statement, params);</span><br><span class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="string">"getResultSet"</span>.equals(method.getName())) &#123;</span><br><span class="line">				<span class="comment">//如果调用getResultSet（）方法，则为ResultSet创建代理对象</span></span><br><span class="line">        ResultSet rs = (ResultSet) method.invoke(statement, params);</span><br><span class="line">        <span class="keyword">return</span> rs == <span class="keyword">null</span> ? <span class="keyword">null</span> : ResultSetLogger.newInstance(rs, statementLog, queryStack);</span><br><span class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="string">"getUpdateCount"</span>.equals(method.getName())) &#123;</span><br><span class="line">        <span class="keyword">int</span> updateCount = (Integer) method.invoke(statement, params);</span><br><span class="line">        <span class="keyword">if</span> (updateCount != -<span class="number">1</span>) &#123;</span><br><span class="line">          debug(<span class="string">"   Updates: "</span> + updateCount, <span class="keyword">false</span>);</span><br><span class="line">        &#125;</span><br><span class="line">				<span class="comment">//返回影响条数</span></span><br><span class="line">        <span class="keyword">return</span> updateCount;</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> method.invoke(statement, params);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Throwable t) &#123;</span><br><span class="line">      <span class="keyword">throw</span> ExceptionUtil.unwrapThrowable(t);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * Creates a logging version of a PreparedStatement.</span></span><br><span class="line"><span class="comment">   *</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> stmt - the statement</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> statementLog - the statement log</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> queryStack - the query stack</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@return</span> - the proxy 使用JDK动态代理的方式创建代理对象</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> PreparedStatement <span class="title">newInstance</span><span class="params">(PreparedStatement stmt, Log statementLog, <span class="keyword">int</span> queryStack)</span> </span>&#123;</span><br><span class="line">    InvocationHandler handler = <span class="keyword">new</span> PreparedStatementLogger(stmt, statementLog, queryStack);</span><br><span class="line">    ClassLoader cl = PreparedStatement<span class="class">.<span class="keyword">class</span>.<span class="title">getClassLoader</span>()</span>;</span><br><span class="line">    <span class="keyword">return</span> (PreparedStatement) Proxy.newProxyInstance(cl, <span class="keyword">new</span> Class[]&#123;PreparedStatement<span class="class">.<span class="keyword">class</span>, <span class="title">CallableStatement</span>.<span class="title">class</span>&#125;, <span class="title">handler</span>)</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * Return the wrapped prepared statement.</span></span><br><span class="line"><span class="comment">   *</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@return</span> the PreparedStatement</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> PreparedStatement <span class="title">getPreparedStatement</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> statement;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>ResultSetLogger 中封装了ResultSet对象，也继承了BaseldbcLogger抽象类并实现了InvocationHandler 接口。ResultSetLogger中定义的字段如下：</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> org.apache.ibatis.logging.jdbc;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.lang.reflect.InvocationHandler;</span><br><span class="line"><span class="keyword">import</span> java.lang.reflect.Method;</span><br><span class="line"><span class="keyword">import</span> java.lang.reflect.Proxy;</span><br><span class="line"><span class="keyword">import</span> java.sql.ResultSet;</span><br><span class="line"><span class="keyword">import</span> java.sql.ResultSetMetaData;</span><br><span class="line"><span class="keyword">import</span> java.sql.SQLException;</span><br><span class="line"><span class="keyword">import</span> java.sql.Types;</span><br><span class="line"><span class="keyword">import</span> java.util.HashSet;</span><br><span class="line"><span class="keyword">import</span> java.util.Set;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.apache.ibatis.logging.Log;</span><br><span class="line"><span class="keyword">import</span> org.apache.ibatis.reflection.ExceptionUtil;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * ResultSet proxy to add logging</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Clinton Begin</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Eduardo Macarron</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">ResultSetLogger</span> <span class="keyword">extends</span> <span class="title">BaseJdbcLogger</span> <span class="keyword">implements</span> <span class="title">InvocationHandler</span> </span>&#123;</span><br><span class="line">	<span class="comment">//记录了超大长度的类型</span></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">static</span> Set&lt;Integer&gt; BLOB_TYPES = <span class="keyword">new</span> HashSet&lt;&gt;();</span><br><span class="line">	<span class="comment">//是否是ResultSet结果集的第一行</span></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">boolean</span> first = <span class="keyword">true</span>;</span><br><span class="line">	<span class="comment">//统计行数</span></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">int</span> rows;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">final</span> ResultSet rs;</span><br><span class="line">	<span class="comment">//记录了超大字段的列编号</span></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">final</span> Set&lt;Integer&gt; blobColumns = <span class="keyword">new</span> HashSet&lt;&gt;();</span><br><span class="line"></span><br><span class="line">  <span class="keyword">static</span> &#123;</span><br><span class="line">		<span class="comment">//所有超大长度的类型</span></span><br><span class="line">    BLOB_TYPES.add(Types.BINARY);</span><br><span class="line">    BLOB_TYPES.add(Types.BLOB);</span><br><span class="line">    BLOB_TYPES.add(Types.CLOB);</span><br><span class="line">    BLOB_TYPES.add(Types.LONGNVARCHAR);</span><br><span class="line">    BLOB_TYPES.add(Types.LONGVARBINARY);</span><br><span class="line">    BLOB_TYPES.add(Types.LONGVARCHAR);</span><br><span class="line">    BLOB_TYPES.add(Types.NCLOB);</span><br><span class="line">    BLOB_TYPES.add(Types.VARBINARY);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> Object <span class="title">invoke</span><span class="params">(Object proxy, Method method, Object[] params)</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      <span class="keyword">if</span> (Object<span class="class">.<span class="keyword">class</span>.<span class="title">equals</span>(<span class="title">method</span>.<span class="title">getDeclaringClass</span>())) </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> method.invoke(<span class="keyword">this</span>, params);</span><br><span class="line">      &#125;</span><br><span class="line">      Object o = method.invoke(rs, params);</span><br><span class="line">      <span class="keyword">if</span> (<span class="string">"next"</span>.equals(method.getName())) &#123;</span><br><span class="line">				<span class="comment">//是否还有下一行</span></span><br><span class="line">        <span class="keyword">if</span> ((Boolean) o) &#123;</span><br><span class="line">          rows++;</span><br><span class="line">          <span class="keyword">if</span> (isTraceEnabled()) &#123;</span><br><span class="line">            ResultSetMetaData rsmd = rs.getMetaData();</span><br><span class="line">						<span class="comment">//获取数据集的列数</span></span><br><span class="line">            <span class="keyword">final</span> <span class="keyword">int</span> columnCount = rsmd.getColumnCount();</span><br><span class="line">            <span class="keyword">if</span> (first) &#123;</span><br><span class="line">              first = <span class="keyword">false</span>;</span><br><span class="line">							<span class="comment">//输出表头，并填充超大长度的类型到集合中</span></span><br><span class="line">              printColumnHeaders(rsmd, columnCount);</span><br><span class="line">            &#125;</span><br><span class="line">						<span class="comment">//输出该行记录，注意会过滤掉blobColumns中记录的列，</span></span><br><span class="line">						<span class="comment">//这些列的数据较大，不会输出到日志</span></span><br><span class="line">            printColumnValues(columnCount);</span><br><span class="line">          &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">					<span class="comment">//遍历ResultSet之后输出总，完例子：Total: 1</span></span><br><span class="line">          debug(<span class="string">"     Total: "</span> + rows, <span class="keyword">false</span>);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">      clearColumnInfo();<span class="comment">//清空BaseJdbcLogger的三个column*集合</span></span><br><span class="line">      <span class="keyword">return</span> o;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Throwable t) &#123;</span><br><span class="line">      <span class="keyword">throw</span> ExceptionUtil.unwrapThrowable(t);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">	<span class="comment">//例子：Header: [count(*)]</span></span><br><span class="line">  <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">printColumnHeaders</span><span class="params">(ResultSetMetaData rsmd, <span class="keyword">int</span> columnCount)</span> <span class="keyword">throws</span> SQLException </span>&#123;</span><br><span class="line">    StringBuilder row = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">    row.append(<span class="string">"   Columns: "</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= columnCount; i++) &#123;</span><br><span class="line">      <span class="keyword">if</span> (BLOB_TYPES.contains(rsmd.getColumnType(i))) &#123;</span><br><span class="line">        blobColumns.add(i);</span><br><span class="line">      &#125;</span><br><span class="line">      String colname = rsmd.getColumnLabel(i);</span><br><span class="line">      row.append(colname);</span><br><span class="line">      <span class="keyword">if</span> (i != columnCount) &#123;</span><br><span class="line">        row.append(<span class="string">", "</span>);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    trace(row.toString(), <span class="keyword">false</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//例子：Row: 39</span></span><br><span class="line">  <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">printColumnValues</span><span class="params">(<span class="keyword">int</span> columnCount)</span> </span>&#123;</span><br><span class="line">    StringBuilder row = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">    row.append(<span class="string">"       Row: "</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= columnCount; i++) &#123;</span><br><span class="line">      String colname;</span><br><span class="line">      <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (blobColumns.contains(i)) &#123;</span><br><span class="line">          colname = <span class="string">"&lt;&lt;BLOB&gt;&gt;"</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">          colname = rs.getString(i);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125; <span class="keyword">catch</span> (SQLException e) &#123;</span><br><span class="line">        <span class="comment">// generally can't call getString() on a BLOB column</span></span><br><span class="line">        colname = <span class="string">"&lt;&lt;Cannot Display&gt;&gt;"</span>;</span><br><span class="line">      &#125;</span><br><span class="line">      row.append(colname);</span><br><span class="line">      <span class="keyword">if</span> (i != columnCount) &#123;</span><br><span class="line">        row.append(<span class="string">", "</span>);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    trace(row.toString(), <span class="keyword">false</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2019-12-21T13:23:59.656Z" itemprop="dateUpdated">2019-12-21 21:23:59</time>
+</span><br>
+
+
+        
+        留言和分享第三方功能待实现，请各位疯狂star我的笔记，私活私聊我😘
+        
+    </div>
+    
+    <footer>
+        <a href="https://caochikai.github.io">
+            <img src="/img/avatar.jpg" alt="ChiKai">
+            ChiKai
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Mybatis/" rel="tag">Mybatis</a></li></ul>
+
+
+            
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between flex-row-reverse">
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2019/12/20/Mybatis%E6%8A%80%E6%9C%AF%E5%86%85%E5%B9%95-%E7%AC%AC%E4%BA%8C%E7%AB%A0%EF%BC%9A2-3%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">Mybatis技术内幕源码解析：类型转换</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+<section class="comments" id="comments">
+    <div id="disqus_thread"></div>
+    <script>
+    var disqus_shortname = 'true';
+    lazyScripts.push('//' + disqus_shortname + '.disqus.com/embed.js')
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a></noscript>
+</section>
+
+
+
+
+<section class="comments" id="comments">
+    <!-- UY BEGIN -->
+    <div id="uyan_frame"></div>
+    <script src="http://v2.uyan.cc/code/uyan.js?uid=true"></script>
+    <!-- UY END -->
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        谢谢大爷~
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/img/wechat.jpg" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="/img/wechat.jpg" data-alipay="/img/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p>
+    <span id="busuanzi_container_site_uv" style='display:none'>
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style='display:none'>
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>ChiKai &copy; 2018 - 2019</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: false, REWARD: true };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '死鬼去哪里了！';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '(つェ⊂)咦!又好了!';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
