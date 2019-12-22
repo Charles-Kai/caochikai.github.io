@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>Mybatis技术内幕源码解析：资源加载 | 天道酬勤 | 劳逸结合</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="">
+    <meta name="description" content="2.5、资源加载2.5.1、类加载器 JVM类加载器（ClassLoader）负责加载各种资源（主要是class字节码文件)，来源比如文件系统、网络资源或者其他来源，且默认使用的是双亲委派模式。类加载器基本三大特性为延迟加载、职责分明、传递性。而JVM 中内置了三个重要的 ClassLoader： BootstrapClassLoader、ExtensionClassLoader 和 AppCla">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Mybatis技术内幕源码解析：资源加载">
+<meta property="og:url" content="https:&#x2F;&#x2F;caochikai.github.io&#x2F;2019&#x2F;12&#x2F;22&#x2F;Mybatis%E6%8A%80%E6%9C%AF%E5%86%85%E5%B9%95%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90%EF%BC%9A%E8%B5%84%E6%BA%90%E5%8A%A0%E8%BD%BD&#x2F;index.html">
+<meta property="og:site_name" content="天道酬勤">
+<meta property="og:description" content="2.5、资源加载2.5.1、类加载器 JVM类加载器（ClassLoader）负责加载各种资源（主要是class字节码文件)，来源比如文件系统、网络资源或者其他来源，且默认使用的是双亲委派模式。类加载器基本三大特性为延迟加载、职责分明、传递性。而JVM 中内置了三个重要的 ClassLoader： BootstrapClassLoader、ExtensionClassLoader 和 AppCla">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;caochikai.github.io&#x2F;images&#x2F;Test.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;caochikai.github.io&#x2F;images&#x2F;VFS.png">
+<meta property="article:published_time" content="2019-12-22T06:10:52.000Z">
+<meta property="article:modified_time" content="2019-12-22T06:12:18.837Z">
+<meta property="article:author" content="ChiKai">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;caochikai.github.io&#x2F;images&#x2F;Test.png">
+    
+        <link rel="alternate" type="application/atom+xml" title="天道酬勤" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+<meta name="generator" content="Hexo 4.1.1"></head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">ChiKai</h5>
+          <a href="mailto:992691009@qq.com" title="992691009@qq.com" class="mail">992691009@qq.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/caochikai" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://caochikai.github.io/" target="_blank" >
+                <i class="icon icon-lg icon-weibo"></i>
+                Weibo
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/custom"  >
+                <i class="icon icon-lg icon-link"></i>
+                测试
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Mybatis技术内幕源码解析：资源加载</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">Mybatis技术内幕源码解析：资源加载</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2019-12-22T06:10:52.000Z" itemprop="datePublished" class="page-time">
+  2019-12-22
+</time>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#2-5、资源加载"><span class="post-toc-number">1.</span> <span class="post-toc-text">2.5、资源加载</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#2-5-1、类加载器"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">2.5.1、类加载器</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#2-5-2-ClassloaderWrapper"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">2.5.2 ClassloaderWrapper</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#2-5-3-ResolverUtil"><span class="post-toc-number">1.3.</span> <span class="post-toc-text">2.5.3 ResolverUtil</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#2-5-5-VFS（虚拟文件系统）"><span class="post-toc-number">1.4.</span> <span class="post-toc-text">2.5.5 VFS（虚拟文件系统）</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考文章"><span class="post-toc-number">1.5.</span> <span class="post-toc-text">参考文章</span></a></li></ol></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-Mybatis技术内幕源码解析：资源加载"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Mybatis技术内幕源码解析：资源加载</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2019-12-22 14:10:52" datetime="2019-12-22T06:10:52.000Z"  itemprop="datePublished">2019-12-22</time>
+
+            
+
+
+            
+<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
+    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+</span>
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h1 id="2-5、资源加载"><a href="#2-5、资源加载" class="headerlink" title="2.5、资源加载"></a>2.5、资源加载</h1><h2 id="2-5-1、类加载器"><a href="#2-5-1、类加载器" class="headerlink" title="2.5.1、类加载器"></a>2.5.1、类加载器</h2><blockquote>
+<p>JVM类加载器（ClassLoader）负责加载各种资源（主要是class字节码文件)，来源比如文件系统、网络资源或者其他来源，且默认使用的是双亲委派模式。类加载器基本三大特性为延迟加载、职责分明、传递性。而JVM 中内置了三个重要的 ClassLoader： BootstrapClassLoader、ExtensionClassLoader 和 AppClassLoader。URLClassLoader 不但可以加载远程类库，还可以加载本地路径的类库，取决于构造器中不同的地址形式。ExtensionClassLoader 和 AppClassLoader 都是 URLClassLoader 的子类，它们都是从本地文件系统里加载类库。</p>
+</blockquote>
+<ul>
+<li><p>BootstrapClassLoader（根加载器）：加载JVM核心类，比如$JAVA_HOME/lib/rt.jar；</p>
+</li>
+<li><p>ExtensionClassLoader（扩展加载器）：加载扩展类，以 javax 开头的swing 系列、内置的 js 引擎、xml 解析器等等；</p>
+</li>
+<li><p>AppClassLoader（用户加载器）：ClassLoader.getSystemClassLoader()获得，加载Classpath 环境变量下目录和jar；</p>
+</li>
+<li><p>Thread.contextClassLoader（线程上下文类加载器）：主要是类隔离或者共享；</p>
+</li>
+<li><p>双亲委派模式：简单了来说子类有个parent 属性指向它的父加载器（类似指针），先检查自己是否已经加载过了，如果没有加载过就优先让父类尝试加载（理解为很懒都坑爹），如果已经加载或者坑爹不成那就自己干。</p>
+</li>
+<li><p>自定义类加载器：继承java.lang.ClassLoader，比如Tomcat（WebAppClassLoader）、JBoss类加载器；</p>
+<p>  package java.lang;<br>  …<br>  public abstract class ClassLoader {</p>
+<pre><code>// The parent class loader for delegation
+// Note: VM hardcoded the offset of this field, thus all new fields
+// must be added *after* it.</code></pre><p>  //如果parent为空（比如ExtensionClassLoader），那默认null就是根加载器BootstrapClassLoader</p>
+<pre><code>private final ClassLoader parent;
+    ...</code></pre><p>  }</p>
+</li>
+</ul>
+<h2 id="2-5-2-ClassloaderWrapper"><a href="#2-5-2-ClassloaderWrapper" class="headerlink" title="2.5.2 ClassloaderWrapper"></a>2.5.2 ClassloaderWrapper</h2><blockquote>
+<p>看名字就知道是ClassLoader的包装器，<a href="http://org.apache.ibatis.io/" target="_blank" rel="noopener">org.apache.ibatis.io</a>包就封装了资源加载文件的相关API，通过ClassloaderWrapper包装器就可以调整多个ClassLoader的使用顺序。ClassLoaderWrapper的主要方法可以分为三类，分别是getResourceAsURL方法、classForName方法、getResourceAsStream方法。</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> org.apache.ibatis.io;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.InputStream;</span><br><span class="line"><span class="keyword">import</span> java.net.URL;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * A class to wrap access to multiple class loaders making them work as one</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Clinton Begin</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ClassLoaderWrapper</span> </span>&#123;</span><br><span class="line">	<span class="comment">//指定的默认类加载器</span></span><br><span class="line">  ClassLoader defaultClassLoader;</span><br><span class="line">	<span class="comment">//SecurityManager系统类加载器</span></span><br><span class="line">  ClassLoader systemClassLoader;</span><br><span class="line"></span><br><span class="line">  ClassLoaderWrapper() &#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">			<span class="comment">//初始化类加载器</span></span><br><span class="line">      systemClassLoader = ClassLoader.getSystemClassLoader();</span><br><span class="line">    &#125; <span class="keyword">catch</span> (SecurityException ignored) &#123;</span><br><span class="line">      <span class="comment">// AccessControlException on Google App Engine</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">	ClassLoader[] getClassLoaders(ClassLoader classLoader) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> ClassLoader[]&#123;</span><br><span class="line">        classLoader,<span class="comment">//参数指定加载器</span></span><br><span class="line">        defaultClassLoader,<span class="comment">//默认加载器</span></span><br><span class="line">        Thread.currentThread().getContextClassLoader(),<span class="comment">//线程上下文类加载器</span></span><br><span class="line">        getClass().getClassLoader(),<span class="comment">//当前类所使用的类加载器</span></span><br><span class="line">        systemClassLoader&#125;;<span class="comment">//System ClassLoader</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">	...省略部分重载方法</span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">   * Try to get a resource from a group of classloaders</span></span><br><span class="line"><span class="comment">   *</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> resource    - the resource to get</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> classLoader - the classloaders to examine</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@return</span> the resource or null</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="function">InputStream <span class="title">getResourceAsStream</span><span class="params">(String resource, ClassLoader[] classLoader)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (ClassLoader cl : classLoader) &#123;</span><br><span class="line">      <span class="keyword">if</span> (<span class="keyword">null</span> != cl) &#123;</span><br><span class="line">        <span class="comment">// try to find the resource as passed</span></span><br><span class="line">        InputStream returnValue = cl.getResourceAsStream(resource);</span><br><span class="line">        <span class="comment">// now, some class loaders want this leading "/", so we'll add it and try again if we didn't find the resource</span></span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">null</span> == returnValue) &#123;</span><br><span class="line">          returnValue = cl.getResourceAsStream(<span class="string">"/"</span> + resource);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">null</span> != returnValue) &#123;</span><br><span class="line">          <span class="keyword">return</span> returnValue;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * Get a resource as a URL using the current class path</span></span><br><span class="line"><span class="comment">   *</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> resource    - the resource to locate</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> classLoader - the class loaders to examine</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@return</span> the resource or null</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="function">URL <span class="title">getResourceAsURL</span><span class="params">(String resource, ClassLoader[] classLoader)</span> </span>&#123;</span><br><span class="line">    URL url;</span><br><span class="line">    <span class="keyword">for</span> (ClassLoader cl : classLoader) &#123;</span><br><span class="line">      <span class="keyword">if</span> (<span class="keyword">null</span> != cl) &#123;</span><br><span class="line">        <span class="comment">// look for the resource as passed in...</span></span><br><span class="line">        url = cl.getResource(resource);</span><br><span class="line">        <span class="comment">// ...but some class loaders want this leading "/", so we'll add it</span></span><br><span class="line">        <span class="comment">// and try again if we didn't find the resource</span></span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">null</span> == url) &#123;</span><br><span class="line">          url = cl.getResource(<span class="string">"/"</span> + resource);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// "It's always in the last place I look for it!"</span></span><br><span class="line">        <span class="comment">// ... because only an idiot would keep looking for it after finding it, so stop looking already.</span></span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">null</span> != url) &#123;</span><br><span class="line">          <span class="keyword">return</span> url;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// didn't find it anywhere.</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * Attempt to load a class from a group of classloaders</span></span><br><span class="line"><span class="comment">   *</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> name        - the class to load</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> classLoader - the group of classloaders to examine</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@return</span> the class</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@throws</span> ClassNotFoundException - Remember the wisdom of Judge Smails: Well, the world needs ditch diggers, too.</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  Class&lt;?&gt; classForName(String name, ClassLoader[] classLoader) <span class="keyword">throws</span> ClassNotFoundException &#123;</span><br><span class="line">    <span class="keyword">for</span> (ClassLoader cl : classLoader) &#123;</span><br><span class="line">      <span class="keyword">if</span> (<span class="keyword">null</span> != cl) &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">          Class&lt;?&gt; c = Class.forName(name, <span class="keyword">true</span>, cl)</span><br><span class="line">          <span class="keyword">if</span> (<span class="keyword">null</span> != c) &#123;</span><br><span class="line">            <span class="keyword">return</span> c;</span><br><span class="line">          &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (ClassNotFoundException e) &#123;</span><br><span class="line">          <span class="comment">// we'll ignore this until all classloaders fail to locate the class</span></span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> ClassNotFoundException(<span class="string">"Cannot find class: "</span> + name);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-5-3-ResolverUtil"><a href="#2-5-3-ResolverUtil" class="headerlink" title="2.5.3 ResolverUtil"></a>2.5.3 ResolverUtil</h2><blockquote>
+<p>ResolverUtil根据指定的条件查找指定包下的类，其中条件由Test接口中定义了matches方法提供。</p>
+</blockquote>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/Test.png" alt="upload successful" title="">
+                </div>
+                <div class="image-caption">upload successful</div>
+            </figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> org.apache.ibatis.io;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> ***</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.apache.ibatis.logging.Log;</span><br><span class="line"><span class="keyword">import</span> org.apache.ibatis.logging.LogFactory;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ResolverUtil</span>&lt;<span class="title">T</span>&gt; </span>&#123;</span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * A simple interface that specifies how to test classes to determine if they</span></span><br><span class="line"><span class="comment">   * are to be included in the results produced by the ResolverUtil.</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Will be called repeatedly with candidate classes. Must return True if a class</span></span><br><span class="line"><span class="comment">     * is to be included in the results, false otherwise.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">matches</span><span class="params">(Class&lt;?&gt; type)</span></span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * A Test that checks to see if each class is assignable to the provided class. Note</span></span><br><span class="line"><span class="comment">   * that this test will match the parent type itself if it is presented for matching.</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">IsA</span> <span class="keyword">implements</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Class&lt;?&gt; parent;</span><br><span class="line"></span><br><span class="line">	  <span class="comment">//...构造方法初始化parent</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/** Returns true if type is assignable to the parent type supplied in the constructor. */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">matches</span><span class="params">(Class&lt;?&gt; type)</span> </span>&#123;</span><br><span class="line">			<span class="comment">//判断parent是否是type的父类（继承）</span></span><br><span class="line">      <span class="keyword">return</span> type != <span class="keyword">null</span> &amp;&amp; parent.isAssignableFrom(type);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * A Test that checks to see if each class is annotated with a specific annotation. If it</span></span><br><span class="line"><span class="comment">   * is, then the test returns true, otherwise false.</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">AnnotatedWith</span> <span class="keyword">implements</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Class&lt;? extends Annotation&gt; annotation;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//...构造方法初始化annotation</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/** Returns true if the type is annotated with the class provided to the constructor. */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">matches</span><span class="params">(Class&lt;?&gt; type)</span> </span>&#123;</span><br><span class="line">			<span class="comment">//判断Type类上是否添加了annotation注解</span></span><br><span class="line">      <span class="keyword">return</span> type != <span class="keyword">null</span> &amp;&amp; type.isAnnotationPresent(annotation);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/** The set of matches being accumulated. */</span></span><br><span class="line">  <span class="keyword">private</span> Set&lt;Class&lt;? extends T&gt;&gt; matches = <span class="keyword">new</span> HashSet&lt;&gt;();</span><br><span class="line"></span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * The ClassLoader to use when looking for classes. If null then the ClassLoader returned</span></span><br><span class="line"><span class="comment">   * by Thread.currentThread().getContextClassLoader() will be used.</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="keyword">private</span> ClassLoader classloader;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * Provides access to the classes discovered so far. If no calls have been made to</span></span><br><span class="line"><span class="comment">   * any of the &#123;<span class="doctag">@code</span> find()&#125; methods, **this set will be empty**.</span></span><br><span class="line"><span class="comment">   *</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@return</span> 匹配的类.</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="keyword">public</span> Set&lt;Class&lt;? extends T&gt;&gt; getClasses() &#123;</span><br><span class="line">    <span class="keyword">return</span> matches;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * Returns the classloader that will be used for scanning for classes. If no explicit</span></span><br><span class="line"><span class="comment">   * ClassLoader has been set by the calling,the context class loader will be used.</span></span><br><span class="line"><span class="comment">   *  默认是线程上下文类加载器</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> ClassLoader <span class="title">getClassLoader</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> classloader == <span class="keyword">null</span> ? Thread.currentThread().getContextClassLoader() : classloader;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setClassLoader</span><span class="params">(ClassLoader classloader)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.classloader = classloader;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * Scans for classes starting at the package provided and descending into subpackages.</span></span><br><span class="line"><span class="comment">   * Each class is offered up to the Test as it is discovered, and if the Test returns</span></span><br><span class="line"><span class="comment">   * true the class is retained.  Accumulated classes can be fetched by calling</span></span><br><span class="line"><span class="comment">	 *</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> test an instance of &#123;<span class="doctag">@link</span> Test&#125; that will be used to filter classes</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> packageName the name of the package from which to start scanning for</span></span><br><span class="line"><span class="comment">   *        classes, e.g. </span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> ResolverUtil&lt;T&gt; <span class="title">find</span><span class="params">(Test test, String packageName)</span> </span>&#123;</span><br><span class="line">		<span class="comment">//根据包名获取对应的路径</span></span><br><span class="line">    String path = getPackagePath(packageName);</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">			<span class="comment">//根据VFS结果集合查找上面path下的资源</span></span><br><span class="line">      List&lt;String&gt; children = VFS.getInstance().list(path);</span><br><span class="line">      <span class="keyword">for</span> (String child : children) &#123;</span><br><span class="line">        <span class="keyword">if</span> (child.endsWith(<span class="string">".class"</span>)) &#123;</span><br><span class="line">					<span class="comment">//检查class是否符合结果</span></span><br><span class="line">          addIfMatching(test, child);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (IOException ioe) &#123;</span><br><span class="line">      log.error(<span class="string">"Could not read package: "</span> + packageName, ioe);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">this</span>;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+
+<p>​    </p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * Add the class designated by the fully qualified class name provided to the set of</span></span><br><span class="line"><span class="comment">   * resolved classes if and only if it is approved by the Test supplied.</span></span><br><span class="line"><span class="comment">   *</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> test the test used to determine if the class matches 查找条件</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> fqn the fully qualified name of a class 类的完全限定名称</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="meta">@SuppressWarnings</span>(<span class="string">"unchecked"</span>)</span><br><span class="line">  <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">addIfMatching</span><span class="params">(Test test, String fqn)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      String externalName = fqn.substring(<span class="number">0</span>, fqn.indexOf(<span class="string">'.'</span>)).replace(<span class="string">'/'</span>, <span class="string">'.'</span>);</span><br><span class="line">      ClassLoader loader = getClassLoader();</span><br><span class="line">      <span class="keyword">if</span> (log.isDebugEnabled()) &#123;</span><br><span class="line">        log.debug(<span class="string">"Checking to see if class "</span> + externalName + <span class="string">" matches criteria ["</span> + test + <span class="string">"]"</span>);</span><br><span class="line">      &#125;</span><br><span class="line">      Class&lt;?&gt; type = loader.loadClass(externalName);<span class="comment">//加载指定的类</span></span><br><span class="line">      <span class="keyword">if</span> (test.matches(type)) &#123;</span><br><span class="line">			     <span class="comment">//如果条件过滤在添加到匹配结果集合matches</span></span><br><span class="line">        matches.add((Class&lt;T&gt;) type);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Throwable t) &#123;</span><br><span class="line">      log.warn(<span class="string">"Could not examine class '"</span> + fqn + <span class="string">"'"</span> + <span class="string">" due to a "</span> +</span><br><span class="line">          t.getClass().getName() + <span class="string">" with message: "</span> + t.getMessage());</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//使用例子：在pkg1和pkg2这两个包下查找实现了ActionBean这个类</span></span><br><span class="line">ResolverUtil&lt;ActionBean&gt; resolver = <span class="keyword">new</span> ResolverUtil&lt;ActionBean&gt;();</span><br><span class="line">resolver.findImplementation(ActionBean<span class="class">.<span class="keyword">class</span>, <span class="title">pkg1</span>, <span class="title">pkg2</span>)</span>;</span><br><span class="line">resolver.find(<span class="keyword">new</span> CustomTest(), pkg1);</span><br><span class="line">resolver.find(<span class="keyword">new</span> CustomTest(), pkg2);</span><br><span class="line"><span class="comment">//获取上面三个方法三次查找的结果集</span></span><br><span class="line">Collection&lt;ActionBean&gt; beans = resolver.getClasses();</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-5-5-VFS（虚拟文件系统）"><a href="#2-5-5-VFS（虚拟文件系统）" class="headerlink" title="2.5.5 VFS（虚拟文件系统）"></a>2.5.5 VFS（虚拟文件系统）</h2><blockquote>
+<p>VFS是Virtual File System缩写，用来查找指定路径下的资源。VFS也是一个抽象类，Mybatis在<a href="http://org.apache.ibatis.io/" target="_blank" rel="noopener">org.apache.ibatis.io</a>下有DefaultVFS和JBoss6VFS的实现，UML图如下：</p>
+</blockquote>
+<p><img src="/images/VFS.png" alt="upload successful"></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> org.apache.ibatis.io;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> ...</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.apache.ibatis.logging.Log;</span><br><span class="line"><span class="keyword">import</span> org.apache.ibatis.logging.LogFactory;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Provides a very simple API for accessing resources within an application server.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Ben Gunter</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">VFS</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/** The built-in implementations.记录了两个实现类 */</span></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> Class&lt;?&gt;[] IMPLEMENTATIONS = &#123; JBoss6VFS<span class="class">.<span class="keyword">class</span>, <span class="title">DefaultVFS</span>.<span class="title">class</span> &#125;</span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/** The list to which implementations are added by &#123;<span class="doctag">@link</span> #addImplClass(Class)&#125;.</span></span><br><span class="line"><span class="comment"> *用户自定义的VES实现类。addImplClass（）方法会将指定的VES实现Class对象添加到集合。</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> List&lt;Class&lt;? extends VFS&gt;&gt; USER_IMPLEMENTATIONS = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">	...</span><br><span class="line">	<span class="comment">/** Singleton instance holder.单例 */</span></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">VFSHolder</span> </span>&#123;</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">final</span> VFS INSTANCE = createVFS();</span><br><span class="line"></span><br><span class="line">    <span class="meta">@SuppressWarnings</span>(<span class="string">"unchecked"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">static</span> VFS <span class="title">createVFS</span><span class="params">()</span> </span>&#123;</span><br><span class="line">      <span class="comment">// Try the user implementations first, then the built-ins</span></span><br><span class="line">      List&lt;Class&lt;? extends VFS&gt;&gt; impls = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line"><span class="comment">//优先使用用户定义的VFS的实现类</span></span><br><span class="line">      impls.addAll(USER_IMPLEMENTATIONS);</span><br><span class="line"><span class="comment">//随后使用Mybatis提供的JBoss6VFS.class, DefaultVFS.class</span></span><br><span class="line">      impls.addAll(Arrays.asList((Class&lt;? extends VFS&gt;[]) IMPLEMENTATIONS));</span><br><span class="line"><span class="comment">//遍历所有实现类，依次实例化VFS对象并判断是否可用，可用就返回对象结束循环</span></span><br><span class="line">      <span class="comment">// Try each implementation class until a valid one is found</span></span><br><span class="line">      VFS vfs = <span class="keyword">null</span>;</span><br><span class="line">      <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; vfs == <span class="keyword">null</span> || !vfs.isValid(); i++) &#123;</span><br><span class="line">        Class&lt;? extends VFS&gt; impl = impls.get(i);</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">          vfs = impl.getDeclaredConstructor().newInstance();</span><br><span class="line">          <span class="keyword">if</span> (!vfs.isValid()) &#123;</span><br><span class="line">            <span class="keyword">if</span> (log.isDebugEnabled()) &#123;</span><br><span class="line">              log.debug(<span class="string">"VFS implementation "</span> + impl.getName() +</span><br><span class="line">                  <span class="string">" is not valid in this environment."</span>);</span><br><span class="line">            &#125;</span><br><span class="line">          &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) &#123;</span><br><span class="line">          log.error(<span class="string">"Failed to instantiate "</span> + impl, e);</span><br><span class="line">          <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">if</span> (log.isDebugEnabled()) &#123;</span><br><span class="line">        log.debug(<span class="string">"Using VFS adapter "</span> + vfs.getClass().getName());</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">return</span> vfs;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/**单例模式体现，通过静态类创建</span></span><br><span class="line"><span class="comment">   * Get the singleton &#123;<span class="doctag">@link</span> VFS&#125; instance. If no &#123;<span class="doctag">@link</span> VFS&#125; implementation can be found for the</span></span><br><span class="line"><span class="comment">   * current environment, then this method returns null.</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> VFS <span class="title">getInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> VFSHolder.INSTANCE;</span><br><span class="line">  &#125;</span><br><span class="line"><span class="comment">//抽象方法</span></span><br><span class="line">	<span class="comment">/*isValid()负责检测当前VFS对象在当前环境下是否有效</span></span><br><span class="line"><span class="comment">* Return true if the &#123;@link VFS&#125; implementation is valid for the current environment. */</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">boolean</span> <span class="title">isValid</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/**负责查找指定的资源名称列表</span></span><br><span class="line"><span class="comment">   * Recursively list the full resource path of all the resources that are children of the</span></span><br><span class="line"><span class="comment">   * resource identified by a URL.</span></span><br><span class="line"><span class="comment">   *</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> url The URL that identifies the resource to list.</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> forPath The path to the resource that is identified by the URL. Generally, this is the</span></span><br><span class="line"><span class="comment">   *            value passed to &#123;<span class="doctag">@link</span> #getResources(String)&#125; to get the resource URL.</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@return</span> A list containing the names of the child resources.</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@throws</span> IOException If I/O errors occur</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="function"><span class="keyword">protected</span> <span class="keyword">abstract</span> List&lt;String&gt; <span class="title">list</span><span class="params">(URL url, String forPath)</span> <span class="keyword">throws</span> IOException</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>VFS中定义了list（URL，String）和isValid()两个抽象方法，在ResolverUtil.find()方法查找类文件时会调用list()方法的重载方法，该重载最终会调用list（URL，String）这个重载。我们以DefaultVFS为例进行分析，实现如下：</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br></pre></td><td class="code"><pre><span class="line">ackage org.apache.ibatis.io;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> ***</span><br><span class="line"><span class="keyword">import</span> org.apache.ibatis.logging.Log;</span><br><span class="line"><span class="keyword">import</span> org.apache.ibatis.logging.LogFactory;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**VFS的默认实现方法，适用于大多数的应用服务</span></span><br><span class="line"><span class="comment"> * A default implementation of &#123;<span class="doctag">@link</span> VFS&#125; that works for most application servers.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> Ben Gunter</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DefaultVFS</span> <span class="keyword">extends</span> <span class="title">VFS</span> </span>&#123;</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Log log = LogFactory.getLog(DefaultVFS<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">	<span class="comment">//判断是否是jar文件的字节特征</span></span><br><span class="line">  <span class="comment">/** The magic header that indicates a JAR (ZIP) file. */</span></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">byte</span>[] JAR_MAGIC = &#123; <span class="string">'P'</span>, <span class="string">'K'</span>, <span class="number">3</span>, <span class="number">4</span> &#125;;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isValid</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> List&lt;String&gt; <span class="title">list</span><span class="params">(URL url, String path)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    InputStream is = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      List&lt;String&gt; resources = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line"></span><br><span class="line">      <span class="comment">// First, try to find the URL of a JAR file containing the requested resource. If a JAR</span></span><br><span class="line">      <span class="comment">// file is found, then we'll list child resources by reading the JAR.</span></span><br><span class="line">			<span class="comment">//尝试读取jar文件，返回对应的URL，如果为空那就代表不是jar资源</span></span><br><span class="line">      URL jarUrl = findJarForResource(url);</span><br><span class="line">      <span class="keyword">if</span> (jarUrl != <span class="keyword">null</span>) &#123;</span><br><span class="line">        is = jarUrl.openStream();</span><br><span class="line">        <span class="keyword">if</span> (log.isDebugEnabled()) &#123;</span><br><span class="line">          log.debug(<span class="string">"Listing "</span> + url);</span><br><span class="line">        &#125;</span><br><span class="line">				<span class="comment">//遍历jar包中以path开头的资源列表</span></span><br><span class="line">        resources = listResources(<span class="keyword">new</span> JarInputStream(is), path);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">else</span> &#123;</span><br><span class="line">				<span class="comment">//遍历url的子目录并记录到children </span></span><br><span class="line">        List&lt;String&gt; children = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">          <span class="keyword">if</span> (isJar(url)) &#123;</span><br><span class="line">            <span class="comment">// Some versions of JBoss VFS might give a JAR stream even if the resource</span></span><br><span class="line">            <span class="comment">// referenced by the URL isn't actually a JAR</span></span><br><span class="line">            is = url.openStream();</span><br><span class="line">            <span class="keyword">try</span> (JarInputStream jarInput = <span class="keyword">new</span> JarInputStream(is)) &#123;</span><br><span class="line">              <span class="keyword">if</span> (log.isDebugEnabled()) &#123;</span><br><span class="line">                log.debug(<span class="string">"Listing "</span> + url);</span><br><span class="line">              &#125;</span><br><span class="line">              <span class="keyword">for</span> (JarEntry entry; (entry = jarInput.getNextJarEntry()) != <span class="keyword">null</span>; ) &#123;</span><br><span class="line">                <span class="keyword">if</span> (log.isDebugEnabled()) &#123;</span><br><span class="line">                  log.debug(<span class="string">"Jar entry: "</span> + entry.getName());</span><br><span class="line">                &#125;</span><br><span class="line">                children.add(entry.getName());</span><br><span class="line">              &#125;</span><br><span class="line">            &#125;</span><br><span class="line">          &#125;</span><br><span class="line">          <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">/* 大意是部分应用是资源列表在文本文件的里，下面尝试逐行读取资源，</span></span><br><span class="line"><span class="comment">							*路径为path + "/" + line（每行内容）若读取成功为文件，否则为文件夹</span></span><br><span class="line"><span class="comment">             * Some servlet containers allow reading from directory resources like a</span></span><br><span class="line"><span class="comment">             * text file, listing the child resources one per line. However, there is no</span></span><br><span class="line"><span class="comment">             * way to differentiate between directory and file resources just by reading</span></span><br><span class="line"><span class="comment">             * them. To work around that, as each line is read, try to look it up via</span></span><br><span class="line"><span class="comment">             * the class loader as a child of the current resource. If any line fails</span></span><br><span class="line"><span class="comment">             * then we assume the current resource is not a directory.</span></span><br><span class="line"><span class="comment">             */</span></span><br><span class="line">            is = url.openStream();</span><br><span class="line">            List&lt;String&gt; lines = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">            <span class="keyword">try</span> (BufferedReader reader = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(is))) &#123;</span><br><span class="line">              <span class="keyword">for</span> (String line; (line = reader.readLine()) != <span class="keyword">null</span>;) &#123;</span><br><span class="line">                <span class="keyword">if</span> (log.isDebugEnabled()) &#123;</span><br><span class="line">                  log.debug(<span class="string">"Reader entry: "</span> + line);</span><br><span class="line">                &#125;</span><br><span class="line">                lines.add(line);</span><br><span class="line">                <span class="keyword">if</span> (getResources(path + <span class="string">"/"</span> + line).isEmpty()) &#123;</span><br><span class="line">                  lines.clear();</span><br><span class="line">                  <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">              &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (!lines.isEmpty()) &#123;</span><br><span class="line">              <span class="keyword">if</span> (log.isDebugEnabled()) &#123;</span><br><span class="line">                log.debug(<span class="string">"Listing "</span> + url);</span><br><span class="line">              &#125;</span><br><span class="line">              children.addAll(lines);</span><br><span class="line">            &#125;</span><br><span class="line">          &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (FileNotFoundException e) &#123;</span><br><span class="line">          <span class="comment">/*若读取URL失败则直接整个文件夹下所有的文件</span></span><br><span class="line"><span class="comment">           * For file URLs the openStream() call might fail, depending on the servlet</span></span><br><span class="line"><span class="comment">           * container, because directories can't be opened for reading. If that happens,</span></span><br><span class="line"><span class="comment">           * then list the directory directly instead.</span></span><br><span class="line"><span class="comment">           */</span></span><br><span class="line">          <span class="keyword">if</span> (<span class="string">"file"</span>.equals(url.getProtocol())) &#123;</span><br><span class="line">            File file = <span class="keyword">new</span> File(url.getFile());</span><br><span class="line">            <span class="keyword">if</span> (log.isDebugEnabled()) &#123;</span><br><span class="line">                log.debug(<span class="string">"Listing directory "</span> + file.getAbsolutePath());</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (file.isDirectory()) &#123;</span><br><span class="line">              <span class="keyword">if</span> (log.isDebugEnabled()) &#123;</span><br><span class="line">                  log.debug(<span class="string">"Listing "</span> + url);</span><br><span class="line">              &#125;</span><br><span class="line">              children = Arrays.asList(file.list());</span><br><span class="line">            &#125;</span><br><span class="line">          &#125;</span><br><span class="line">          <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// No idea where the exception came from so rethrow it</span></span><br><span class="line">            <span class="keyword">throw</span> e;</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// The URL prefix to use when recursively listing child resources</span></span><br><span class="line">        String prefix = url.toExternalForm();</span><br><span class="line">        <span class="keyword">if</span> (!prefix.endsWith(<span class="string">"/"</span>)) &#123;</span><br><span class="line">          prefix = prefix + <span class="string">"/"</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Iterate over immediate children, adding files and recursing into directories</span></span><br><span class="line">        <span class="keyword">for</span> (String child : children) &#123;</span><br><span class="line">          String resourcePath = path + <span class="string">"/"</span> + child;</span><br><span class="line">          resources.add(resourcePath);</span><br><span class="line">          URL childUrl = <span class="keyword">new</span> URL(prefix + child);</span><br><span class="line">          resources.addAll(list(childUrl, resourcePath));</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">return</span> resources;</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">			...关闭流</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">/**</span></span><br><span class="line"><span class="comment">   * List the names of the entries in the given &#123;<span class="doctag">@link</span> JarInputStream&#125; that begin with the</span></span><br><span class="line"><span class="comment">   * specified &#123;<span class="doctag">@code</span> path&#125;. Entries will match with or without a leading slash.</span></span><br><span class="line"><span class="comment">   *</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> jar The JAR input stream</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@param</span> path The leading path to match</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@return</span> The names of all the matching entries</span></span><br><span class="line"><span class="comment">   * <span class="doctag">@throws</span> IOException If I/O errors occur</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="function"><span class="keyword">protected</span> List&lt;String&gt; <span class="title">listResources</span><span class="params">(JarInputStream jar, String path)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="comment">// Include the leading and trailing slash when matching names</span></span><br><span class="line">		<span class="comment">//...如果path不是以/开始和结束，则在其开始和结束位置添加/（略）</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// Iterate over the entries and collect those that begin with the requested path</span></span><br><span class="line">    List&lt;String&gt; resources = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">		<span class="comment">//遍历jar包,将以path开头资源加入到resources 集合</span></span><br><span class="line">    <span class="keyword">for</span> (JarEntry entry; (entry = jar.getNextJarEntry()) != <span class="keyword">null</span>;) &#123;</span><br><span class="line">      <span class="keyword">if</span> (!entry.isDirectory()) &#123;</span><br><span class="line">        <span class="comment">// Add leading slash if it's missing</span></span><br><span class="line">        StringBuilder name = <span class="keyword">new</span> StringBuilder(entry.getName());</span><br><span class="line">        <span class="keyword">if</span> (name.charAt(<span class="number">0</span>) != <span class="string">'/'</span>) &#123;</span><br><span class="line">          name.insert(<span class="number">0</span>, <span class="string">'/'</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Check file name-&gt;path开头</span></span><br><span class="line">        <span class="keyword">if</span> (name.indexOf(path) == <span class="number">0</span>) &#123;</span><br><span class="line">          <span class="keyword">if</span> (log.isDebugEnabled()) &#123;</span><br><span class="line">            log.debug(<span class="string">"Found resource: "</span> + name);</span><br><span class="line">          &#125;</span><br><span class="line">          <span class="comment">// Trim leading slash</span></span><br><span class="line">          resources.add(name.substring(<span class="number">1</span>));</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> resources;</span><br><span class="line">  &#125;</span><br><span class="line">	...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h2><ul>
+<li><a href="https://docs.oracle.com/javase/8/docs/technotes/guides/lang/resources.html" target="_blank" rel="noopener">Oracle Location-Independent Access to Resources</a></li>
+<li><a href="https://juejin.im/post/5c04892351882516e70dcc9b" target="_blank" rel="noopener">老大难的 Java ClassLoader 再不理解就老了</a></li>
+</ul>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2019-12-22T06:12:18.837Z" itemprop="dateUpdated">2019-12-22 14:12:18</time>
+</span><br>
+
+
+        
+        留言和分享第三方功能待实现，请各位疯狂star我的笔记，私活私聊我😘
+        
+    </div>
+    
+    <footer>
+        <a href="https://caochikai.github.io">
+            <img src="/img/avatar.jpg" alt="ChiKai">
+            ChiKai
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+
+            
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between flex-row-reverse">
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2019/12/21/Mybatis%E6%8A%80%E6%9C%AF%E5%86%85%E5%B9%95%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90%EF%BC%9A%E6%97%A5%E5%BF%97%E6%A8%A1%E5%9D%97/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">Mybatis技术内幕源码解析：日志模块</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+<section class="comments" id="comments">
+    <div id="disqus_thread"></div>
+    <script>
+    var disqus_shortname = 'true';
+    lazyScripts.push('//' + disqus_shortname + '.disqus.com/embed.js')
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript" target="_blank" rel="noopener">comments powered by Disqus.</a></noscript>
+</section>
+
+
+
+
+<section class="comments" id="comments">
+    <!-- UY BEGIN -->
+    <div id="uyan_frame"></div>
+    <script src="http://v2.uyan.cc/code/uyan.js?uid=true"></script>
+    <!-- UY END -->
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        谢谢大爷~
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/img/wechat.jpg" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="/img/wechat.jpg" data-alipay="/img/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p>
+    <span id="busuanzi_container_site_uv" style='display:none'>
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style='display:none'>
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>ChiKai &copy; 2018 - 2019</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: false, REWARD: true };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '死鬼去哪里了！';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '(つェ⊂)咦!又好了!';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
