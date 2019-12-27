@@ -160,6 +160,56 @@
     <ul class="post-list">
     
         <li class="post-list-item fade">
+            <article id="post-Mybatis技术内幕源码解析：缓存模块"
+  class="article-card article-type-post" itemprop="blogPost">
+
+    <div class="post-meta">
+        <time class="post-time" title="2019-12-27 22:06:00" datetime="2019-12-27T14:06:00.000Z"  itemprop="datePublished">2019-12-27</time>
+
+        
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Mybatis/">Mybatis</a></li></ul>
+
+
+
+    </div>
+
+    
+
+
+  
+    <h3 class="post-title" itemprop="name">
+      <a class="post-title-link" href="/2019/12/27/Mybatis%E6%8A%80%E6%9C%AF%E5%86%85%E5%B9%95%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90%EF%BC%9A%E7%BC%93%E5%AD%98%E6%A8%A1%E5%9D%97/">Mybatis技术内幕源码解析：缓存模块</a>
+    </h3>
+  
+
+
+
+
+    <div class="post-content" id="post-content" itemprop="postContent">
+
+    
+        2.9、缓存模块
+在Mybatis中，最常听见的就是mybatis的查询一二级缓存，本质都是org.apache.ibatis.cache缓存模块下Cache的实现。本文主要是对Cache接口以及实现类进行结束，并涉及到了装饰器模式。该接口实现类众多，只有PerpetualCache提供了Cache接口的基本实现，下面分析Cache接口后，接着PerpetualCache（超级简单）：
+
+1...
+    
+
+        <a href="/2019/12/27/Mybatis%E6%8A%80%E6%9C%AF%E5%86%85%E5%B9%95%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90%EF%BC%9A%E7%BC%93%E5%AD%98%E6%A8%A1%E5%9D%97/" class="post-more waves-effect waves-button">
+            阅读全文…
+        </a>
+    </div>
+    
+    <div class="post-footer">
+        
+	<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Mybatis/" rel="tag">Mybatis</a></li></ul>
+
+    </div>
+    
+</article>
+
+        </li>
+    
+        <li class="post-list-item fade">
             <article id="post-Mybatis技术内幕源码解析：参数和结果集处理"
   class="article-card article-type-post" itemprop="blogPost">
 
@@ -598,54 +648,6 @@ Mybatis以SqlSessionFactory为核心，通过SqlSessionFactoryBuilder解析xml�
     <div class="post-footer">
         
 	<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Mybatis/" rel="tag">Mybatis</a></li></ul>
-
-    </div>
-    
-</article>
-
-        </li>
-    
-        <li class="post-list-item fade">
-            <article id="post-HttpServletRequest流重复读"
-  class="article-card article-type-post" itemprop="blogPost">
-
-    <div class="post-meta">
-        <time class="post-time" title="2019-12-18 20:30:00" datetime="2019-12-18T12:30:00.000Z"  itemprop="datePublished">2019-12-18</time>
-
-        
-
-
-    </div>
-
-    
-
-
-  
-    <h3 class="post-title" itemprop="name">
-      <a class="post-title-link" href="/2019/12/18/HttpServletRequest%E6%B5%81%E9%87%8D%E5%A4%8D%E8%AF%BB/">HttpServletRequest流重复读</a>
-    </h3>
-  
-
-
-
-
-    <div class="post-content" id="post-content" itemprop="postContent">
-
-    
-        HttpServletRequest流重复读
-springmvc controller @RequestBody接受参数报错，原因为http POST请求报文体为二进制流，在HttpServletRequest.getInputStream()中流只能被读取一次，重复读取会报如下：
-
-1getRead() has already been called for this request&#x...
-    
-
-        <a href="/2019/12/18/HttpServletRequest%E6%B5%81%E9%87%8D%E5%A4%8D%E8%AF%BB/" class="post-more waves-effect waves-button">
-            阅读全文…
-        </a>
-    </div>
-    
-    <div class="post-footer">
-        
-	<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/" rel="tag">Spring</a></li></ul>
 
     </div>
     
