@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>SpringBoot之Redis定时发送消息 | 天道酬勤 | 劳逸结合</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Spring">
+    <meta name="description" content="SpringBoot之Redis定时发送消息一、需求 实时发送定时公告，倒计时功能通过监听Redis 缓存过期（Key 失效）事件。类似用途可以用于订单定时关闭，商品或活动上下架。  二、修改 redis.conf 文件，打开 notify-keyspace-events Ex 的注释，开启过期通知功能123456789101112131415161718192021222324252627282">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringBoot之Redis定时发送消息">
+<meta property="og:url" content="https:&#x2F;&#x2F;caochikai.github.io&#x2F;2020&#x2F;05&#x2F;09&#x2F;SpringBoot%E4%B9%8BRedis%E5%AE%9A%E6%97%B6%E5%8F%91%E9%80%81%E6%B6%88%E6%81%AF&#x2F;index.html">
+<meta property="og:site_name" content="天道酬勤">
+<meta property="og:description" content="SpringBoot之Redis定时发送消息一、需求 实时发送定时公告，倒计时功能通过监听Redis 缓存过期（Key 失效）事件。类似用途可以用于订单定时关闭，商品或活动上下架。  二、修改 redis.conf 文件，打开 notify-keyspace-events Ex 的注释，开启过期通知功能123456789101112131415161718192021222324252627282">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-05-09T03:26:00.000Z">
+<meta property="article:modified_time" content="2020-05-09T03:28:40.720Z">
+<meta property="article:author" content="ChiKai">
+<meta property="article:tag" content="Spring">
+<meta name="twitter:card" content="summary">
+    
+        <link rel="alternate" type="application/atom+xml" title="天道酬勤" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+<meta name="generator" content="Hexo 4.1.1"></head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">ChiKai</h5>
+          <a href="mailto:992691009@qq.com" title="992691009@qq.com" class="mail">992691009@qq.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/caochikai" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://caochikai.github.io/" target="_blank" >
+                <i class="icon icon-lg icon-weibo"></i>
+                Weibo
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="http://129.211.67.107" target="_blank" rel="noopener"  >
+                <i class="icon icon-lg icon-link"></i>
+                个人网站
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">SpringBoot之Redis定时发送消息</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">SpringBoot之Redis定时发送消息</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2020-05-09T03:26:00.000Z" itemprop="datePublished" class="page-time">
+  2020-05-09
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Spring/">Spring</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#SpringBoot之Redis定时发送消息"><span class="post-toc-number">1.</span> <span class="post-toc-text">SpringBoot之Redis定时发送消息</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#一、需求"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">一、需求</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#二、修改-redis-conf-文件，打开-notify-keyspace-events-Ex-的注释，开启过期通知功能"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">二、修改 redis.conf 文件，打开 notify-keyspace-events Ex 的注释，开启过期通知功能</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#三、重启redis-测试监听事件是否开启"><span class="post-toc-number">1.3.</span> <span class="post-toc-text">三、重启redis ,测试监听事件是否开启</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#四、监听器配置和实现"><span class="post-toc-number">1.4.</span> <span class="post-toc-text">四、监听器配置和实现</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#五、发送时候如何自定义切换指定redis库下标"><span class="post-toc-number">1.5.</span> <span class="post-toc-text">五、发送时候如何自定义切换指定redis库下标</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#SpringBoot-1-X之前的版本"><span class="post-toc-number">1.5.1.</span> <span class="post-toc-text">SpringBoot 1.X之前的版本</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#六、设置缓存时候技巧"><span class="post-toc-number">1.6.</span> <span class="post-toc-text">六、设置缓存时候技巧</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#七、参考文章如下"><span class="post-toc-number">1.7.</span> <span class="post-toc-text">七、参考文章如下:</span></a></li></ol></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-SpringBoot之Redis定时发送消息"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">SpringBoot之Redis定时发送消息</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2020-05-09 11:26:00" datetime="2020-05-09T03:26:00.000Z"  itemprop="datePublished">2020-05-09</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/Spring/">Spring</a></li></ul>
+
+
+
+            
+<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
+    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+</span>
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h1 id="SpringBoot之Redis定时发送消息"><a href="#SpringBoot之Redis定时发送消息" class="headerlink" title="SpringBoot之Redis定时发送消息"></a>SpringBoot之Redis定时发送消息</h1><h2 id="一、需求"><a href="#一、需求" class="headerlink" title="一、需求"></a>一、需求</h2><blockquote>
+<p>实时发送定时公告，倒计时功能通过监听Redis 缓存过期（Key 失效）事件。类似用途可以用于订单定时关闭，商品或活动上下架。</p>
+</blockquote>
+<h2 id="二、修改-redis-conf-文件，打开-notify-keyspace-events-Ex-的注释，开启过期通知功能"><a href="#二、修改-redis-conf-文件，打开-notify-keyspace-events-Ex-的注释，开启过期通知功能" class="headerlink" title="二、修改 redis.conf 文件，打开 notify-keyspace-events Ex 的注释，开启过期通知功能"></a>二、修改 redis.conf 文件，打开 notify-keyspace-events Ex 的注释，开启过期通知功能</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">############################# EVENT NOTIFICATION ##############################</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Redis can notify Pub/Sub clients about events happening in the key space.</span></span><br><span class="line"><span class="comment"># This feature is documented at http://redis.io/topics/notifications</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># For instance if keyspace events notification is enabled, and a client</span></span><br><span class="line"><span class="comment"># performs a DEL operation on key "foo" stored in the Database 0, two</span></span><br><span class="line"><span class="comment"># messages will be published via Pub/Sub:</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># PUBLISH __keyspace@0__:foo del</span></span><br><span class="line"><span class="comment"># PUBLISH __keyevent@0__:del foo</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># It is possible to select the events that Redis will notify among a set</span></span><br><span class="line"><span class="comment"># of classes. Every class is identified by a single character:</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment">#  K     Keyspace events, published with __keyspace@&lt;db&gt;__ prefix.</span></span><br><span class="line"><span class="comment">#  E     Keyevent events, published with __keyevent@&lt;db&gt;__ prefix.</span></span><br><span class="line"><span class="comment">#  g     Generic commands (non-type specific) like DEL, EXPIRE, RENAME, ...</span></span><br><span class="line"><span class="comment">#  $     String commands</span></span><br><span class="line"><span class="comment">#  l     List commands</span></span><br><span class="line"><span class="comment">#  s     Set commands</span></span><br><span class="line"><span class="comment">#  h     Hash commands</span></span><br><span class="line"><span class="comment">#  z     Sorted set commands</span></span><br><span class="line"><span class="comment">#  x     Expired events (events generated every time a key expires)</span></span><br><span class="line"><span class="comment">#  e     Evicted events (events generated when a key is evicted for maxmemory)</span></span><br><span class="line"><span class="comment">#  A     Alias for g$lshzxe, so that the "AKE" string means all the events.</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment">#  The "notify-keyspace-events" takes as argument a string that is composed</span></span><br><span class="line"><span class="comment">#  of zero or multiple characters. The empty string means that notifications</span></span><br><span class="line"><span class="comment">#  are disabled.</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment">#  Example: to enable list and generic events, from the point of view of the</span></span><br><span class="line"><span class="comment">#           event name, use:</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment">#  notify-keyspace-events Elg</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment">#  Example 2: to get the stream of the expired keys subscribing to channel</span></span><br><span class="line"><span class="comment">#             name __keyevent@0__:expired use:</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment">#  notify-keyspace-events Ex</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment">#  By default all notifications are disabled because most users don't need</span></span><br><span class="line"><span class="comment">#  this feature and the feature has some overhead. Note that if you don't</span></span><br><span class="line"><span class="comment">#  specify at least one of K or E, no events will be delivered.</span></span><br><span class="line">notify-keyspace-events <span class="string">""</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="三、重启redis-测试监听事件是否开启"><a href="#三、重启redis-测试监听事件是否开启" class="headerlink" title="三、重启redis ,测试监听事件是否开启"></a>三、重启redis ,测试监听事件是否开启</h2><blockquote>
+<p><strong>keyevent@*</strong>:expired其实是<em>指所有库，可以指定库下标监听16个默认数据库的某一个，比如*</em>keyevent@1指定壹号<strong>库。打开</strong>redisclientA**，PSUBSCRIBE指令订阅事件。</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; PSUBSCRIBE __keyevent@*__:expired</span><br><span class="line">Reading messages... (press Ctrl-C to quit)</span><br><span class="line">1) <span class="string">"psubscribe"</span></span><br><span class="line">2) <span class="string">"__keyevent@*__:expired"</span></span><br><span class="line">3) (<span class="built_in">integer</span>) 1</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>再开启另一个<strong>redisclientB</strong>，发送过期数据指定事件2秒。</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; setex <span class="built_in">test</span> 2 2</span><br><span class="line">OK</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>redisclientA就会监听到redisclientB过期key</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">127.0.0.1:6379&gt; PSUBSCRIBE __keyevent@*__:expired</span><br><span class="line">Reading messages... (press Ctrl-C to quit)</span><br><span class="line">1) <span class="string">"psubscribe"</span></span><br><span class="line">2) <span class="string">"__keyevent@*__:expired"</span></span><br><span class="line">3) (<span class="built_in">integer</span>) 1</span><br><span class="line">1) <span class="string">"pmessage"</span></span><br><span class="line">2) <span class="string">"__keyevent@*__:expired"</span></span><br><span class="line">3) <span class="string">"__keyevent@0__:expired"</span></span><br><span class="line">4) <span class="string">"test"</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="四、监听器配置和实现"><a href="#四、监听器配置和实现" class="headerlink" title="四、监听器配置和实现"></a>四、监听器配置和实现</h2><blockquote>
+<p>KeyExpirationEvent1MessageListener可参考org.springframework.data.redis.listener.KeyExpirationEventMessageListener源码实现的（默认订阅的是<strong>keyevent@*</strong>:expired），而我们目标是监听壹号库。因为0号库给限流和oauth2用了，里面存在很多短期key，会监听许多不相干的业务key缓存。此外，不能给KeyExpirationEvent1MessageListener加上@Component，因为存在bean循环依赖问题，可以通过SpringContextHolder解决。</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Slf</span>4j</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">KeyExpirationEvent1MessageListener</span> <span class="keyword">extends</span> <span class="title">KeyExpirationEventMessageListener</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Topic KEYEVENT1_EXPIRED_TOPIC = <span class="keyword">new</span> PatternTopic(<span class="string">"__keyevent@1__:expired"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> listenerContainer must not be &#123;<span class="doctag">@literal</span> null&#125;.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">KeyExpirationEvent1MessageListener</span><span class="params">(RedisMessageListenerContainer listenerContainer)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(listenerContainer);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">doRegister</span><span class="params">(RedisMessageListenerContainer listenerContainer)</span> </span>&#123;</span><br><span class="line">        listenerContainer.addMessageListener(<span class="keyword">this</span>, KEYEVENT1_EXPIRED_TOPIC);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onMessage</span><span class="params">(Message message, <span class="keyword">byte</span>[] pattern)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//获取过期的key</span></span><br><span class="line">        String expireKey = message.toString();</span><br><span class="line">        <span class="comment">//设置监听频道</span></span><br><span class="line">        <span class="keyword">if</span> (expireKey.startsWith(RedisConstant.NOTIFY_RECEIVE)) &#123;</span><br><span class="line">            log.info(<span class="string">"过期的键值对的消息ID:"</span> + expireKey);</span><br><span class="line">            log.info(<span class="string">"消息监听频道topic:"</span> + <span class="keyword">new</span> String(message.getChannel()));</span><br><span class="line"><span class="comment">//获取消息发送id，通过</span></span><br><span class="line">            String sendId = expireKey.substring(RedisConstant.NOTIFY_RECEIVE.length());</span><br><span class="line">            SysNotifySendService sysNotifySendService =  SpringContextHolder.getBean(SysNotifySendService<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line"><span class="comment">//common服务提供websocket发送远程接口RemoteCommonService</span></span><br><span class="line">            RemoteCommonService remoteCommonService =  SpringContextHolder.getBean(RemoteCommonService<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">            SysNotifyReceiveService receiveService =  SpringContextHolder.getBean(SysNotifyReceiveService<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">            SysNotifySend sysNotifySend = sysNotifySendService.getOne(Wrappers.&lt;SysNotifySend&gt;lambdaQuery().eq(SysNotifySend::getSendId, sendId));</span><br><span class="line">            com.gdjs.gold.admin.api.dto.Message websocketMsg = <span class="keyword">new</span> com.gdjs.gold.admin.api.dto.Message();</span><br><span class="line">            websocketMsg.setSendId(sysNotifySend.getSendId());</span><br><span class="line">            websocketMsg.setFrom(sysNotifySend.getSendUserId());</span><br><span class="line">            websocketMsg.setDestination(ThemeEnum.BUSINESS.getTheme());</span><br><span class="line">            websocketMsg.setMessage(sysNotifySend.getContent());</span><br><span class="line">            remoteCommonService.sendMessage(websocketMsg);     </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RedisListenerConfig</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> RedisMessageListenerContainer <span class="title">container</span><span class="params">(RedisConnectionFactory connectionFactory, ApplicationContext context)</span> </span>&#123;</span><br><span class="line">        RedisMessageListenerContainer container = <span class="keyword">new</span> RedisMessageListenerContainer();</span><br><span class="line">        container.setConnectionFactory(connectionFactory);</span><br><span class="line"><span class="comment">//通过new监听器，并且往RedisMessageListenerContainer注册监听器</span></span><br><span class="line">        KeyExpirationEvent1MessageListener listener = <span class="keyword">new</span> KeyExpirationEvent1MessageListener(container);</span><br><span class="line">        listener.doRegister(container);</span><br><span class="line">        listener.setApplicationEventPublisher(context);</span><br><span class="line">        <span class="keyword">return</span> container;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="五、发送时候如何自定义切换指定redis库下标"><a href="#五、发送时候如何自定义切换指定redis库下标" class="headerlink" title="五、发送时候如何自定义切换指定redis库下标"></a>五、发送时候如何自定义切换指定redis库下标</h2><h3 id="SpringBoot-1-X之前的版本"><a href="#SpringBoot-1-X之前的版本" class="headerlink" title="SpringBoot 1.X之前的版本"></a>SpringBoot 1.X之前的版本</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">JedisConnectionFactory jedisConnectionFactory = (JedisConnectionFactory) stringRedisTemplate.getConnectionFactory();</span><br><span class="line">jedisConnectionFactory.setDatabase(切换到指定的db上);</span><br><span class="line">stringRedisTemplate.setConnectionFactory(jedisConnectionFactory);</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>SpringBoot 2.X之后的版本，RedisConnectionFactory动态切换库必须是LettuceConnectionFactory，必须是配置RedisTemplate时候指定，下面看源码。</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RedisUtil</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 切换redis数据库</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> redisTemplate springboot封装的redis对象</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> index         数据库下标</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">select</span><span class="params">(RedisTemplate redisTemplate, <span class="keyword">int</span> index)</span> </span>&#123;</span><br><span class="line">        LettuceConnectionFactory lettuceConnectionFactory = (LettuceConnectionFactory) redisTemplate.getConnectionFactory();</span><br><span class="line">        <span class="keyword">if</span> (lettuceConnectionFactory != <span class="keyword">null</span>) &#123;</span><br><span class="line">            lettuceConnectionFactory.setDatabase(index);</span><br><span class="line">            redisTemplate.setConnectionFactory(lettuceConnectionFactory);</span><br><span class="line">            lettuceConnectionFactory.resetConnection();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> caochikai</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@date</span> 2019/7/12</span></span><br><span class="line"><span class="comment"> * Redis 配置类</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@EnableCaching</span></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@AllArgsConstructor</span></span><br><span class="line"><span class="meta">@AutoConfigureBefore</span>(RedisAutoConfiguration<span class="class">.<span class="keyword">class</span>)</span></span><br><span class="line"><span class="class"><span class="title">public</span> <span class="title">class</span> <span class="title">RedisTemplateConfig</span> </span>&#123;</span><br><span class="line"><span class="comment">//@AllArgsConstructor是构造器注入进来LettuceConnectionFactory</span></span><br><span class="line">	<span class="keyword">private</span> <span class="keyword">final</span> LettuceConnectionFactory lcfactory;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Bean</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> RedisTemplate&lt;String, Object&gt; <span class="title">redisTemplate</span><span class="params">()</span> </span>&#123;</span><br><span class="line">		<span class="comment">// 关闭共享链接，动态切换的重点在这里</span></span><br><span class="line">		**lcfactory.setShareNativeConnection(<span class="keyword">false</span>);**</span><br><span class="line">		RedisTemplate&lt;String, Object&gt; redisTemplate = <span class="keyword">new</span> RedisTemplate&lt;&gt;();</span><br><span class="line">		redisTemplate.setKeySerializer(<span class="keyword">new</span> StringRedisSerializer());</span><br><span class="line">		redisTemplate.setHashKeySerializer(<span class="keyword">new</span> StringRedisSerializer());</span><br><span class="line">		redisTemplate.setValueSerializer(<span class="keyword">new</span> JdkSerializationRedisSerializer());</span><br><span class="line">		redisTemplate.setHashValueSerializer(<span class="keyword">new</span> JdkSerializationRedisSerializer());</span><br><span class="line">		redisTemplate.setConnectionFactory(lcfactory);</span><br><span class="line">		<span class="keyword">return</span> redisTemplate;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Bean</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> HashOperations&lt;String, String, Object&gt; <span class="title">hashOperations</span><span class="params">(RedisTemplate&lt;String, Object&gt; redisTemplate)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> redisTemplate.opsForHash();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Bean</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> ValueOperations&lt;String, String&gt; <span class="title">valueOperations</span><span class="params">(RedisTemplate&lt;String, String&gt; redisTemplate)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> redisTemplate.opsForValue();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Bean</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> ListOperations&lt;String, Object&gt; <span class="title">listOperations</span><span class="params">(RedisTemplate&lt;String, Object&gt; redisTemplate)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> redisTemplate.opsForList();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Bean</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> SetOperations&lt;String, Object&gt; <span class="title">setOperations</span><span class="params">(RedisTemplate&lt;String, Object&gt; redisTemplate)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> redisTemplate.opsForSet();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Bean</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> ZSetOperations&lt;String, Object&gt; <span class="title">zSetOperations</span><span class="params">(RedisTemplate&lt;String, Object&gt; redisTemplate)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> redisTemplate.opsForZSet();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="六、设置缓存时候技巧"><a href="#六、设置缓存时候技巧" class="headerlink" title="六、设置缓存时候技巧"></a>六、设置缓存时候技巧</h2><blockquote>
+<p>key需要指定key命名规则前缀RedisConstant.NOTIFY_RECEIVE常量（通常取表名），随后加上表的主键。时间计算间距小技巧，博主业务使用的是LocalDateTime，Duration.between(LocalDateTime.now(), 指定发送时间).getSeconds()，过期时间单位使用的是TimeUnit枚举。切换到指定一号库后，记得切换回来零号库，减少对其他业务的影响</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">     * redis缓存过期监听</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> sysNotifySend 定时发送消息</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> message 消息内容</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">redisSetMsgKey</span><span class="params">(SysNotifySend sysNotifySend, Message message)</span> </span>&#123;</span><br><span class="line">        LocalDateTime sendTime = sysNotifySend.getSendTime();</span><br><span class="line">        String jsonString = JSONUtil.parseObj(message).toJSONString(<span class="number">0</span>);</span><br><span class="line">        RedisUtil.select(redisTemplate, <span class="number">1</span>);</span><br><span class="line">        redisTemplate.opsForValue().set(RedisConstant.NOTIFY_RECEIVE + sysNotifySend.getSendId(), jsonString, Duration.between(LocalDateTime.now(), sendTime).getSeconds(), TimeUnit.SECONDS);</span><br><span class="line">        RedisUtil.select(redisTemplate, <span class="number">0</span>);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="七、参考文章如下"><a href="#七、参考文章如下" class="headerlink" title="七、参考文章如下:"></a>七、参考文章如下:</h2><ol>
+<li><a href="https://www.jianshu.com/p/efdd21d71a44" target="_blank" rel="noopener">SpringBoot2.0以上整合redis根据下标动态切换数据库</a></li>
+<li><a href="https://blog.csdn.net/weixin_41497481/article/details/85322794" target="_blank" rel="noopener">redis缓存过期策略，监听redis缓存</a></li>
+</ol>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2020-05-09T03:28:40.720Z" itemprop="dateUpdated">2020-05-09 11:28:40</time>
+</span><br>
+
+
+        
+        欢迎各位看官留言，如有不正之处望指教，私活私聊我😘
+        
+    </div>
+    
+    <footer>
+        <a href="https://caochikai.github.io">
+            <img src="/img/avatar.jpg" alt="ChiKai">
+            ChiKai
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/" rel="tag">Spring</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://caochikai.github.io/2020/05/09/SpringBoot%E4%B9%8BRedis%E5%AE%9A%E6%97%B6%E5%8F%91%E9%80%81%E6%B6%88%E6%81%AF/&title=《SpringBoot之Redis定时发送消息》 — 天道酬勤&pic=https://caochikai.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://caochikai.github.io/2020/05/09/SpringBoot%E4%B9%8BRedis%E5%AE%9A%E6%97%B6%E5%8F%91%E9%80%81%E6%B6%88%E6%81%AF/&title=《SpringBoot之Redis定时发送消息》 — 天道酬勤&source=喜欢java，死忠工具派" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://caochikai.github.io/2020/05/09/SpringBoot%E4%B9%8BRedis%E5%AE%9A%E6%97%B6%E5%8F%91%E9%80%81%E6%B6%88%E6%81%AF/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《SpringBoot之Redis定时发送消息》 — 天道酬勤&url=https://caochikai.github.io/2020/05/09/SpringBoot%E4%B9%8BRedis%E5%AE%9A%E6%97%B6%E5%8F%91%E9%80%81%E6%B6%88%E6%81%AF/&via=https://caochikai.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://caochikai.github.io/2020/05/09/SpringBoot%E4%B9%8BRedis%E5%AE%9A%E6%97%B6%E5%8F%91%E9%80%81%E6%B6%88%E6%81%AF/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between flex-row-reverse">
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2020/03/24/Thread%E5%88%86%E6%9E%90/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">Thread分析</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'true' == 'true',
+            verify: 'false' == 'true',
+            appId: "o8xTya29DFK9WYa0VDGv47ge-gzGzoHsz",
+            appKey: "D4gSyRHCJFOjX19uaHYWz0Fa",
+            avatar: "mm",
+            placeholder: "Just go go",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
+
+
+
+
+
+
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        谢谢大爷~
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/img/wechat.jpg" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="/img/wechat.jpg" data-alipay="/img/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p>
+    <span id="busuanzi_container_site_uv" style='display:none'>
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style='display:none'>
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>ChiKai &copy; 2018 - 2020</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://caochikai.github.io/2020/05/09/SpringBoot%E4%B9%8BRedis%E5%AE%9A%E6%97%B6%E5%8F%91%E9%80%81%E6%B6%88%E6%81%AF/&title=《SpringBoot之Redis定时发送消息》 — 天道酬勤&pic=https://caochikai.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://caochikai.github.io/2020/05/09/SpringBoot%E4%B9%8BRedis%E5%AE%9A%E6%97%B6%E5%8F%91%E9%80%81%E6%B6%88%E6%81%AF/&title=《SpringBoot之Redis定时发送消息》 — 天道酬勤&source=喜欢java，死忠工具派" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://caochikai.github.io/2020/05/09/SpringBoot%E4%B9%8BRedis%E5%AE%9A%E6%97%B6%E5%8F%91%E9%80%81%E6%B6%88%E6%81%AF/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《SpringBoot之Redis定时发送消息》 — 天道酬勤&url=https://caochikai.github.io/2020/05/09/SpringBoot%E4%B9%8BRedis%E5%AE%9A%E6%97%B6%E5%8F%91%E9%80%81%E6%B6%88%E6%81%AF/&via=https://caochikai.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://caochikai.github.io/2020/05/09/SpringBoot%E4%B9%8BRedis%E5%AE%9A%E6%97%B6%E5%8F%91%E9%80%81%E6%B6%88%E6%81%AF/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="//api.qrserver.com/v1/create-qr-code/?data=https://caochikai.github.io/2020/05/09/SpringBoot%E4%B9%8BRedis%E5%AE%9A%E6%97%B6%E5%8F%91%E9%80%81%E6%B6%88%E6%81%AF/" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '死鬼去哪里了！';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '(つェ⊂)咦!又好了!';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
