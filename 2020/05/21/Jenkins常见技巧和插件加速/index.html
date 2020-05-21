@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>Jenkins常见技巧和插件加速 | 天道酬勤 | 劳逸结合</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="jenkins">
+    <meta name="description" content="Jenkins常见技巧和插件加速展望计划 在微服务单体仓库、GitLab和k8s环境下，如何配合测试、运维完成Devops。参数化自动和手动构建同时按需增量，同时多次更新合并到最后一次，成功失败发送邮件和信息到运维。包括静态代码检查、自动化测试和容器热更新，同时探讨JenkinsX和Gitlab CI提高构建效率。  一、如何快速启动、停止、重启、查看日志 采用通用的URL方式，就可以实现Jeni">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Jenkins常见技巧和插件加速">
+<meta property="og:url" content="https:&#x2F;&#x2F;caochikai.github.io&#x2F;2020&#x2F;05&#x2F;21&#x2F;Jenkins%E5%B8%B8%E8%A7%81%E6%8A%80%E5%B7%A7%E5%92%8C%E6%8F%92%E4%BB%B6%E5%8A%A0%E9%80%9F&#x2F;index.html">
+<meta property="og:site_name" content="天道酬勤">
+<meta property="og:description" content="Jenkins常见技巧和插件加速展望计划 在微服务单体仓库、GitLab和k8s环境下，如何配合测试、运维完成Devops。参数化自动和手动构建同时按需增量，同时多次更新合并到最后一次，成功失败发送邮件和信息到运维。包括静态代码检查、自动化测试和容器热更新，同时探讨JenkinsX和Gitlab CI提高构建效率。  一、如何快速启动、停止、重启、查看日志 采用通用的URL方式，就可以实现Jeni">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;www.jenkins.io&#x2F;doc&#x2F;book&#x2F;resources&#x2F;managing&#x2F;logging-manage-screen.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;img2018.cnblogs.com&#x2F;blog&#x2F;692500&#x2F;201908&#x2F;692500-20190811165844377-1762367867.png">
+<meta property="article:published_time" content="2020-05-21T06:53:00.000Z">
+<meta property="article:modified_time" content="2020-05-21T06:56:40.592Z">
+<meta property="article:author" content="ChiKai">
+<meta property="article:tag" content="jenkins">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;www.jenkins.io&#x2F;doc&#x2F;book&#x2F;resources&#x2F;managing&#x2F;logging-manage-screen.png">
+    
+        <link rel="alternate" type="application/atom+xml" title="天道酬勤" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+<meta name="generator" content="Hexo 4.1.1"></head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">ChiKai</h5>
+          <a href="mailto:992691009@qq.com" title="992691009@qq.com" class="mail">992691009@qq.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/caochikai" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://caochikai.github.io/" target="_blank" >
+                <i class="icon icon-lg icon-weibo"></i>
+                Weibo
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="http://129.211.67.107" target="_blank" rel="noopener"  >
+                <i class="icon icon-lg icon-link"></i>
+                个人网站
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Jenkins常见技巧和插件加速</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">Jenkins常见技巧和插件加速</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2020-05-21T06:53:00.000Z" itemprop="datePublished" class="page-time">
+  2020-05-21
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/jenkins/">jenkins</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#Jenkins常见技巧和插件加速"><span class="post-toc-number">1.</span> <span class="post-toc-text">Jenkins常见技巧和插件加速</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#展望计划"><span class="post-toc-number">2.</span> <span class="post-toc-text">展望计划</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#一、如何快速启动、停止、重启、查看日志"><span class="post-toc-number">3.</span> <span class="post-toc-text">一、如何快速启动、停止、重启、查看日志</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#二、国内镜像加速插件和版本更新"><span class="post-toc-number">4.</span> <span class="post-toc-text">二、国内镜像加速插件和版本更新</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#镜像列表"><span class="post-toc-number">4.0.1.</span> <span class="post-toc-text">镜像列表</span></a></li></ol></li></ol></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#三、参考资料"><span class="post-toc-number">5.</span> <span class="post-toc-text">三、参考资料</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-Jenkins常见技巧和插件加速"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Jenkins常见技巧和插件加速</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2020-05-21 14:53:00" datetime="2020-05-21T06:53:00.000Z"  itemprop="datePublished">2020-05-21</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/jenkins/">jenkins</a></li></ul>
+
+
+
+            
+<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
+    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+</span>
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h1 id="Jenkins常见技巧和插件加速"><a href="#Jenkins常见技巧和插件加速" class="headerlink" title="Jenkins常见技巧和插件加速"></a>Jenkins常见技巧和插件加速</h1><h1 id="展望计划"><a href="#展望计划" class="headerlink" title="展望计划"></a>展望计划</h1><blockquote>
+<p>在微服务单体仓库、GitLab和k8s环境下，如何配合测试、运维完成Devops。参数化自动和手动构建同时按需增量，同时多次更新合并到最后一次，成功失败发送邮件和信息到运维。包括静态代码检查、自动化测试和容器热更新，同时探讨JenkinsX和Gitlab CI提高构建效率。</p>
+</blockquote>
+<h1 id="一、如何快速启动、停止、重启、查看日志"><a href="#一、如何快速启动、停止、重启、查看日志" class="headerlink" title="一、如何快速启动、停止、重启、查看日志"></a>一、如何快速启动、停止、重启、查看日志</h1><blockquote>
+<p>采用通用的URL方式，就可以实现Jenins的停止，重启和重载。启动java -jar jenkins.war方式，或者通过tomcat也可。</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">http:<span class="comment">//[jenkins-server-address][:port]/[command] </span></span><br><span class="line">where [command] can be</span><br><span class="line">exit to shutdown jenkins</span><br><span class="line">restart to restart jenkins</span><br><span class="line">reload to reload the configuration</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>查看日志根据<a href="https://www.jenkins.io/doc/book/system-administration/viewing-logs/" target="_blank" rel="noopener">Jenkins官方文档</a>，tail -f 日志文件位置，遇到过由于docket插件造成日志文件爆磁盘。</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Linux</span><br><span class="line">By <span class="keyword">default</span> logs should be made available in /<span class="keyword">var</span>/log/jenkins/jenkins.log, unless customized in /etc/<span class="keyword">default</span>/jenkins (<span class="keyword">for</span> *.deb) or via /etc/sysconfig/jenkins (<span class="keyword">for</span> */rpm)</span><br><span class="line">Windows</span><br><span class="line">By <span class="keyword">default</span> logs should be at %JENKINS_HOME%/jenkins.out and %JENKINS_HOME%/jenkins.err, unless customized in %JENKINS_HOME%/jenkins.xml</span><br><span class="line">Docker</span><br><span class="line">If you run Jenkins inside docker as a detached container, you can use docker logs containerId to view the Jenkins logs.</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>在Jenkins内部日志是可以设置logs级别和信息，默认使用java.util.logging输出INFO级别日志。插件日志可以添加log recorder，就可以查看到源码级别日志输出，如图所示：</p>
+</blockquote>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://www.jenkins.io/doc/book/resources/managing/logging-manage-screen.png" alt="https://www.jenkins.io/doc/book/resources/managing/logging-manage-screen.png" title="">
+                </div>
+                <div class="image-caption">https://www.jenkins.io/doc/book/resources/managing/logging-manage-screen.png</div>
+            </figure>
+
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="https://img2018.cnblogs.com/blog/692500/201908/692500-20190811165844377-1762367867.png" alt="https://img2018.cnblogs.com/blog/692500/201908/692500-20190811165844377-1762367867.png" title="">
+                </div>
+                <div class="image-caption">https://img2018.cnblogs.com/blog/692500/201908/692500-20190811165844377-1762367867.png</div>
+            </figure>
+
+<h1 id="二、国内镜像加速插件和版本更新"><a href="#二、国内镜像加速插件和版本更新" class="headerlink" title="二、国内镜像加速插件和版本更新"></a>二、国内镜像加速插件和版本更新</h1><blockquote>
+<p>官方镜像很慢几乎不可用，国内有两家镜像源：清华大学和华为，个人选择华为速度起飞︿(￣︶￣)︿。需要改动两个文件hudson.model.UpdateCenter.xml和/updates/default.json，更新完成通过<a href="http://localhost:8080/restart" target="_blank" rel="noopener">http://localhost:8080/restart</a>重启，下载插件速度飙升跑满宽带。</p>
+</blockquote>
+<h3 id="镜像列表"><a href="#镜像列表" class="headerlink" title="镜像列表"></a>镜像列表</h3><ol>
+<li>清华大学镜像：<a href="https://mirrors.tuna.tsinghua.edu.cn/jenkins/updates/update-center.json" target="_blank" rel="noopener">https://mirrors.tuna.tsinghua.edu.cn/jenkins/updates/update-center.json</a></li>
+<li>华为镜像：<a href="https://mirrors.huaweicloud.com/jenkins" target="_blank" rel="noopener">https://mirrors.huaweicloud.com/jenkins</a><a href="https://mirrors.tuna.tsinghua.edu.cn/jenkins/updates/update-center.json" target="_blank" rel="noopener">/updates/update-center.json</a></li>
+</ol>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">vim hudson.model.UpdateCenter.xml</span><br><span class="line"></span><br><span class="line"><span class="meta">&lt;?xml version='1.1' encoding='UTF-8'?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">sites</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">site</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">id</span>&gt;</span>default<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">url</span>&gt;</span>https://mirrors.huaweicloud.com/jenkins/updates/update-center.json<span class="tag">&lt;/<span class="name">url</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">site</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">sites</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">vim updates/default.json</span><br><span class="line">:1,<span class="variable">$s</span>/http:\/\/updates.jenkins-ci.org\/download/https:\/\/mirrors.tuna.tsinghua.edu.cn\/jenkins/g</span><br><span class="line">:1,<span class="variable">$s</span>/http:\/\/www.google.com/https:\/\/www.baidu.com/g</span><br></pre></td></tr></table></figure>
+
+<h1 id="三、参考资料"><a href="#三、参考资料" class="headerlink" title="三、参考资料"></a>三、参考资料</h1><ol>
+<li><a href="https://www.cnblogs.com/dzblog/p/6962810.html" target="_blank" rel="noopener">Jenkins技巧：如何启动、停止、重启、重载Jenkins</a></li>
+<li><a href="https://www.jenkins.io/doc/book/system-administration/viewing-logs/" target="_blank" rel="noopener">Viewing logs Table of Contents Logs on the system</a></li>
+<li><a href="https://www.cnblogs.com/shengulong/p/11335536.html" target="_blank" rel="noopener">Jenkins增加日志查看内容. 如何查看Jenkins插件的日志？</a></li>
+<li><a href="https://benpaodewoniu.github.io/2020/03/03/jenkins1/" target="_blank" rel="noopener">jenkins | 使用镜像加速安装插件</a></li>
+</ol>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2020-05-21T06:56:40.592Z" itemprop="dateUpdated">2020-05-21 14:56:40</time>
+</span><br>
+
+
+        
+        欢迎各位看官留言，如有不正之处望指教，私活私聊我😘
+        
+    </div>
+    
+    <footer>
+        <a href="https://caochikai.github.io">
+            <img src="/img/avatar.jpg" alt="ChiKai">
+            ChiKai
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/jenkins/" rel="tag">jenkins</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://caochikai.github.io/2020/05/21/Jenkins%E5%B8%B8%E8%A7%81%E6%8A%80%E5%B7%A7%E5%92%8C%E6%8F%92%E4%BB%B6%E5%8A%A0%E9%80%9F/&title=《Jenkins常见技巧和插件加速》 — 天道酬勤&pic=https://caochikai.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://caochikai.github.io/2020/05/21/Jenkins%E5%B8%B8%E8%A7%81%E6%8A%80%E5%B7%A7%E5%92%8C%E6%8F%92%E4%BB%B6%E5%8A%A0%E9%80%9F/&title=《Jenkins常见技巧和插件加速》 — 天道酬勤&source=喜欢java，死忠工具派" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://caochikai.github.io/2020/05/21/Jenkins%E5%B8%B8%E8%A7%81%E6%8A%80%E5%B7%A7%E5%92%8C%E6%8F%92%E4%BB%B6%E5%8A%A0%E9%80%9F/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Jenkins常见技巧和插件加速》 — 天道酬勤&url=https://caochikai.github.io/2020/05/21/Jenkins%E5%B8%B8%E8%A7%81%E6%8A%80%E5%B7%A7%E5%92%8C%E6%8F%92%E4%BB%B6%E5%8A%A0%E9%80%9F/&via=https://caochikai.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://caochikai.github.io/2020/05/21/Jenkins%E5%B8%B8%E8%A7%81%E6%8A%80%E5%B7%A7%E5%92%8C%E6%8F%92%E4%BB%B6%E5%8A%A0%E9%80%9F/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between flex-row-reverse">
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2020/05/18/Spring-Cloud-Feign%E8%BF%9E%E6%8E%A5%E6%B1%A0okhttp-EOF%E5%BC%82%E5%B8%B8/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">Spring Cloud Feign连接池okhttp EOF异常</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'true' == 'true',
+            verify: 'false' == 'true',
+            appId: "o8xTya29DFK9WYa0VDGv47ge-gzGzoHsz",
+            appKey: "D4gSyRHCJFOjX19uaHYWz0Fa",
+            avatar: "mm",
+            placeholder: "Just go go",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
+
+
+
+
+
+
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        谢谢大爷~
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/img/wechat.jpg" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="/img/wechat.jpg" data-alipay="/img/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p>
+    <span id="busuanzi_container_site_uv" style='display:none'>
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style='display:none'>
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>ChiKai &copy; 2018 - 2020</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://caochikai.github.io/2020/05/21/Jenkins%E5%B8%B8%E8%A7%81%E6%8A%80%E5%B7%A7%E5%92%8C%E6%8F%92%E4%BB%B6%E5%8A%A0%E9%80%9F/&title=《Jenkins常见技巧和插件加速》 — 天道酬勤&pic=https://caochikai.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://caochikai.github.io/2020/05/21/Jenkins%E5%B8%B8%E8%A7%81%E6%8A%80%E5%B7%A7%E5%92%8C%E6%8F%92%E4%BB%B6%E5%8A%A0%E9%80%9F/&title=《Jenkins常见技巧和插件加速》 — 天道酬勤&source=喜欢java，死忠工具派" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://caochikai.github.io/2020/05/21/Jenkins%E5%B8%B8%E8%A7%81%E6%8A%80%E5%B7%A7%E5%92%8C%E6%8F%92%E4%BB%B6%E5%8A%A0%E9%80%9F/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Jenkins常见技巧和插件加速》 — 天道酬勤&url=https://caochikai.github.io/2020/05/21/Jenkins%E5%B8%B8%E8%A7%81%E6%8A%80%E5%B7%A7%E5%92%8C%E6%8F%92%E4%BB%B6%E5%8A%A0%E9%80%9F/&via=https://caochikai.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://caochikai.github.io/2020/05/21/Jenkins%E5%B8%B8%E8%A7%81%E6%8A%80%E5%B7%A7%E5%92%8C%E6%8F%92%E4%BB%B6%E5%8A%A0%E9%80%9F/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="//api.qrserver.com/v1/create-qr-code/?data=https://caochikai.github.io/2020/05/21/Jenkins%E5%B8%B8%E8%A7%81%E6%8A%80%E5%B7%A7%E5%92%8C%E6%8F%92%E4%BB%B6%E5%8A%A0%E9%80%9F/" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '死鬼去哪里了！';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '(つェ⊂)咦!又好了!';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
