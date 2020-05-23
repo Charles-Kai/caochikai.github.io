@@ -29,7 +29,7 @@
 <meta property="og:description" content="SpringCloud之Wesocket双向通信一、需求 运营中台向某个商家或者全部平台发送实时消息通知，websocket在微服务gateway网关和Oauth2鉴权的环境下，会遇到网关转发Authorization:Bearer 鉴权失败。由于websocket协议在握手时候是不支持Oauth2在header放置token，那么就有两种解决办法，第一种在网关处添加GlobalFilter转发h">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-05-12T06:47:00.000Z">
-<meta property="article:modified_time" content="2020-05-22T07:50:27.376Z">
+<meta property="article:modified_time" content="2020-05-23T10:58:50.950Z">
 <meta property="article:author" content="ChiKai">
 <meta property="article:tag" content="Spring">
 <meta name="twitter:card" content="summary">
@@ -201,7 +201,7 @@
         </div>
         <div class="post-content" id="post-content" itemprop="postContent">
             <h1 id="SpringCloud之Wesocket双向通信"><a href="#SpringCloud之Wesocket双向通信" class="headerlink" title="SpringCloud之Wesocket双向通信"></a>SpringCloud之Wesocket双向通信</h1><h2 id="一、需求"><a href="#一、需求" class="headerlink" title="一、需求"></a>一、需求</h2><blockquote>
-<p>运营中台向某个商家或者全部平台发送实时消息通知，websocket在微服务gateway网关和Oauth2鉴权的环境下，会遇到网关转发Authorization:Bearer 鉴权失败。由于websocket协议在握手时候是不支持Oauth2在header放置token，那么就有两种解决办法，第一种在网关处添加GlobalFilter转发header并且暴露websocket，第二种直接暴露websocket放开鉴权，登录之后直接链接websocket；参考Github Demo仓库在文章结尾。</p>
+<p>运营中台向某个商家或者全部平台发送实时消息通知，websocket在微服务gateway网关和Oauth2鉴权的环境下，会遇到网关转发Authorization:Bearer 鉴权失败。由于websocket协议在握手时候是不支持Oauth2在header放置token，那么就有两种解决办法，第一种在网关处添加GlobalFilter转发header并且暴露websocket，第二种直接暴露websocket放开鉴权，登录之后直接链接websocket；有了双向通信功能就可以取代轮询，比如PC扫码支付后通知前端支付结果，具体实现参考Github Demo仓库在文章结尾。</p>
 </blockquote>
 <h2 id="二、第一种解决办法"><a href="#二、第一种解决办法" class="headerlink" title="二、第一种解决办法"></a>二、第一种解决办法</h2><blockquote>
 <p>Websocket握手协商报文如下，SockJS注意端点跨域：</p>
@@ -229,7 +229,7 @@
     <div class="content">
         
 <span class="post-time">
-    最后更新时间：<time datetime="2020-05-22T07:50:27.376Z" itemprop="dateUpdated">2020-05-22 15:50:27</time>
+    最后更新时间：<time datetime="2020-05-23T10:58:50.950Z" itemprop="dateUpdated">2020-05-23 18:58:50</time>
 </span><br>
 
 

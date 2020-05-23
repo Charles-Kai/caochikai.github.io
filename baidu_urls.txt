@@ -1,5 +1,5 @@
+https://caochikai.github.io/2020/05/23/OpenResty-lua-redis%E5%AE%9E%E7%8E%B0%E5%B9%BF%E5%91%8A%E7%BC%93%E5%AD%98/
 https://caochikai.github.io/2020/05/22/%E9%98%B2%E6%AD%A2jenkins%E6%9D%80%E6%8E%89jar%E5%90%8E%E5%8F%B0%E8%BF%90%E8%A1%8C/
 https://caochikai.github.io/2020/05/21/Jenkins%E5%B8%B8%E8%A7%81%E6%8A%80%E5%B7%A7%E5%92%8C%E6%8F%92%E4%BB%B6%E5%8A%A0%E9%80%9F/
 https://caochikai.github.io/2020/05/18/Spring-Cloud-Feign%E8%BF%9E%E6%8E%A5%E6%B1%A0okhttp-EOF%E5%BC%82%E5%B8%B8/
 https://caochikai.github.io/2020/05/12/SpringBoot%E4%B9%8BWesocket%E5%8F%8C%E5%90%91%E9%80%9A%E4%BF%A1/
-https://caochikai.github.io/2020/05/09/SpringBoot%E4%B9%8BRedis%E5%AE%9A%E6%97%B6%E5%8F%91%E9%80%81%E6%B6%88%E6%81%AF/

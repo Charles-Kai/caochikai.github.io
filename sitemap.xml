@@ -2,16 +2,23 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://caochikai.github.io/2020/05/22/%E9%98%B2%E6%AD%A2jenkins%E6%9D%80%E6%8E%89jar%E5%90%8E%E5%8F%B0%E8%BF%90%E8%A1%8C/</loc>
+    <loc>https://caochikai.github.io/2020/05/23/OpenResty-lua-redis%E5%AE%9E%E7%8E%B0%E5%B9%BF%E5%91%8A%E7%BC%93%E5%AD%98/</loc>
     
-    <lastmod>2020-05-22T12:10:04.406Z</lastmod>
+    <lastmod>2020-05-23T11:01:15.001Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://caochikai.github.io/2020/05/12/SpringBoot%E4%B9%8BWesocket%E5%8F%8C%E5%90%91%E9%80%9A%E4%BF%A1/</loc>
     
-    <lastmod>2020-05-22T07:50:27.376Z</lastmod>
+    <lastmod>2020-05-23T10:58:50.950Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://caochikai.github.io/2020/05/22/%E9%98%B2%E6%AD%A2jenkins%E6%9D%80%E6%8E%89jar%E5%90%8E%E5%8F%B0%E8%BF%90%E8%A1%8C/</loc>
+    
+    <lastmod>2020-05-22T12:13:05.249Z</lastmod>
     
   </url>
   
