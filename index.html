@@ -182,7 +182,7 @@
 
   
     <h3 class="post-title" itemprop="name">
-      <a class="post-title-link" href="/2020/05/23/OpenResty-lua-redis%E5%AE%9E%E7%8E%B0%E5%B9%BF%E5%91%8A%E7%BC%93%E5%AD%98/">OpenResty+lua+redis实现广告缓存</a>
+      <a class="post-title-link" href="/2020/05/23/OpenResty-lua-redis%E5%AE%9E%E7%8E%B0%E5%B9%BF%E5%91%8A%E7%BC%93%E5%AD%98/">OpenResty+lua+redis实现多级缓存</a>
     </h3>
   
 
@@ -192,11 +192,10 @@
     <div class="post-content" id="post-content" itemprop="postContent">
 
     
-        OpenResty+lua+redis实现广告缓存一、需求
+        OpenResty+lua+redis实现多级缓存一、需求
 ngx_openresty是一个基于 NGINX的lua可编程模块，在性能方面有着出色的性能，配合redis做二级缓存效果，nginx开启一级本地缓存。
 
-二、一二级缓存实现
-查询mysql中上架的所有广告转换为json字符串，放入redis中作为二级缓存，等真正的第一次查询会把缓存加入一级本地缓存。当广告修改时候需要请求，需要请求...
+实验数据库sql1234567891011121314151617181920SET NAMES utf8mb4;SET FOREIGN_KEY_CHECKS = 0;-- --...
     
 
         <a href="/2020/05/23/OpenResty-lua-redis%E5%AE%9E%E7%8E%B0%E5%B9%BF%E5%91%8A%E7%BC%93%E5%AD%98/" class="post-more waves-effect waves-button">
