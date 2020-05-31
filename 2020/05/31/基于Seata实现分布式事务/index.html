@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>基于Seata实现分布式事务 | 天道酬勤 | 劳逸结合</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="SpringCloud">
+    <meta name="description" content="一、Seata简介 2019 年 1 月，阿里巴巴中间件团队发起了开源项目 Fescar（Fast &amp; EaSy Commit And Rollback），蚂蚁金服后在Fescar 0.4.0 版本中贡献了 TCC 模式。后来更名为 Seata，意为：Simple Extensible Autonomous Transaction Architecture，是一套一站式分布式事务解决方案。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于Seata实现分布式事务">
+<meta property="og:url" content="https:&#x2F;&#x2F;caochikai.github.io&#x2F;2020&#x2F;05&#x2F;31&#x2F;%E5%9F%BA%E4%BA%8ESeata%E5%AE%9E%E7%8E%B0%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1&#x2F;index.html">
+<meta property="og:site_name" content="天道酬勤">
+<meta property="og:description" content="一、Seata简介 2019 年 1 月，阿里巴巴中间件团队发起了开源项目 Fescar（Fast &amp; EaSy Commit And Rollback），蚂蚁金服后在Fescar 0.4.0 版本中贡献了 TCC 模式。后来更名为 Seata，意为：Simple Extensible Autonomous Transaction Architecture，是一套一站式分布式事务解决方案。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;caochikai.github.io&#x2F;images&#x2F;pasted-17.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;caochikai.github.io&#x2F;images&#x2F;pasted-18.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;caochikai.github.io&#x2F;images&#x2F;pasted-20.png">
+<meta property="article:published_time" content="2020-05-31T03:24:00.000Z">
+<meta property="article:modified_time" content="2020-05-31T03:25:56.297Z">
+<meta property="article:author" content="ChiKai">
+<meta property="article:tag" content="SpringCloud">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;caochikai.github.io&#x2F;images&#x2F;pasted-17.png">
+    
+        <link rel="alternate" type="application/atom+xml" title="天道酬勤" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+<meta name="generator" content="Hexo 4.1.1"></head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">ChiKai</h5>
+          <a href="mailto:992691009@qq.com" title="992691009@qq.com" class="mail">992691009@qq.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/caochikai" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://caochikai.github.io/" target="_blank" >
+                <i class="icon icon-lg icon-weibo"></i>
+                Weibo
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="http://129.211.67.107" target="_blank" rel="noopener"  >
+                <i class="icon icon-lg icon-link"></i>
+                个人网站
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">基于Seata实现分布式事务</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">基于Seata实现分布式事务</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2020-05-31T03:24:00.000Z" itemprop="datePublished" class="page-time">
+  2020-05-31
+</time>
+
+
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/SpringCloud/">SpringCloud</a></li></ul>
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#一、Seata简介"><span class="post-toc-number">1.</span> <span class="post-toc-text">一、Seata简介</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Seata三大基本组件："><span class="post-toc-number">1.1.</span> <span class="post-toc-text">Seata三大基本组件：</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Seata官方调用流程图："><span class="post-toc-number">1.2.</span> <span class="post-toc-text">Seata官方调用流程图：</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#二、Fescar相比XA二阶段优缺点："><span class="post-toc-number">2.</span> <span class="post-toc-text">二、Fescar相比XA二阶段优缺点：</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#优点："><span class="post-toc-number">2.1.</span> <span class="post-toc-text">优点：</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#缺点："><span class="post-toc-number">2.2.</span> <span class="post-toc-text">缺点：</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#三、实验"><span class="post-toc-number">3.</span> <span class="post-toc-text">三、实验</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#OrderServerApplication日志展示了事务增强拦截器GlobalTransactionalInterceptor"><span class="post-toc-number">3.1.</span> <span class="post-toc-text">OrderServerApplication日志展示了事务增强拦截器GlobalTransactionalInterceptor</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#StorageServerApplication日志展示事务分支Branch-Rollbacked"><span class="post-toc-number">3.2.</span> <span class="post-toc-text">StorageServerApplication日志展示事务分支Branch Rollbacked</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#AccountServerApplication日志出现sql-exception"><span class="post-toc-number">3.3.</span> <span class="post-toc-text">AccountServerApplication日志出现sql exception</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#四、分布式事务公共模块"><span class="post-toc-number">4.</span> <span class="post-toc-text">四、分布式事务公共模块</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#1、创建工程common-fescar，引入依赖"><span class="post-toc-number">4.1.</span> <span class="post-toc-text">1、创建工程common_fescar，引入依赖</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#2、将fescar配置文件拷贝到resources工程下"><span class="post-toc-number">4.2.</span> <span class="post-toc-text">2、将fescar配置文件拷贝到resources工程下</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#3、资源提供者每个线程绑定一个XID"><span class="post-toc-number">4.3.</span> <span class="post-toc-text">3、资源提供者每个线程绑定一个XID</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#4、RestInterceptor过滤器，每次请求都将XID转发到其他微服务"><span class="post-toc-number">4.4.</span> <span class="post-toc-text">4、RestInterceptor过滤器，每次请求都将XID转发到其他微服务</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#5、创建FescarAutoConfiguration类"><span class="post-toc-number">4.5.</span> <span class="post-toc-text">5、创建FescarAutoConfiguration类</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#6、记得将涉及到分布式事务的每个数据库都新建一个Undolog表"><span class="post-toc-number">4.6.</span> <span class="post-toc-text">6、记得将涉及到分布式事务的每个数据库都新建一个Undolog表</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#五、参考资料"><span class="post-toc-number">5.</span> <span class="post-toc-text">五、参考资料</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-基于Seata实现分布式事务"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">基于Seata实现分布式事务</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2020-05-31 11:24:00" datetime="2020-05-31T03:24:00.000Z"  itemprop="datePublished">2020-05-31</time>
+
+            
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/SpringCloud/">SpringCloud</a></li></ul>
+
+
+
+            
+<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
+    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+</span>
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h2 id="一、Seata简介"><a href="#一、Seata简介" class="headerlink" title="一、Seata简介"></a>一、Seata简介</h2><blockquote>
+<p>2019 年 1 月，阿里巴巴中间件团队发起了开源项目 Fescar（Fast &amp; EaSy Commit And Rollback），蚂蚁金服后在Fescar 0.4.0 版本中贡献了 TCC 模式。后来更名为 Seata，意为：Simple Extensible Autonomous Transaction Architecture，是一套一站式分布式事务解决方案。</p>
+</blockquote>
+<h3 id="Seata三大基本组件："><a href="#Seata三大基本组件：" class="headerlink" title="Seata三大基本组件："></a>Seata三大基本组件：</h3><p><img src="/images/pasted-17.png" alt="upload successful"></p>
+<p><strong>Transaction Coordinator (TC)：</strong> 事务协调器，维护全局事务的运行状态，负责协调并驱动全局事务的提交或回滚。</p>
+<p><strong>Transaction Manager (TM)：</strong> 控制全局事务的边界，负责开启一个全局事务，并最终发起全局提交或全局回滚的决议。</p>
+<p><strong>Resource Manager (RM)：</strong> 控制分支事务，负责分支注册、状态汇报，并接收事务协调器的指令，驱动分支（本地）事务的提交和回滚。</p>
+<h3 id="Seata官方调用流程图："><a href="#Seata官方调用流程图：" class="headerlink" title="Seata官方调用流程图："></a>Seata官方调用流程图：</h3><figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/pasted-18.png" alt="upload successful" title="">
+                </div>
+                <div class="image-caption">upload successful</div>
+            </figure>
+
+<h2 id="二、Fescar相比XA二阶段优缺点："><a href="#二、Fescar相比XA二阶段优缺点：" class="headerlink" title="二、Fescar相比XA二阶段优缺点："></a>二、Fescar相比XA二阶段优缺点：</h2><h3 id="优点："><a href="#优点：" class="headerlink" title="优点："></a>优点：</h3><ul>
+<li>基于SQL解析实现了自动补偿，降低业务侵入性。</li>
+<li>第一阶段就本地事务就提交了 ，二阶段commit是异步操作相对XA两段全部持有资源更高效。</li>
+<li>Fescar提供了两种模式，AT和MT。在AT模式下事务资源可以是任何支持ACID的数据库，在MT模式下事务资源没有限制，可以是缓存，可以是文件，可以是其他的等等。当然这两个模式也可以混用。</li>
+<li>global lock全局锁实现了写隔离与读隔离。</li>
+<li>Undolog日志自动清理</li>
+</ul>
+<h3 id="缺点："><a href="#缺点：" class="headerlink" title="缺点："></a>缺点：</h3><ul>
+<li>代码入侵性体现为配置Fescar的数据代理和加个注解，每个业务库都需要一个Undolog表。</li>
+<li>从调用图中开源看出性能损耗有：一条Update的SQL，获取全局事务xid（TC通讯）、before image（查询）、after image（查询）、insert undo log（Undolog表的blob字段数据量可不小）、before commit（TC通讯，判断锁冲突）；为了自动补偿在Undolog表花了不小开销，而且触发概率比较低。</li>
+<li>二阶段commit也是需要占用系统资源。</li>
+<li>二阶段回滚需要删除各节点的Undolog才能释放全局锁。</li>
+</ul>
+<h2 id="三、实验"><a href="#三、实验" class="headerlink" title="三、实验"></a>三、实验</h2><blockquote>
+<p>本次实验使用的是官方提供的<a href="https://github.com/seata/seata-samples/tree/master/springcloud-eureka-feign-mybatis-seata" target="_blank" rel="noopener">springcloud-eureka-feign-mybatis-seata</a>工程，模拟远程调用超时异常；通过<a href="http://localhost:8180/order/create?userId=1&productId=1&count=10&money=100" target="_blank" rel="noopener">localhost:8180/order/create?userId=1&amp;productId=1&amp;count=10&amp;money=100</a>触发流程，order本地创建订单调用，远程storage扣减库存，远程扣减账户余额时候模拟该超时异常。下面展示下异常情况下日志信息：</p>
+</blockquote>
+<h3 id="OrderServerApplication日志展示了事务增强拦截器GlobalTransactionalInterceptor"><a href="#OrderServerApplication日志展示了事务增强拦截器GlobalTransactionalInterceptor" class="headerlink" title="OrderServerApplication日志展示了事务增强拦截器GlobalTransactionalInterceptor"></a>OrderServerApplication日志展示了事务增强拦截器GlobalTransactionalInterceptor</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><span class="line">i.seata.tm.api.DefaultGlobalTransaction  : Begin <span class="keyword">new</span> global transaction [<span class="number">192.168</span><span class="number">.3</span><span class="number">.2</span>:<span class="number">8091</span>:<span class="number">2044579200</span>]</span><br><span class="line"> i.seata.sample.service.OrderServiceImpl  : -------&gt;交易开始</span><br><span class="line"> i.seata.sample.service.OrderServiceImpl  : -------&gt;扣减账户开始order中</span><br><span class="line"> i.s.core.rpc.netty.RmMessageListener     : onMessage:xid=<span class="number">192.168</span><span class="number">.3</span><span class="number">.2</span>:<span class="number">8091</span>:<span class="number">2044579200</span>,branchId=<span class="number">2044579202</span>,branchType=AT,resourceId=jdbc:mysql:<span class="comment">//127.0.0.1/seat-order,applicationData=null</span></span><br><span class="line"> io.seata.rm.AbstractRMHandler            : Branch Rollbacking: <span class="number">192.168</span><span class="number">.3</span><span class="number">.2</span>:<span class="number">8091</span>:<span class="number">2044579200</span> <span class="number">2044579202</span> jdbc:mysql:<span class="comment">//127.0.0.1/seat-order</span></span><br><span class="line"> i.s.r.d.undo.AbstractUndoLogManager      : xid <span class="number">192.168</span><span class="number">.3</span><span class="number">.2</span>:<span class="number">8091</span>:<span class="number">2044579200</span> branch <span class="number">2044579202</span>, undo_log deleted with GlobalFinished</span><br><span class="line"> io.seata.rm.AbstractRMHandler            : Branch Rollbacked result: PhaseTwo_Rollbacked</span><br><span class="line"> i.seata.tm.api.DefaultGlobalTransaction  : [<span class="number">192.168</span><span class="number">.3</span><span class="number">.2</span>:<span class="number">8091</span>:<span class="number">2044579200</span>] rollback status: Rollbacked</span><br><span class="line"> o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() <span class="keyword">for</span> servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed; nested exception is feign.RetryableException: Read timed out executing GET http:<span class="comment">//account-server/account/decrease?userId=1&amp;money=100] with root cause</span></span><br><span class="line"></span><br><span class="line">java.net.SocketTimeoutException: Read timed out</span><br><span class="line">	at java.net.SocketInputStream.socketRead0(Native Method) ~[na:<span class="number">1.8</span><span class="number">.0_231</span>]</span><br><span class="line">	at java.net.SocketInputStream.socketRead(SocketInputStream.java:<span class="number">116</span>) ~[na:<span class="number">1.8</span><span class="number">.0_231</span>]</span><br><span class="line">	at java.net.SocketInputStream.read(SocketInputStream.java:<span class="number">171</span>) ~[na:<span class="number">1.8</span><span class="number">.0_231</span>]</span><br><span class="line">	at java.net.SocketInputStream.read(SocketInputStream.java:<span class="number">141</span>) ~[na:<span class="number">1.8</span><span class="number">.0_231</span>]</span><br><span class="line">	at java.io.BufferedInputStream.fill(BufferedInputStream.java:<span class="number">246</span>) ~[na:<span class="number">1.8</span><span class="number">.0_231</span>]</span><br><span class="line">	at java.io.BufferedInputStream.read1(BufferedInputStream.java:<span class="number">286</span>) ~[na:<span class="number">1.8</span><span class="number">.0_231</span>]</span><br><span class="line">	at java.io.BufferedInputStream.read(BufferedInputStream.java:<span class="number">345</span>) ~[na:<span class="number">1.8</span><span class="number">.0_231</span>]</span><br><span class="line">	at sun.net.www.http.HttpClient.parseHTTPHeader(HttpClient.java:<span class="number">735</span>) ~[na:<span class="number">1.8</span><span class="number">.0_231</span>]</span><br><span class="line">	at sun.net.www.http.HttpClient.parseHTTP(HttpClient.java:<span class="number">678</span>) ~[na:<span class="number">1.8</span><span class="number">.0_231</span>]</span><br><span class="line">	at sun.net.www.protocol.http.HttpURLConnection.getInputStream0(HttpURLConnection.java:<span class="number">1593</span>) ~[na:<span class="number">1.8</span><span class="number">.0_231</span>]</span><br><span class="line">	at sun.net.www.protocol.http.HttpURLConnection.getInputStream(HttpURLConnection.java:<span class="number">1498</span>) ~[na:<span class="number">1.8</span><span class="number">.0_231</span>]</span><br><span class="line">	at java.net.HttpURLConnection.getResponseCode(HttpURLConnection.java:<span class="number">480</span>) ~[na:<span class="number">1.8</span><span class="number">.0_231</span>]</span><br><span class="line">	at feign.Client$Default.convertResponse(Client.java:<span class="number">143</span>) ~[feign-core-<span class="number">10.2</span><span class="number">.3</span>.jar:na]</span><br><span class="line">	at feign.Client$Default.execute(Client.java:<span class="number">68</span>) ~[feign-core-<span class="number">10.2</span><span class="number">.3</span>.jar:na]</span><br><span class="line">	at com.alibaba.cloud.seata.feign.SeataFeignClient.execute(SeataFeignClient.java:<span class="number">57</span>) ~[spring-cloud-alibaba-seata-<span class="number">2.1</span><span class="number">.0</span>.RELEASE.jar:<span class="number">2.1</span><span class="number">.0</span>.RELEASE]</span><br><span class="line">	at org.springframework.cloud.openfeign.ribbon.FeignLoadBalancer.execute(FeignLoadBalancer.java:<span class="number">93</span>) ~[spring-cloud-openfeign-core-<span class="number">2.1</span><span class="number">.2</span>.RELEASE.jar:<span class="number">2.1</span><span class="number">.2</span>.RELEASE]</span><br><span class="line">	at org.springframework.cloud.openfeign.ribbon.FeignLoadBalancer.execute(FeignLoadBalancer.java:<span class="number">56</span>) ~[spring-cloud-openfeign-core-<span class="number">2.1</span><span class="number">.2</span>.RELEASE.jar:<span class="number">2.1</span><span class="number">.2</span>.RELEASE]</span><br><span class="line">	at com.netflix.client.AbstractLoadBalancerAwareClient$<span class="number">1</span>.call(AbstractLoadBalancerAwareClient.java:<span class="number">104</span>) ~[ribbon-loadbalancer-<span class="number">2.3</span><span class="number">.0</span>.jar:<span class="number">2.3</span><span class="number">.0</span>]</span><br><span class="line">	at com.netflix.loadbalancer.reactive.LoadBalancerCommand$<span class="number">3</span>$<span class="number">1</span>.call(LoadBalancerCommand.java:<span class="number">303</span>) ~[ribbon-loadbalancer-<span class="number">2.3</span><span class="number">.0</span>.jar:<span class="number">2.3</span><span class="number">.0</span>]</span><br><span class="line">	at com.netflix.loadbalancer.reactive.LoadBalancerCommand$<span class="number">3</span>$<span class="number">1</span>.call(LoadBalancerCommand.java:<span class="number">287</span>) ~[ribbon-loadbalancer-<span class="number">2.3</span><span class="number">.0</span>.jar:<span class="number">2.3</span><span class="number">.0</span>]</span><br><span class="line">	at rx.internal.util.ScalarSynchronousObservable$<span class="number">3</span>.call(ScalarSynchronousObservable.java:<span class="number">231</span>) ~[rxjava-<span class="number">1.3</span><span class="number">.8</span>.jar:<span class="number">1.3</span><span class="number">.8</span>]</span><br><span class="line">	at rx.internal.util.ScalarSynchronousObservable$<span class="number">3</span>.call(ScalarSynchronousObservable.java:<span class="number">228</span>) ~[rxjava-<span class="number">1.3</span><span class="number">.8</span>.jar:<span class="number">1.3</span><span class="number">.8</span>]</span><br><span class="line">	at rx.Observable.unsafeSubscribe(Observable.java:<span class="number">10327</span>) ~[rxjava-<span class="number">1.3</span><span class="number">.8</span>.jar:<span class="number">1.3</span><span class="number">.8</span>]</span><br><span class="line">	at rx.internal.operators.OnSubscribeConcatMap$ConcatMapSubscriber.drain(OnSubscribeConcatMap.java:<span class="number">286</span>) ~[rxjava-<span class="number">1.3</span><span class="number">.8</span>.jar:<span class="number">1.3</span><span class="number">.8</span>]</span><br><span class="line">	at rx.internal.operators.OnSubscribeConcatMap$ConcatMapSubscriber.onNext(OnSubscribeConcatMap.java:<span class="number">144</span>) ~[rxjava-<span class="number">1.3</span><span class="number">.8</span>.jar:<span class="number">1.3</span><span class="number">.8</span>]</span><br><span class="line">	at com.netflix.loadbalancer.reactive.LoadBalancerCommand$<span class="number">1</span>.call(LoadBalancerCommand.java:<span class="number">185</span>) ~[ribbon-loadbalancer-<span class="number">2.3</span><span class="number">.0</span>.jar:<span class="number">2.3</span><span class="number">.0</span>]</span><br><span class="line">	at com.netflix.loadbalancer.reactive.LoadBalancerCommand$<span class="number">1</span>.call(LoadBalancerCommand.java:<span class="number">180</span>) ~[ribbon-loadbalancer-<span class="number">2.3</span><span class="number">.0</span>.jar:<span class="number">2.3</span><span class="number">.0</span>]</span><br><span class="line">	at rx.Observable.unsafeSubscribe(Observable.java:<span class="number">10327</span>) ~[rxjava-<span class="number">1.3</span><span class="number">.8</span>.jar:<span class="number">1.3</span><span class="number">.8</span>]</span><br><span class="line">	at rx.internal.operators.OnSubscribeConcatMap.call(OnSubscribeConcatMap.java:<span class="number">94</span>) ~[rxjava-<span class="number">1.3</span><span class="number">.8</span>.jar:<span class="number">1.3</span><span class="number">.8</span>]</span><br><span class="line">	at rx.internal.operators.OnSubscribeConcatMap.call(OnSubscribeConcatMap.java:<span class="number">42</span>) ~[rxjava-<span class="number">1.3</span><span class="number">.8</span>.jar:<span class="number">1.3</span><span class="number">.8</span>]</span><br><span class="line">	at rx.internal.operators.OnSubscribeLift.call(OnSubscribeLift.java:<span class="number">48</span>) ~[rxjava-<span class="number">1.3</span><span class="number">.8</span>.jar:<span class="number">1.3</span><span class="number">.8</span>]</span><br><span class="line">	at rx.internal.operators.OnSubscribeLift.call(OnSubscribeLift.java:<span class="number">30</span>) ~[rxjava-<span class="number">1.3</span><span class="number">.8</span>.jar:<span class="number">1.3</span><span class="number">.8</span>]</span><br><span class="line">	at rx.internal.operators.OnSubscribeLift.call(OnSubscribeLift.java:<span class="number">48</span>) ~[rxjava-<span class="number">1.3</span><span class="number">.8</span>.jar:<span class="number">1.3</span><span class="number">.8</span>]</span><br><span class="line">	at rx.internal.operators.OnSubscribeLift.call(OnSubscribeLift.java:<span class="number">30</span>) ~[rxjava-<span class="number">1.3</span><span class="number">.8</span>.jar:<span class="number">1.3</span><span class="number">.8</span>]</span><br><span class="line">	at rx.Observable.subscribe(Observable.java:<span class="number">10423</span>) ~[rxjava-<span class="number">1.3</span><span class="number">.8</span>.jar:<span class="number">1.3</span><span class="number">.8</span>]</span><br><span class="line">	at rx.Observable.subscribe(Observable.java:<span class="number">10390</span>) ~[rxjava-<span class="number">1.3</span><span class="number">.8</span>.jar:<span class="number">1.3</span><span class="number">.8</span>]</span><br><span class="line">	at rx.observables.BlockingObservable.blockForSingle(BlockingObservable.java:<span class="number">443</span>) ~[rxjava-<span class="number">1.3</span><span class="number">.8</span>.jar:<span class="number">1.3</span><span class="number">.8</span>]</span><br><span class="line">	at rx.observables.BlockingObservable.single(BlockingObservable.java:<span class="number">340</span>) ~[rxjava-<span class="number">1.3</span><span class="number">.8</span>.jar:<span class="number">1.3</span><span class="number">.8</span>]</span><br><span class="line">	at com.netflix.client.AbstractLoadBalancerAwareClient.executeWithLoadBalancer(AbstractLoadBalancerAwareClient.java:<span class="number">112</span>) ~[ribbon-loadbalancer-<span class="number">2.3</span><span class="number">.0</span>.jar:<span class="number">2.3</span><span class="number">.0</span>]</span><br><span class="line">	at org.springframework.cloud.openfeign.ribbon.LoadBalancerFeignClient.execute(LoadBalancerFeignClient.java:<span class="number">83</span>) ~[spring-cloud-openfeign-core-<span class="number">2.1</span><span class="number">.2</span>.RELEASE.jar:<span class="number">2.1</span><span class="number">.2</span>.RELEASE]</span><br><span class="line">	at com.alibaba.cloud.seata.feign.SeataLoadBalancerFeignClient.execute(SeataLoadBalancerFeignClient.java:<span class="number">56</span>) ~[spring-cloud-alibaba-seata-<span class="number">2.1</span><span class="number">.0</span>.RELEASE.jar:<span class="number">2.1</span><span class="number">.0</span>.RELEASE]</span><br><span class="line">	at feign.SynchronousMethodHandler.executeAndDecode(SynchronousMethodHandler.java:<span class="number">108</span>) ~[feign-core-<span class="number">10.2</span><span class="number">.3</span>.jar:na]</span><br><span class="line">	at feign.SynchronousMethodHandler.invoke(SynchronousMethodHandler.java:<span class="number">78</span>) ~[feign-core-<span class="number">10.2</span><span class="number">.3</span>.jar:na]</span><br><span class="line">	at feign.ReflectiveFeign$FeignInvocationHandler.invoke(ReflectiveFeign.java:<span class="number">103</span>) ~[feign-core-<span class="number">10.2</span><span class="number">.3</span>.jar:na]</span><br><span class="line">	at com.sun.proxy.$Proxy111.decrease(Unknown Source) ~[na:na]</span><br><span class="line">	at io.seata.sample.service.OrderServiceImpl.create(OrderServiceImpl.java:<span class="number">50</span>) ~[classes/:na]</span><br><span class="line">	at io.seata.sample.service.OrderServiceImpl$$FastClassBySpringCGLIB$$<span class="number">3</span>d2d368a.invoke(&lt;generated&gt;) ~[classes/:na]</span><br><span class="line">	at org.springframework.cglib.proxy.MethodProxy.invoke(MethodProxy.java:<span class="number">218</span>) ~[spring-core-<span class="number">5.1</span><span class="number">.9</span>.RELEASE.jar:<span class="number">5.1</span><span class="number">.9</span>.RELEASE]</span><br><span class="line">	at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:<span class="number">749</span>) ~[spring-aop-<span class="number">5.1</span><span class="number">.9</span>.RELEASE.jar:<span class="number">5.1</span><span class="number">.9</span>.RELEASE]</span><br><span class="line">	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:<span class="number">163</span>) ~[spring-aop-<span class="number">5.1</span><span class="number">.9</span>.RELEASE.jar:<span class="number">5.1</span><span class="number">.9</span>.RELEASE]</span><br><span class="line">	at io.seata.spring.annotation.GlobalTransactionalInterceptor$<span class="number">1</span>.execute(GlobalTransactionalInterceptor.java:<span class="number">109</span>) ~[seata-all-<span class="number">1.2</span><span class="number">.0</span>.jar:<span class="number">1.2</span><span class="number">.0</span>]</span><br><span class="line">	at io.seata.tm.api.TransactionalTemplate.execute(TransactionalTemplate.java:<span class="number">104</span>) ~[seata-all-<span class="number">1.2</span><span class="number">.0</span>.jar:<span class="number">1.2</span><span class="number">.0</span>]</span><br><span class="line">	at io.seata.spring.annotation.GlobalTransactionalInterceptor.handleGlobalTransaction(GlobalTransactionalInterceptor.java:<span class="number">106</span>) ~[seata-all-<span class="number">1.2</span><span class="number">.0</span>.jar:<span class="number">1.2</span><span class="number">.0</span>]</span><br><span class="line">	at io.seata.spring.annotation.GlobalTransactionalInterceptor.invoke(GlobalTransactionalInterceptor.java:<span class="number">83</span>) ~[seata-all-<span class="number">1.2</span><span class="number">.0</span>.jar:<span class="number">1.2</span><span class="number">.0</span>]</span><br><span class="line">	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:<span class="number">186</span>) ~[spring-aop-<span class="number">5.1</span><span class="number">.9</span>.RELEASE.jar:<span class="number">5.1</span><span class="number">.9</span>.RELEASE]</span><br><span class="line">	at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:<span class="number">688</span>) ~[spring-aop-<span class="number">5.1</span><span class="number">.9</span>.RELEASE.jar:<span class="number">5.1</span><span class="number">.9</span>.RELEASE]</span><br><span class="line">	at io.seata.sample.service.OrderServiceImpl$$EnhancerBySpringCGLIB$$<span class="number">9</span>c1f4d2e.create(&lt;generated&gt;) ~[classes/:na]</span><br><span class="line">	at io.seata.sample.controller.OrderController.create(OrderController.java:<span class="number">29</span>) ~[classes/:na]</span><br><span class="line">........省略异常</span><br></pre></td></tr></table></figure>
+
+<h3 id="StorageServerApplication日志展示事务分支Branch-Rollbacked"><a href="#StorageServerApplication日志展示事务分支Branch-Rollbacked" class="headerlink" title="StorageServerApplication日志展示事务分支Branch Rollbacked"></a>StorageServerApplication日志展示事务分支Branch Rollbacked</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">i.s.sample.service.StorageServiceImpl    : -------&gt;扣减库存开始</span><br><span class="line">i.s.sample.service.StorageServiceImpl    : -------&gt;扣减库存结束</span><br><span class="line">c.a.c.seata.web.SeataHandlerInterceptor  : xid in change during RPC from <span class="number">192.168</span><span class="number">.3</span><span class="number">.2</span>:<span class="number">8091</span>:<span class="number">2044579200</span> to <span class="keyword">null</span></span><br><span class="line">i.s.core.rpc.netty.RmMessageListener     : onMessage:xid=<span class="number">192.168</span><span class="number">.3</span><span class="number">.2</span>:<span class="number">8091</span>:<span class="number">2044579200</span>,branchId=<span class="number">2044579204</span>,branchType=AT,resourceId=jdbc:mysql:<span class="comment">//127.0.0.1/seat-storage,applicationData=null</span></span><br><span class="line">io.seata.rm.AbstractRMHandler            : Branch Rollbacking: <span class="number">192.168</span><span class="number">.3</span><span class="number">.2</span>:<span class="number">8091</span>:<span class="number">2044579200</span> <span class="number">2044579204</span> jdbc:mysql:<span class="comment">//127.0.0.1/seat-storage</span></span><br><span class="line">i.s.r.d.undo.AbstractUndoLogManager      : xid <span class="number">192.168</span><span class="number">.3</span><span class="number">.2</span>:<span class="number">8091</span>:<span class="number">2044579200</span> branch <span class="number">2044579204</span>, undo_log deleted with GlobalFinished           : Branch Rollbacked result: PhaseTwo_Rollbacked</span><br></pre></td></tr></table></figure>
+
+<h3 id="AccountServerApplication日志出现sql-exception"><a href="#AccountServerApplication日志出现sql-exception" class="headerlink" title="AccountServerApplication日志出现sql exception"></a>AccountServerApplication日志出现sql exception</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">i.s.sample.service.AccountServiceImpl    : -------&gt;扣减账户开始account中</span><br><span class="line">i.s.r.d.exec.AbstractDMLBaseExecutor     : execute executeAutoCommitTrue error:io.seata.core.exception.RmTransactionException: Response[ TransactionException[<span class="number">192.168</span><span class="number">.3</span><span class="number">.2</span>:<span class="number">8091</span>:<span class="number">2044579200</span>] ]</span><br><span class="line">java.sql.SQLException: io.seata.core.exception.RmTransactionException: Response[ TransactionException[<span class="number">192.168</span><span class="number">.3</span><span class="number">.2</span>:<span class="number">8091</span>:<span class="number">2044579200</span>] ]</span><br><span class="line">...省略一些重要异常堆栈信息</span><br><span class="line"></span><br><span class="line"><span class="number">2020</span>-<span class="number">05</span>-<span class="number">30</span> <span class="number">23</span>:<span class="number">31</span>:<span class="number">56.652</span>  WARN <span class="number">5960</span> --- [nio-<span class="number">8181</span>-exec-<span class="number">2</span>] c.a.c.seata.web.SeataHandlerInterceptor  : xid in change during RPC from <span class="number">192.168</span><span class="number">.3</span><span class="number">.2</span>:<span class="number">8091</span>:<span class="number">2044579200</span> to <span class="keyword">null</span></span><br><span class="line"><span class="number">2020</span>-<span class="number">05</span>-<span class="number">30</span> <span class="number">23</span>:<span class="number">31</span>:<span class="number">56.654</span> ERROR <span class="number">5960</span> --- [nio-<span class="number">8181</span>-exec-<span class="number">2</span>] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() <span class="keyword">for</span> servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed; nested exception is org.springframework.jdbc.UncategorizedSQLException: </span><br><span class="line">### Error updating database.  Cause: java.sql.SQLException: io.seata.core.exception.RmTransactionException: Response[ TransactionException[192.168.3.2:8091:2044579200] ]</span><br><span class="line">### The error may exist in file [E:\document\GitHub\seata-samples-master\springcloud-eureka-feign-mybatis-seata\account-server\target\classes\mapper\AccountMapper.xml]</span><br><span class="line">### The error may involve defaultParameterMap</span><br><span class="line">### The error occurred while setting parameters</span><br><span class="line">### SQL: UPDATE account SET residue = residue - ?,used = used + ? where user_id = ?;</span><br><span class="line">### Cause: java.sql.SQLException: io.seata.core.exception.RmTransactionException: Response[ TransactionException[192.168.3.2:8091:2044579200] ]</span><br><span class="line">; uncategorized SQLException; SQL state [<span class="keyword">null</span>]; error code [<span class="number">0</span>]; io.seata.core.exception.RmTransactionException: Response[ TransactionException[<span class="number">192.168</span><span class="number">.3</span><span class="number">.2</span>:<span class="number">8091</span>:<span class="number">2044579200</span>] ]; nested exception is java.sql.SQLException: io.seata.core.exception.RmTransactionException: Response[ TransactionException[<span class="number">192.168</span><span class="number">.3</span><span class="number">.2</span>:<span class="number">8091</span>:<span class="number">2044579200</span>] ]] with root cause</span><br></pre></td></tr></table></figure>
+
+<h2 id="四、分布式事务公共模块"><a href="#四、分布式事务公共模块" class="headerlink" title="四、分布式事务公共模块"></a>四、分布式事务公共模块</h2><h3 id="1、创建工程common-fescar，引入依赖"><a href="#1、创建工程common-fescar，引入依赖" class="headerlink" title="1、创建工程common_fescar，引入依赖"></a>1、创建工程common_fescar，引入依赖</h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">properties</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">fescar.version</span>&gt;</span>0.4.2<span class="tag">&lt;/<span class="name">fescar.version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">properties</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.alibaba.fescar<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>fescar-tm<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;fescar.version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.alibaba.fescar<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>fescar-spring<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;fescar.version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2、将fescar配置文件拷贝到resources工程下"><a href="#2、将fescar配置文件拷贝到resources工程下" class="headerlink" title="2、将fescar配置文件拷贝到resources工程下"></a>2、将<code>fescar配置文件</code>拷贝到resources工程下</h3><p><img src="/images/pasted-20.png" alt="upload successful"></p>
+<h3 id="3、资源提供者每个线程绑定一个XID"><a href="#3、资源提供者每个线程绑定一个XID" class="headerlink" title="3、资源提供者每个线程绑定一个XID"></a>3、资源提供者每个线程绑定一个XID</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> 分布式事务框架<span class="title">Fescar</span>在<span class="title">SpringCloud</span>环境下的应用实践<span class="keyword">extends</span> <span class="title">OncePerRequestFilter</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Logger LOGGER = org.slf4j.LoggerFactory.getLogger( FescarRMRequestFilter<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 给每次线程请求绑定一个XID</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> request</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> response</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> filterChain</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">doFilterInternal</span><span class="params">(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)</span> <span class="keyword">throws</span> ServletException, IOException </span>&#123;</span><br><span class="line">        String currentXID = request.getHeader( FescarAutoConfiguration.FESCAR_XID);</span><br><span class="line">        <span class="keyword">if</span>(!StringUtils.isEmpty(currentXID))&#123;</span><br><span class="line">            RootContext.bind(currentXID);</span><br><span class="line">            LOGGER.info(<span class="string">"当前线程绑定的XID :"</span> + currentXID);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">try</span>&#123;</span><br><span class="line">            filterChain.doFilter(request, response);</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            String unbindXID = RootContext.unbind();</span><br><span class="line">            <span class="keyword">if</span>(unbindXID != <span class="keyword">null</span>)&#123;</span><br><span class="line">                LOGGER.info(<span class="string">"当前线程从指定XID中解绑 XID :"</span> + unbindXID);</span><br><span class="line">                <span class="keyword">if</span>(!currentXID.equals(unbindXID))&#123;</span><br><span class="line">                    LOGGER.info(<span class="string">"当前线程的XID发生变更"</span>);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span>(currentXID != <span class="keyword">null</span>)&#123;</span><br><span class="line">                LOGGER.info(<span class="string">"当前线程的XID发生变更"</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="4、RestInterceptor过滤器，每次请求都将XID转发到其他微服务"><a href="#4、RestInterceptor过滤器，每次请求都将XID转发到其他微服务" class="headerlink" title="4、RestInterceptor过滤器，每次请求都将XID转发到其他微服务"></a>4、RestInterceptor过滤器，每次请求都将XID转发到其他微服务</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FescarRestInterceptor</span> <span class="keyword">implements</span> <span class="title">RequestInterceptor</span>, <span class="title">ClientHttpRequestInterceptor</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">apply</span><span class="params">(RequestTemplate requestTemplate)</span> </span>&#123;</span><br><span class="line">        String xid = RootContext.getXID();</span><br><span class="line">        <span class="keyword">if</span>(!StringUtils.isEmpty(xid))&#123;</span><br><span class="line">            requestTemplate.header( FescarAutoConfiguration.FESCAR_XID, xid);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> ClientHttpResponse <span class="title">intercept</span><span class="params">(HttpRequest request, <span class="keyword">byte</span>[] body, ClientHttpRequestExecution execution)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        String xid = RootContext.getXID();</span><br><span class="line">        <span class="keyword">if</span>(!StringUtils.isEmpty(xid))&#123;</span><br><span class="line">            HttpHeaders headers = request.getHeaders();</span><br><span class="line">            headers.put( FescarAutoConfiguration.FESCAR_XID, Collections.singletonList(xid));</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> execution.execute(request, body);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="5、创建FescarAutoConfiguration类"><a href="#5、创建FescarAutoConfiguration类" class="headerlink" title="5、创建FescarAutoConfiguration类"></a>5、创建FescarAutoConfiguration类</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> *  * 创建数据源</span></span><br><span class="line"><span class="comment"> *  * 定义全局事务管理器扫描对象</span></span><br><span class="line"><span class="comment"> *  * 给所有RestTemplate添加头信息防止微服务之间调用问题</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FescarAutoConfiguration</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String FESCAR_XID = <span class="string">"fescarXID"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/***</span></span><br><span class="line"><span class="comment">     * 创建代理数据库</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> environment</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> DataSource <span class="title">dataSource</span><span class="params">(Environment environment)</span></span>&#123;</span><br><span class="line">        DruidDataSource dataSource = <span class="keyword">new</span> DruidDataSource();</span><br><span class="line">        dataSource.setUrl(environment.getProperty(<span class="string">"spring.datasource.url"</span>));</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            dataSource.setDriver(DriverManager.getDriver(environment.getProperty(<span class="string">"spring.datasource.url"</span>)));</span><br><span class="line">        &#125; <span class="keyword">catch</span> (SQLException e) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">"can't recognize dataSource Driver"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        dataSource.setUsername(environment.getProperty(<span class="string">"spring.datasource.username"</span>));</span><br><span class="line">        dataSource.setPassword(environment.getProperty(<span class="string">"spring.datasource.password"</span>));</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> DataSourceProxy(dataSource);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/***</span></span><br><span class="line"><span class="comment">     * 全局事务扫描器</span></span><br><span class="line"><span class="comment">     * 用来解析带有<span class="doctag">@GlobalTransactional</span>注解的方法，然后采用AOP的机制控制事务</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> environment</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> GlobalTransactionScanner <span class="title">globalTransactionScanner</span><span class="params">(Environment environment)</span></span>&#123;</span><br><span class="line">        String applicationName = environment.getProperty(<span class="string">"spring.application.name"</span>);</span><br><span class="line">        String groupName = environment.getProperty(<span class="string">"fescar.group.name"</span>);</span><br><span class="line">        <span class="keyword">if</span>(applicationName == <span class="keyword">null</span>)&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> GlobalTransactionScanner(groupName == <span class="keyword">null</span> ? <span class="string">"my_test_tx_group"</span> : groupName);</span><br><span class="line">        &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> GlobalTransactionScanner(applicationName, groupName == <span class="keyword">null</span> ? <span class="string">"my_test_tx_group"</span> : groupName);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/***</span></span><br><span class="line"><span class="comment">     * 每次微服务和微服务之间相互调用</span></span><br><span class="line"><span class="comment">     * 要想控制全局事务，每次TM都会请求TC生成一个XID，每次执行下一个事务，也就是调用其他微服务的时候都需要将该XID传递过去</span></span><br><span class="line"><span class="comment">     * 所以我们可以每次请求的时候，都获取头中的XID，并将XID传递到下一个微服务</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> restTemplates</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@ConditionalOnBean</span>(&#123;RestTemplate<span class="class">.<span class="keyword">class</span>&#125;)</span></span><br><span class="line"><span class="class">    @<span class="title">Bean</span></span></span><br><span class="line"><span class="class">    <span class="title">public</span> <span class="title">Object</span> <span class="title">addFescarInterceptor</span>(<span class="title">Collection</span>&lt;<span class="title">RestTemplate</span>&gt; <span class="title">restTemplates</span>)</span>&#123;</span><br><span class="line">        restTemplates.stream()</span><br><span class="line">                .forEach(restTemplate -&gt; &#123;</span><br><span class="line">                    List&lt;ClientHttpRequestInterceptor&gt; interceptors = restTemplate.getInterceptors();</span><br><span class="line">                    <span class="keyword">if</span>(interceptors != <span class="keyword">null</span>)&#123;</span><br><span class="line">                        interceptors.add(fescarRestInterceptor());</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Object();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> FescarRMRequestFilter <span class="title">fescarRMRequestFilter</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> FescarRMRequestFilter();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> FescarRestInterceptor <span class="title">fescarRestInterceptor</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> FescarRestInterceptor();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="6、记得将涉及到分布式事务的每个数据库都新建一个Undolog表"><a href="#6、记得将涉及到分布式事务的每个数据库都新建一个Undolog表" class="headerlink" title="6、记得将涉及到分布式事务的每个数据库都新建一个Undolog表"></a>6、记得将涉及到分布式事务的每个数据库都新建一个Undolog表</h3><h2 id="五、参考资料"><a href="#五、参考资料" class="headerlink" title="五、参考资料"></a>五、参考资料</h2><ol>
+<li><a href="https://github.com/seata/seata-samples" target="_blank" rel="noopener">官方实验Demo集合</a></li>
+<li><a href="https://github.com/seata/seata-samples/tree/master/springcloud-eureka-feign-mybatis-seata" target="_blank" rel="noopener">本次博客实验所用Demo</a></li>
+<li><a href="https://blog.csdn.net/zt_16kk/article/details/89105663" target="_blank" rel="noopener">分布式事务框架Fescar在SpringCloud环境下的应用实践</a></li>
+</ol>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2020-05-31T03:25:56.297Z" itemprop="dateUpdated">2020-05-31 11:25:56</time>
+</span><br>
+
+
+        
+        欢迎各位看官留言，如有不正之处望指教，私活私聊我😘
+        
+    </div>
+    
+    <footer>
+        <a href="https://caochikai.github.io">
+            <img src="/img/avatar.jpg" alt="ChiKai">
+            ChiKai
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/SpringCloud/" rel="tag">SpringCloud</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://caochikai.github.io/2020/05/31/%E5%9F%BA%E4%BA%8ESeata%E5%AE%9E%E7%8E%B0%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/&title=《基于Seata实现分布式事务》 — 天道酬勤&pic=https://caochikai.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://caochikai.github.io/2020/05/31/%E5%9F%BA%E4%BA%8ESeata%E5%AE%9E%E7%8E%B0%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/&title=《基于Seata实现分布式事务》 — 天道酬勤&source=喜欢java，死忠工具派" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://caochikai.github.io/2020/05/31/%E5%9F%BA%E4%BA%8ESeata%E5%AE%9E%E7%8E%B0%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《基于Seata实现分布式事务》 — 天道酬勤&url=https://caochikai.github.io/2020/05/31/%E5%9F%BA%E4%BA%8ESeata%E5%AE%9E%E7%8E%B0%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/&via=https://caochikai.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://caochikai.github.io/2020/05/31/%E5%9F%BA%E4%BA%8ESeata%E5%AE%9E%E7%8E%B0%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between flex-row-reverse">
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2020/05/30/TX-LCN%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1%E5%AE%9E%E8%B7%B5/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">TX-LCN分布式事务实践</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'true' == 'true',
+            verify: 'false' == 'true',
+            appId: "o8xTya29DFK9WYa0VDGv47ge-gzGzoHsz",
+            appKey: "D4gSyRHCJFOjX19uaHYWz0Fa",
+            avatar: "mm",
+            placeholder: "Just go go",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
+
+
+
+
+
+
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        谢谢大爷~
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/img/wechat.jpg" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="/img/wechat.jpg" data-alipay="/img/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p>
+    <span id="busuanzi_container_site_uv" style='display:none'>
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style='display:none'>
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>ChiKai &copy; 2018 - 2020</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://caochikai.github.io/2020/05/31/%E5%9F%BA%E4%BA%8ESeata%E5%AE%9E%E7%8E%B0%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/&title=《基于Seata实现分布式事务》 — 天道酬勤&pic=https://caochikai.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://caochikai.github.io/2020/05/31/%E5%9F%BA%E4%BA%8ESeata%E5%AE%9E%E7%8E%B0%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/&title=《基于Seata实现分布式事务》 — 天道酬勤&source=喜欢java，死忠工具派" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://caochikai.github.io/2020/05/31/%E5%9F%BA%E4%BA%8ESeata%E5%AE%9E%E7%8E%B0%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《基于Seata实现分布式事务》 — 天道酬勤&url=https://caochikai.github.io/2020/05/31/%E5%9F%BA%E4%BA%8ESeata%E5%AE%9E%E7%8E%B0%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/&via=https://caochikai.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://caochikai.github.io/2020/05/31/%E5%9F%BA%E4%BA%8ESeata%E5%AE%9E%E7%8E%B0%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="//api.qrserver.com/v1/create-qr-code/?data=https://caochikai.github.io/2020/05/31/%E5%9F%BA%E4%BA%8ESeata%E5%AE%9E%E7%8E%B0%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '死鬼去哪里了！';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '(つェ⊂)咦!又好了!';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
