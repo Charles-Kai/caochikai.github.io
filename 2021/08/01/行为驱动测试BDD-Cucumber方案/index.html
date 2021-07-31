@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>行为驱动测试BDD Cucumber方案 | 天道酬勤 | 劳逸结合</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Test">
+    <meta name="description" content="行为驱动测试BDD Cucumber方案一、什么是BDD Behaviour-Driven Development既行为驱动开发，是构建Cucumber以支持的软件开发过程。  BDD是软件团队的一种工作方式，通过以下方式缩小业务人员和技术人员之间的差距: 鼓励跨角色的协作，以建立对要解决的问题的共享理解。 业务员根据用户的行为生成需求场景描述文档，比如行为条件和参数，相当于伪代码。 技术人员通过">
+<meta property="og:type" content="article">
+<meta property="og:title" content="行为驱动测试BDD Cucumber方案">
+<meta property="og:url" content="https:&#x2F;&#x2F;caochikai.github.io&#x2F;2021&#x2F;08&#x2F;01&#x2F;%E8%A1%8C%E4%B8%BA%E9%A9%B1%E5%8A%A8%E6%B5%8B%E8%AF%95BDD-Cucumber%E6%96%B9%E6%A1%88&#x2F;index.html">
+<meta property="og:site_name" content="天道酬勤">
+<meta property="og:description" content="行为驱动测试BDD Cucumber方案一、什么是BDD Behaviour-Driven Development既行为驱动开发，是构建Cucumber以支持的软件开发过程。  BDD是软件团队的一种工作方式，通过以下方式缩小业务人员和技术人员之间的差距: 鼓励跨角色的协作，以建立对要解决的问题的共享理解。 业务员根据用户的行为生成需求场景描述文档，比如行为条件和参数，相当于伪代码。 技术人员通过">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;caochikai.github.io&#x2F;images&#x2F;pasted-25.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;caochikai.github.io&#x2F;images&#x2F;pasted-26.png">
+<meta property="og:image" content="https:&#x2F;&#x2F;caochikai.github.io&#x2F;images&#x2F;pasted-27.png">
+<meta property="article:published_time" content="2021-07-31T16:19:00.000Z">
+<meta property="article:modified_time" content="2021-07-31T16:21:30.953Z">
+<meta property="article:author" content="ChiKai">
+<meta property="article:tag" content="Test">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;caochikai.github.io&#x2F;images&#x2F;pasted-25.png">
+    
+        <link rel="alternate" type="application/atom+xml" title="天道酬勤" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+<meta name="generator" content="Hexo 4.1.1"></head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">ChiKai</h5>
+          <a href="mailto:992691009@qq.com" title="992691009@qq.com" class="mail">992691009@qq.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/caochikai" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://caochikai.github.io/" target="_blank" >
+                <i class="icon icon-lg icon-weibo"></i>
+                Weibo
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="http://129.211.67.107" target="_blank" rel="noopener"  >
+                <i class="icon icon-lg icon-link"></i>
+                个人网站
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">行为驱动测试BDD Cucumber方案</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">行为驱动测试BDD Cucumber方案</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2021-07-31T16:19:00.000Z" itemprop="datePublished" class="page-time">
+  2021-08-01
+</time>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#行为驱动测试BDD-Cucumber方案"><span class="post-toc-number">1.</span> <span class="post-toc-text">行为驱动测试BDD Cucumber方案</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#一、什么是BDD"><span class="post-toc-number">2.</span> <span class="post-toc-text">一、什么是BDD</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#BDD是软件团队的一种工作方式，通过以下方式缩小业务人员和技术人员之间的差距"><span class="post-toc-number">2.0.1.</span> <span class="post-toc-text">BDD是软件团队的一种工作方式，通过以下方式缩小业务人员和技术人员之间的差距:</span></a></li></ol></li></ol></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#二、Cucumber特性"><span class="post-toc-number">3.</span> <span class="post-toc-text">二、Cucumber特性</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Gherkin语言基本概念："><span class="post-toc-number">3.1.</span> <span class="post-toc-text">Gherkin语言基本概念：</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Features功能"><span class="post-toc-number">3.1.1.</span> <span class="post-toc-text">Features功能</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Scenario场景"><span class="post-toc-number">3.1.2.</span> <span class="post-toc-text">Scenario场景</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Step-denfinitions步骤"><span class="post-toc-number">3.1.3.</span> <span class="post-toc-text">Step denfinitions步骤</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Given-When-then-假如-当-那么"><span class="post-toc-number">3.1.4.</span> <span class="post-toc-text">Given When then(假如 当 那么)</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#通过下列步骤介绍Cucumber流程："><span class="post-toc-number">3.1.5.</span> <span class="post-toc-text">通过下列步骤介绍Cucumber流程：</span></a></li></ol></li></ol></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#三、集成Spring生成测试报告"><span class="post-toc-number">4.</span> <span class="post-toc-text">三、集成Spring生成测试报告</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Maven-Dependencies"><span class="post-toc-number">4.1.</span> <span class="post-toc-text">Maven Dependencies</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#REST-Controller"><span class="post-toc-number">4.2.</span> <span class="post-toc-text">REST Controller</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Cucumber-Step-Definitions"><span class="post-toc-number">4.3.</span> <span class="post-toc-text">Cucumber Step Definitions</span></a></li></ol></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#四、Moco-Server在集成测试和开发中应用"><span class="post-toc-number">5.</span> <span class="post-toc-text">四、Moco Server在集成测试和开发中应用</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#通过jar提供mock-http服务："><span class="post-toc-number">5.1.</span> <span class="post-toc-text">通过jar提供mock http服务：</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#集成到项目"><span class="post-toc-number">5.2.</span> <span class="post-toc-text">集成到项目</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Maven-Dependencies-1"><span class="post-toc-number">5.3.</span> <span class="post-toc-text">Maven Dependencies</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#API-Test"><span class="post-toc-number">5.4.</span> <span class="post-toc-text">API Test</span></a></li></ol></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#五、参考资料"><span class="post-toc-number">6.</span> <span class="post-toc-text">五、参考资料</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-行为驱动测试BDD-Cucumber方案"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">行为驱动测试BDD Cucumber方案</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2021-08-01 00:19:00" datetime="2021-07-31T16:19:00.000Z"  itemprop="datePublished">2021-08-01</time>
+
+            
+
+
+            
+<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
+    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+</span>
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h1 id="行为驱动测试BDD-Cucumber方案"><a href="#行为驱动测试BDD-Cucumber方案" class="headerlink" title="行为驱动测试BDD Cucumber方案"></a>行为驱动测试BDD Cucumber方案</h1><h1 id="一、什么是BDD"><a href="#一、什么是BDD" class="headerlink" title="一、什么是BDD"></a>一、什么是BDD</h1><blockquote>
+<p>Behaviour-Driven Development既行为驱动开发，是构建Cucumber以支持的软件开发过程。</p>
+</blockquote>
+<h3 id="BDD是软件团队的一种工作方式，通过以下方式缩小业务人员和技术人员之间的差距"><a href="#BDD是软件团队的一种工作方式，通过以下方式缩小业务人员和技术人员之间的差距" class="headerlink" title="BDD是软件团队的一种工作方式，通过以下方式缩小业务人员和技术人员之间的差距:"></a>BDD是软件团队的一种工作方式，通过以下方式缩小业务人员和技术人员之间的差距:</h3><ul>
+<li>鼓励跨角色的协作，以建立对要解决的问题的共享理解。</li>
+<li>业务员根据用户的行为生成需求场景描述文档，比如行为条件和参数，相当于伪代码。</li>
+<li>技术人员通过用户的行为场景设计测试用例，验收和驱动开发，并生成符合伪代码报告。<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/pasted-25.png" alt="敏捷流程" title="">
+                </div>
+                <div class="image-caption">敏捷流程</div>
+            </figure>
+
+</li>
+</ul>
+<h1 id="二、Cucumber特性"><a href="#二、Cucumber特性" class="headerlink" title="二、Cucumber特性"></a>二、Cucumber特性</h1><blockquote>
+<p>Cucumber是一种可以使用文本描述语言来执行自动测试用例的工具，使用的语言叫做Gherkin。Gherkin用于描述软件的行为而不需要了解具体的实现，主要有两个目的文档和自动测试用例（最好和手工测试用例统一）。 Gherkin支持超过40种语言，包括英文、中文。 Gherkin可以在任何地方新增注释，注释已#开头，都是以.feature结尾，在feature文件中输入功能描述、场景、步骤，当执行这个功能时每一个步骤都需要编写java代码块来实现具体的功能。当前cucumber支持多种语言，还可以使用java和spring、javascript和react。下面是Cucumber Ruby 官方截图：</p>
+</blockquote>
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/pasted-26.png" alt="Ruby官方例子" title="">
+                </div>
+                <div class="image-caption">Ruby官方例子</div>
+            </figure>
+
+<figure class="image-bubble">
+                <div class="img-lightbox">
+                    <div class="overlay"></div>
+                    <img src="/images/pasted-27.png" alt="Cucumber Report截图" title="">
+                </div>
+                <div class="image-caption">Cucumber Report截图</div>
+            </figure>
+
+<h2 id="Gherkin语言基本概念："><a href="#Gherkin语言基本概念：" class="headerlink" title="Gherkin语言基本概念："></a>Gherkin语言基本概念：</h2><h3 id="Features功能"><a href="#Features功能" class="headerlink" title="Features功能"></a>Features功能</h3><blockquote>
+<p>一个feature文件对应一组集合功能，比如用户管理。</p>
+</blockquote>
+<h3 id="Scenario场景"><a href="#Scenario场景" class="headerlink" title="Scenario场景"></a>Scenario场景</h3><blockquote>
+<p>一个feature文件对应一组Scenario场景，比如用户管理功能有新增用户，删除用户，修改用户和查询用户四个场景。Scenario Outline场景大纲必须包含一个示例Examples，Examples有多少行测试驱动数据，测试场景Scenario就执行多少次，以下面步骤第一步Given step的<day>参数变量，就来源于Examples下的day。</p>
+</blockquote>
+<h3 id="Step-denfinitions步骤"><a href="#Step-denfinitions步骤" class="headerlink" title="Step denfinitions步骤"></a>Step denfinitions步骤</h3><blockquote>
+<p>Scenario场景下有多个Step步骤，每一Step步骤都以Given, When, Then, And, or But开始。</p>
+</blockquote>
+<h3 id="Given-When-then-假如-当-那么"><a href="#Given-When-then-假如-当-那么" class="headerlink" title="Given When then(假如 当 那么)"></a>Given When then(假如 当 那么)</h3><blockquote>
+<p>每一步都以Given, When, Then, And, or But开始。java实现都有对应注解。</p>
+</blockquote>
+<ul>
+<li>Given——@Given：用例开始执行前的一个前置条件，比如用户已经登录对应代码有jwt token。</li>
+<li>When——@When：用例开始执行的一些关键操作步骤，类似修改用户性别等。</li>
+<li>Then——@Then：观察结果，就是平时用例中的验证步骤，比如修改后验证数据库是否存入操作成功。</li>
+</ul>
+<h3 id="通过下列步骤介绍Cucumber流程："><a href="#通过下列步骤介绍Cucumber流程：" class="headerlink" title="通过下列步骤介绍Cucumber流程："></a>通过下列步骤介绍Cucumber流程：</h3><ul>
+<li><p>第一步：通过Gherkin伪代码文本语言描述，写到feature文件。以官方10分钟体验为例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">Feature: Is it Friday yet?</span><br><span class="line">  Everybody wants to know when it<span class="string">'s Friday</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">  Scenario Outline: Today is or is not Friday</span></span><br><span class="line"><span class="string">    Given today is "&lt;day&gt;"</span></span><br><span class="line"><span class="string">    When I ask whether it'</span>s Friday yet</span><br><span class="line">    Then I should be told <span class="string">"&lt;answer&gt;"</span></span><br><span class="line"></span><br><span class="line">  Examples:</span><br><span class="line">    | day            | answer |</span><br><span class="line">    | Friday         | TGIF   |</span><br><span class="line">    | Sunday         | Nope   |</span><br><span class="line">    | anything <span class="keyword">else</span>! | Nope   |</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>使用java进行步骤定义。feature文件的step对应了每个java方法上的注解，而且注解双引号文本内容在所有feature中唯一且不可重复。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> hellocucumber;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> io.cucumber.java.en.Given;</span><br><span class="line"><span class="keyword">import</span> io.cucumber.java.en.When;</span><br><span class="line"><span class="keyword">import</span> io.cucumber.java.en.Then;</span><br><span class="line"><span class="keyword">import</span> <span class="keyword">static</span> org.junit.Assert.*;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">IsItFriday</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">static</span> String <span class="title">isItFriday</span><span class="params">(String today)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"Friday"</span>.equals(today) ? <span class="string">"TGIF"</span> : <span class="string">"Nope"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Stepdefs</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String today;</span><br><span class="line">    <span class="keyword">private</span> String actualAnswer;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Given</span>(<span class="string">"today is &#123;string&#125;"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">today_is</span><span class="params">(String today)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.today = today;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@When</span>(<span class="string">"I ask whether it's Friday yet"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">i_ask_whether_it_s_Friday_yet</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        actualAnswer = IsItFriday.isItFriday(today);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Then</span>(<span class="string">"I should be told &#123;string&#125;"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">i_should_be_told</span><span class="params">(String expectedAnswer)</span> </span>&#123;</span><br><span class="line">        assertEquals(expectedAnswer, actualAnswer);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Maven mvn test控制台输出:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">-------------------------------------------------------</span><br><span class="line"> T E S T S</span><br><span class="line">-------------------------------------------------------</span><br><span class="line">Running hellocucumber.RunCucumberTest</span><br><span class="line">Feature: Is it Friday yet?</span><br><span class="line">  Everybody wants to know when it&#39;s Friday</span><br><span class="line"></span><br><span class="line">  Scenario Outline: Today is or is not Friday # hellocucumber&#x2F;is_it_friday_yet.feature:4</span><br><span class="line">    Given today is &quot;&lt;day&gt;&quot;</span><br><span class="line">    When I ask whether it&#39;s Friday yet</span><br><span class="line">    Then I should be told &quot;&lt;answer&gt;&quot;</span><br><span class="line"></span><br><span class="line">    Examples:</span><br><span class="line"></span><br><span class="line">  Scenario Outline: Today is or is not Friday # hellocucumber&#x2F;is_it_friday_yet.feature:11</span><br><span class="line">    Given today is &quot;Friday&quot;                   # Stepdefs.today_is(String)</span><br><span class="line">    When I ask whether it&#39;s Friday yet        # Stepdefs.i_ask_whether_it_s_Friday_yet()</span><br><span class="line">    Then I should be told &quot;TGIF&quot;              # Stepdefs.i_should_be_told(String)</span><br><span class="line"></span><br><span class="line">  Scenario Outline: Today is or is not Friday # hellocucumber&#x2F;is_it_friday_yet.feature:12</span><br><span class="line">    Given today is &quot;Sunday&quot;                   # Stepdefs.today_is(String)</span><br><span class="line">    When I ask whether it&#39;s Friday yet        # Stepdefs.i_ask_whether_it_s_Friday_yet()</span><br><span class="line">    Then I should be told &quot;Nope&quot;              # Stepdefs.i_should_be_told(String)</span><br><span class="line"></span><br><span class="line">  Scenario Outline: Today is or is not Friday # hellocucumber&#x2F;is_it_friday_yet.feature:13</span><br><span class="line">    Given today is &quot;anything else!&quot;           # Stepdefs.today_is(String)</span><br><span class="line">    When I ask whether it&#39;s Friday yet        # Stepdefs.i_ask_whether_it_s_Friday_yet()</span><br><span class="line">    Then I should be told &quot;Nope&quot;              # Stepdefs.i_should_be_told(String)</span><br><span class="line"></span><br><span class="line">3 Scenarios (3 passed)</span><br><span class="line">9 Steps (9 passed)</span><br><span class="line">0m0.255s</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<h1 id="三、集成Spring生成测试报告"><a href="#三、集成Spring生成测试报告" class="headerlink" title="三、集成Spring生成测试报告"></a>三、集成Spring生成测试报告</h1><h2 id="Maven-Dependencies"><a href="#Maven-Dependencies" class="headerlink" title="Maven Dependencies"></a>Maven Dependencies</h2><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>io.cucumber<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>cucumber-java<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>6.8.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">scope</span>&gt;</span>test<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>io.cucumber<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>cucumber-junit<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>6.8.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">scope</span>&gt;</span>test<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>io.cucumber<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>cucumber-spring<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>6.8.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">scope</span>&gt;</span>test<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="REST-Controller"><a href="#REST-Controller" class="headerlink" title="REST Controller"></a>REST Controller</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">VersionController</span> </span>&#123;</span><br><span class="line">    <span class="meta">@GetMapping</span>(<span class="string">"/version"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getVersion</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"1.0"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Cucumber-Step-Definitions"><a href="#Cucumber-Step-Definitions" class="headerlink" title="Cucumber Step Definitions"></a>Cucumber Step Definitions</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//单独跑Cucumber</span></span><br><span class="line"><span class="meta">@RunWith</span>(Cucumber<span class="class">.<span class="keyword">class</span>)</span></span><br><span class="line"><span class="class">@<span class="title">CucumberOptions</span>(<span class="title">features</span> </span>= <span class="string">"src/test/resources"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CucumberIntegrationTest</span> </span>&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Feature: the version can be retrieved</span><br><span class="line">  Scenario: client makes call to GET /version</span><br><span class="line">    When the client calls /version</span><br><span class="line">    Then the client receives status code of <span class="number">200</span></span><br><span class="line">    And the client receives server version <span class="number">1.0</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@When</span>(<span class="string">"^the client calls /version$"</span>)</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">the_client_issues_GET_version</span><span class="params">()</span> <span class="keyword">throws</span> Throwable</span>&#123;</span><br><span class="line">    executeGet(<span class="string">"http://localhost:8080/version"</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Then</span>(<span class="string">"^the client receives status code of (\\d+)$"</span>)</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">the_client_receives_status_code_of</span><span class="params">(<span class="keyword">int</span> statusCode)</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line">    HttpStatus currentStatusCode = latestResponse.getTheResponse().getStatusCode();</span><br><span class="line">    assertThat(<span class="string">"status code is incorrect : "</span>+ </span><br><span class="line">    latestResponse.getBody(), currentStatusCode.value(), is(statusCode));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@And</span>(<span class="string">"^the client receives server version (.+)$"</span>)</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">the_client_receives_server_version_body</span><span class="params">(String version)</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line">    assertThat(latestResponse.getBody(), is(version));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//集成Springboot</span></span><br><span class="line"><span class="meta">@CucumberContextConfiguration</span></span><br><span class="line"><span class="meta">@SpringBootTest</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SpringIntegrationTest</span> </span>&#123;</span><br><span class="line">    <span class="comment">// executeGet implementation</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//进行接口自动化测试</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StepDefs</span> <span class="keyword">extends</span> <span class="title">SpringIntegrationTest</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@When</span>(<span class="string">"^the client calls /version$"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">the_client_issues_GET_version</span><span class="params">()</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line">        executeGet(<span class="string">"http://localhost:8080/version"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="四、Moco-Server在集成测试和开发中应用"><a href="#四、Moco-Server在集成测试和开发中应用" class="headerlink" title="四、Moco Server在集成测试和开发中应用"></a>四、<a href="https://github.com/dreamhead/moco" target="_blank" rel="noopener">Moco Server</a>在集成测试和开发中应用</h1><blockquote>
+<p>moco工具是在github开源的一个项目，可以搭一个简单的mock server方便我们进行开发调试，以及在单元测试中取消边界服务。有两种形式，第一种是集成到项目，随项目启动提供http mock服务。第二种是一个jar包，配合配置文件和命令启动http服务。</p>
+</blockquote>
+<h2 id="通过jar提供mock-http服务："><a href="#通过jar提供mock-http服务：" class="headerlink" title="通过jar提供mock http服务："></a>通过jar提供mock http服务：</h2><p>首先我们要编写一个config文件，把我们需要“模拟”的请求和响应写入这个配置文件，配置文件是json格式的访问 localhost:12306/hello 接口，返回一个纯文本“moco”。</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">[</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="attr">"request"</span>:</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="attr">"uri"</span>:<span class="string">"/hello"</span></span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="attr">"response"</span>:</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="attr">"text"</span>:<span class="string">"moco"</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<p><strong>启动指令：</strong></p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -jar moco-runner-0.11.1-standalone.jar http -p 12306 -c config.json</span><br></pre></td></tr></table></figure>
+
+<h2 id="集成到项目"><a href="#集成到项目" class="headerlink" title="集成到项目"></a>集成到项目</h2><h2 id="Maven-Dependencies-1"><a href="#Maven-Dependencies-1" class="headerlink" title="Maven Dependencies"></a>Maven Dependencies</h2><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.github.dreamhead<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>moco-core<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.2.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="API-Test"><a href="#API-Test" class="headerlink" title="API Test"></a>API Test</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.junit.After;</span><br><span class="line"><span class="keyword">import</span> org.junit.Before;</span><br><span class="line"><span class="keyword">import</span> org.junit.Test;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="keyword">static</span> com.github.dreamhead.moco.Moco.httpServer;</span><br><span class="line"><span class="keyword">import</span> <span class="keyword">static</span> com.github.dreamhead.moco.Runner.runner;</span><br><span class="line"><span class="keyword">import</span> <span class="keyword">static</span> org.hamcrest.CoreMatchers.is;</span><br><span class="line"><span class="keyword">import</span> <span class="keyword">static</span> org.hamcrest.MatcherAssert.assertThat;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MocoRunnerTest</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Runner runner;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Before</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setup</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        HttpServer server = httpServer(<span class="number">12306</span>);</span><br><span class="line">        server.response(<span class="string">"foo"</span>);</span><br><span class="line">        runner = runner(server);</span><br><span class="line">        runner.start();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@After</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">tearDown</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        runner.stop();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">should_response_as_expected</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        Content content = Request.Get(<span class="string">"http://localhost:12306"</span>).execute().returnContent();</span><br><span class="line">        assertThat(content.asString(), is(<span class="string">"foo"</span>));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="五、参考资料"><a href="#五、参考资料" class="headerlink" title="五、参考资料"></a>五、参考资料</h1><ol>
+<li><a href="https://cucumber.io/docs/guides/" target="_blank" rel="noopener">Cucumber官方文档</a></li>
+<li><a href="https://reports.cucumber.io/" target="_blank" rel="noopener">Cucumber测试报告例子</a></li>
+<li><a href="https://www.cnblogs.com/jarodzz/archive/2012/07/26/2610617.html" target="_blank" rel="noopener">Cucumber入门2 - 啥是BDD？</a></li>
+<li><a href="https://github.com/dreamhead/moco/blob/master/moco-doc/usage.md" target="_blank" rel="noopener">Moco Server</a></li>
+</ol>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2021-07-31T16:21:30.953Z" itemprop="dateUpdated">2021-08-01 00:21:30</time>
+</span><br>
+
+
+        
+        欢迎各位看官留言，如有不正之处望指教，私活私聊我😘
+        
+    </div>
+    
+    <footer>
+        <a href="https://caochikai.github.io">
+            <img src="/img/avatar.jpg" alt="ChiKai">
+            ChiKai
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Test/" rel="tag">Test</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://caochikai.github.io/2021/08/01/%E8%A1%8C%E4%B8%BA%E9%A9%B1%E5%8A%A8%E6%B5%8B%E8%AF%95BDD-Cucumber%E6%96%B9%E6%A1%88/&title=《行为驱动测试BDD Cucumber方案》 — 天道酬勤&pic=https://caochikai.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://caochikai.github.io/2021/08/01/%E8%A1%8C%E4%B8%BA%E9%A9%B1%E5%8A%A8%E6%B5%8B%E8%AF%95BDD-Cucumber%E6%96%B9%E6%A1%88/&title=《行为驱动测试BDD Cucumber方案》 — 天道酬勤&source=喜欢java，死忠工具派" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://caochikai.github.io/2021/08/01/%E8%A1%8C%E4%B8%BA%E9%A9%B1%E5%8A%A8%E6%B5%8B%E8%AF%95BDD-Cucumber%E6%96%B9%E6%A1%88/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《行为驱动测试BDD Cucumber方案》 — 天道酬勤&url=https://caochikai.github.io/2021/08/01/%E8%A1%8C%E4%B8%BA%E9%A9%B1%E5%8A%A8%E6%B5%8B%E8%AF%95BDD-Cucumber%E6%96%B9%E6%A1%88/&via=https://caochikai.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://caochikai.github.io/2021/08/01/%E8%A1%8C%E4%B8%BA%E9%A9%B1%E5%8A%A8%E6%B5%8B%E8%AF%95BDD-Cucumber%E6%96%B9%E6%A1%88/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between flex-row-reverse">
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2021/07/31/Netty-Connection-prematurely-closed-BEFORE-response%E5%92%8Cconnection-reset-by-peer%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">Netty Connection prematurely closed BEFORE response和connection reset by peer解决方案</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'true' == 'true',
+            verify: 'false' == 'true',
+            appId: "o8xTya29DFK9WYa0VDGv47ge-gzGzoHsz",
+            appKey: "D4gSyRHCJFOjX19uaHYWz0Fa",
+            avatar: "mm",
+            placeholder: "Just go go",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
+
+
+
+
+
+
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        谢谢大爷~
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/img/wechat.jpg" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="/img/wechat.jpg" data-alipay="/img/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p>
+    <span id="busuanzi_container_site_uv" style='display:none'>
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style='display:none'>
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>ChiKai &copy; 2018 - 2021</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://caochikai.github.io/2021/08/01/%E8%A1%8C%E4%B8%BA%E9%A9%B1%E5%8A%A8%E6%B5%8B%E8%AF%95BDD-Cucumber%E6%96%B9%E6%A1%88/&title=《行为驱动测试BDD Cucumber方案》 — 天道酬勤&pic=https://caochikai.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://caochikai.github.io/2021/08/01/%E8%A1%8C%E4%B8%BA%E9%A9%B1%E5%8A%A8%E6%B5%8B%E8%AF%95BDD-Cucumber%E6%96%B9%E6%A1%88/&title=《行为驱动测试BDD Cucumber方案》 — 天道酬勤&source=喜欢java，死忠工具派" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://caochikai.github.io/2021/08/01/%E8%A1%8C%E4%B8%BA%E9%A9%B1%E5%8A%A8%E6%B5%8B%E8%AF%95BDD-Cucumber%E6%96%B9%E6%A1%88/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《行为驱动测试BDD Cucumber方案》 — 天道酬勤&url=https://caochikai.github.io/2021/08/01/%E8%A1%8C%E4%B8%BA%E9%A9%B1%E5%8A%A8%E6%B5%8B%E8%AF%95BDD-Cucumber%E6%96%B9%E6%A1%88/&via=https://caochikai.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://caochikai.github.io/2021/08/01/%E8%A1%8C%E4%B8%BA%E9%A9%B1%E5%8A%A8%E6%B5%8B%E8%AF%95BDD-Cucumber%E6%96%B9%E6%A1%88/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="//api.qrserver.com/v1/create-qr-code/?data=https://caochikai.github.io/2021/08/01/%E8%A1%8C%E4%B8%BA%E9%A9%B1%E5%8A%A8%E6%B5%8B%E8%AF%95BDD-Cucumber%E6%96%B9%E6%A1%88/" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '死鬼去哪里了！';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '(つェ⊂)咦!又好了!';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
