@@ -33,7 +33,7 @@
 <meta property="og:image" content="https:&#x2F;&#x2F;caochikai.github.io&#x2F;images&#x2F;pasted-23.png">
 <meta property="og:image" content="https:&#x2F;&#x2F;caochikai.github.io&#x2F;images&#x2F;pasted-24.png">
 <meta property="article:published_time" content="2021-07-31T03:50:00.000Z">
-<meta property="article:modified_time" content="2021-07-31T03:57:24.436Z">
+<meta property="article:modified_time" content="2021-07-31T04:01:32.379Z">
 <meta property="article:author" content="ChiKai">
 <meta property="article:tag" content="Linux">
 <meta property="article:tag" content="TCP">
@@ -203,7 +203,7 @@
         </div>
         <div class="post-content" id="post-content" itemprop="postContent">
             <h1 id="Netty-Connection-prematurely-closed-BEFORE-response和connection-reset-by-peer解决方案"><a href="#Netty-Connection-prematurely-closed-BEFORE-response和connection-reset-by-peer解决方案" class="headerlink" title="Netty Connection prematurely closed BEFORE response和connection reset by peer解决方案"></a>Netty Connection prematurely closed BEFORE response和connection reset by peer解决方案</h1><h1 id="一、异常说明"><a href="#一、异常说明" class="headerlink" title="一、异常说明"></a>一、异常说明</h1><blockquote>
-<p>在长达一年时间里面，由于云基础设施kubernetes经常升级更新，以及网络原因不定期出现。长期和云设施部门打交道，所有k8s集群都是Istio进行流量控制，Istio提供服务网格服务。如果要请求到容器外部网络，需要通过Egress Gateway的组件，从HTTPS代理Squid proxy请求外部网络。一个Squid proxy集群对应一个k8s，一个Squid集群十二个节点，部分节点出现故障就会造成整个集群出现概率性netty请求异常。作为踩雷先锋队和救火员，所以很多其他部门或者团队都有向我咨询反馈，首页从日志平台Splunk搜索到异常，进入容器通过curl -kv 测试外部请求，出现概率性连接异常，连接被重置了。概率问题通常会想到jemeter做接口压测，通过jemeter的聚合报告，大概有23%概率出现error，写报告申请云设施部门反馈，最终发现某个Squid节点故障，删除该节点再次压测，一切恢复正常。后面一段时间，遇到部署成功，第一次请求一定发生该上次问题，反馈之后短时间没解决，我们通过netty reactor retry策略，一旦发生该异常触发重试请求，从代码上解决问题。</p>
+<p>在长达一年时间里面，由于云基础设施kubernetes经常升级更新，以及网络原因不定期出现。长期和云设施部门打交道，所有k8s集群都是Istio进行流量控制，Istio提供服务网格服务。如果要请求到容器外部网络，需要通过Egress Gateway的组件，从HTTPS代理Squid proxy请求外部网络。一个Squid proxy集群对应一个k8s，一个Squid集群十二个节点，部分节点出现故障就会造成整个集群出现概率性netty请求异常。作为踩雷先锋队和救火员，所以很多其他部门或者团队都有向我咨询反馈，首先从日志平台Splunk搜索到异常，进入容器通过curl -kv 测试外部请求，出现概率性连接异常，连接被重置了。概率问题通常会想到jemeter做接口压测，通过jemeter的聚合报告，大概有23%概率出现error，写报告申请云设施部门反馈，最终发现某个Squid节点故障，删除该节点再次压测，一切恢复正常。后面一段时间，遇到部署成功，第一次请求一定发生该上次问题，反馈之后短时间没解决，我们通过netty reactor retry策略，一旦发生该异常触发重试请求，从代码上解决问题。</p>
 </blockquote>
 <figure class="highlight jsx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CURL ERROR: Recv failure: Connection reset by peer</span><br></pre></td></tr></table></figure>
 
@@ -302,7 +302,7 @@
     <div class="content">
         
 <span class="post-time">
-    最后更新时间：<time datetime="2021-07-31T03:57:24.436Z" itemprop="dateUpdated">2021-07-31 11:57:24</time>
+    最后更新时间：<time datetime="2021-07-31T04:01:32.379Z" itemprop="dateUpdated">2021-07-31 12:01:32</time>
 </span><br>
 
 
