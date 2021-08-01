@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>API Standard | 天道酬勤 | 劳逸结合</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="架构">
+    <meta name="description" content="API Standard一、意义 API standard即接口标准，它提供了工程开发指南和最好的培训实现，能让API接口开发者自愿跟随共同的工程标准，技术解决方案，公共库管理，甚至是构建API的模板。  二、各项标准 项目标准涉及到方方面面，随着业务不断发展，持续演变进化，架构团队需要与各团队深度合作，成立架构评审委员会ARB，在不断配合业务部门支撑公司业务发展，勇于承担重任。     分类 标">
+<meta property="og:type" content="article">
+<meta property="og:title" content="API Standard">
+<meta property="og:url" content="https:&#x2F;&#x2F;caochikai.github.io&#x2F;2021&#x2F;08&#x2F;01&#x2F;API-Standard&#x2F;index.html">
+<meta property="og:site_name" content="天道酬勤">
+<meta property="og:description" content="API Standard一、意义 API standard即接口标准，它提供了工程开发指南和最好的培训实现，能让API接口开发者自愿跟随共同的工程标准，技术解决方案，公共库管理，甚至是构建API的模板。  二、各项标准 项目标准涉及到方方面面，随着业务不断发展，持续演变进化，架构团队需要与各团队深度合作，成立架构评审委员会ARB，在不断配合业务部门支撑公司业务发展，勇于承担重任。     分类 标">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-08-01T07:30:00.000Z">
+<meta property="article:modified_time" content="2021-08-01T07:30:37.660Z">
+<meta property="article:author" content="ChiKai">
+<meta property="article:tag" content="架构">
+<meta name="twitter:card" content="summary">
+    
+        <link rel="alternate" type="application/atom+xml" title="天道酬勤" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+<meta name="generator" content="Hexo 4.1.1"></head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">ChiKai</h5>
+          <a href="mailto:992691009@qq.com" title="992691009@qq.com" class="mail">992691009@qq.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/caochikai" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://caochikai.github.io/" target="_blank" >
+                <i class="icon icon-lg icon-weibo"></i>
+                Weibo
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="http://129.211.67.107" target="_blank" rel="noopener"  >
+                <i class="icon icon-lg icon-link"></i>
+                个人网站
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">API Standard</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">API Standard</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2021-08-01T07:30:00.000Z" itemprop="datePublished" class="page-time">
+  2021-08-01
+</time>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#API-Standard"><span class="post-toc-number">1.</span> <span class="post-toc-text">API Standard</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#一、意义"><span class="post-toc-number">2.</span> <span class="post-toc-text">一、意义</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#二、各项标准"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">二、各项标准</span></a></li></ol></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-API-Standard"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">API Standard</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2021-08-01 15:30:00" datetime="2021-08-01T07:30:00.000Z"  itemprop="datePublished">2021-08-01</time>
+
+            
+
+
+            
+<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
+    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+</span>
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h1 id="API-Standard"><a href="#API-Standard" class="headerlink" title="API Standard"></a>API Standard</h1><h1 id="一、意义"><a href="#一、意义" class="headerlink" title="一、意义"></a>一、意义</h1><blockquote>
+<p><strong>API standard即接口标准，它提供了工程开发指南和最好的培训实现，能让API接口开发者自愿跟随共同的工程标准，技术解决方案，公共库管理，甚至是构建API的模板。</strong></p>
+</blockquote>
+<h2 id="二、各项标准"><a href="#二、各项标准" class="headerlink" title="二、各项标准"></a>二、各项标准</h2><blockquote>
+<p><strong>项目标准涉及到方方面面，随着业务不断发展，持续演变进化，架构团队需要与各团队深度合作，成立架构评审委员会ARB，在不断配合业务部门支撑公司业务发展，勇于承担重任</strong>。</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>分类</th>
+<th>标准</th>
+<th>文档名称</th>
+<th>目的</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>培训</td>
+<td>开发者工具和权限申请</td>
+<td>培训文档</td>
+<td>使用免费的软件和工具是主要方向，应根据最小权限原则在必要时候申请。</td>
+</tr>
+<tr>
+<td>培训</td>
+<td>快速开始指引</td>
+<td>新人指引<br/>离职指引<br/>技术经理指引<br/>数据库工程师指引</td>
+<td>基于不同的团队角色提供开始文档，比如leader和developer</td>
+</tr>
+<tr>
+<td>开发流程</td>
+<td>代码标准</td>
+<td>代码标准</td>
+<td>在API开发中必须遵循代码标准</td>
+</tr>
+<tr>
+<td>开发流程</td>
+<td>分支策略</td>
+<td>分支管理策略</td>
+<td>提供分支、提交信息、拉请求和代码合并的命名规定。<br/>主分支是保护分支。理想情况下，开发完成才有主分支。<br/>feature功能分支合并后必须删除。</td>
+</tr>
+<tr>
+<td>开发流程</td>
+<td>CI/CD Pipeline</td>
+<td>CI/CD Pipeline</td>
+<td>在上生产之前必须审查扫描报告</td>
+</tr>
+<tr>
+<td>接口设计</td>
+<td>HTTP REST，API契约和JSON标准</td>
+<td>接口设计</td>
+<td>遵循OpenAPI 或者RAML规范。<br/>JSON schema和example由开发者必须提供。</td>
+</tr>
+<tr>
+<td>应用基础</td>
+<td>Spring Boot框架</td>
+<td>应用基础</td>
+<td>选型Spring Boot作为后端API开发基础框架。<br/>提供父POM和公共包推动API接口开发。</td>
+</tr>
+<tr>
+<td>应用基础</td>
+<td>依赖管理</td>
+<td>源码依赖管理</td>
+<td>提供parent-dependencies BOM统一依赖管理。<br/>提供两套父POM针对WebMvc和WebFlux标准给API开发。<br/>开发者可以根据需求选择其中一个父POM。</td>
+</tr>
+<tr>
+<td>应用基础</td>
+<td>仓库、包、类、文件夹结构的命名规范和代码规范</td>
+<td>源码管理</td>
+<td>开发者应当遵守包命名规范。<br/>为SpringBoot API提供了预定义的文件夹和文件结构。<br/>提供了编码规范，建议开发人员应遵循。</td>
+</tr>
+<tr>
+<td>应用基础</td>
+<td>公共库</td>
+<td>公共库</td>
+<td>提供公共库来推动API开发。<br/>logging<br/>error-handing<br/>raml-paser<br/>http-client</td>
+</tr>
+<tr>
+<td>应用基础</td>
+<td>模板和参考实现</td>
+<td>模板和参考实现</td>
+<td>提供简单和模板。<br/>提供代码生成器。</td>
+</tr>
+<tr>
+<td>编码流程</td>
+<td>业务流程和编排</td>
+<td>业务流程和编排</td>
+<td>对基础服务选择同步或者异步调用。<br/>对基础服务选择同步或者顺序调用。<br/>复杂编排规范分析。</td>
+</tr>
+<tr>
+<td>编码流程</td>
+<td>非阻塞IO和响应式模式</td>
+<td>非阻塞IO和响应式模式</td>
+<td>应当使用Reactor Reactive开发。</td>
+</tr>
+<tr>
+<td>编码流程</td>
+<td>数据校验</td>
+<td>数据校验</td>
+<td>输入数据必须要在业务处理之前校验。<br/>API规范中必须定义数据校验。</td>
+</tr>
+<tr>
+<td>编码流程</td>
+<td>数据转化和匹配</td>
+<td>数据转化和匹配</td>
+<td>MapStruct选型为mapping framework。<br/>Jackson选型为默认json和POJO 转化框架。<br/>Lombok禁止使用。</td>
+</tr>
+<tr>
+<td>编码流程</td>
+<td>限流熔断</td>
+<td>限流熔断</td>
+<td>在应用推荐使用resislence4j库。</td>
+</tr>
+<tr>
+<td>编码流程</td>
+<td>异常处理</td>
+<td>异常处理</td>
+<td>Error Schema必须遵守。<br/>自定义HTTP状态码和Error code不要冲突公共规范。<br/>提供公共全局异常处理库处理应用跑出的error。</td>
+</tr>
+<tr>
+<td>协议支持</td>
+<td>Http Server</td>
+<td>Http Server</td>
+<td>强制默认使用tomcat和8080端口或netty。</td>
+</tr>
+<tr>
+<td>协议支持</td>
+<td>HTTP Client</td>
+<td>HTTP Client</td>
+<td>Reactor Netty Client是核心http client库。<br/>公共库提供默认配置和扩展配置。如超时、代理等。</td>
+</tr>
+<tr>
+<td>协议支持</td>
+<td>数据加密和安全</td>
+<td>数据加密和安全</td>
+<td>提供公共库异步记录请求和响应到日志，保护敏感数据进行加密打印。</td>
+</tr>
+<tr>
+<td>安全</td>
+<td>鉴权</td>
+<td>鉴权</td>
+<td>强制开启Token校验。<br/>允许健康检查相关端点跳过。</td>
+</tr>
+<tr>
+<td>安全</td>
+<td>授权</td>
+<td>授权</td>
+<td>针对用户角色校验当前请求时候是否有权限。</td>
+</tr>
+<tr>
+<td>安全</td>
+<td>环境变量加密</td>
+<td>环境变量加密</td>
+<td>阿里云密钥管理服务（KMS）或者AWS Secret Mananger来存储环境变量。</td>
+</tr>
+<tr>
+<td>安全</td>
+<td>密钥管理</td>
+<td>密钥管理</td>
+<td>阿里云密钥管理服务（KMS）或者AWS Secret Mananger来管理秘钥，通过脚本定期更新服务密码。如数据库和redis。</td>
+</tr>
+<tr>
+<td>安全</td>
+<td>SSL强制校验</td>
+<td>SSL强制校验</td>
+<td>所有连接必须使用SSL加密。<br/>应用中通过Https FItler强制开启。</td>
+</tr>
+<tr>
+<td>安全</td>
+<td>参数加密解密</td>
+<td>参数加密解密</td>
+<td>公共库secure-data提供运行时重要参数加密解密。</td>
+</tr>
+<tr>
+<td>安全</td>
+<td>Client ID和Secret秘钥对</td>
+<td>Client ID和Secret秘钥对</td>
+<td>针对部分的外部第三应用授权和接口限流。</td>
+</tr>
+<tr>
+<td>监控和故障排查</td>
+<td>日志</td>
+<td>日志</td>
+<td>关键信息必须打印。<br/>提供公共包logging。</td>
+</tr>
+<tr>
+<td>监控和故障排查</td>
+<td>日志框架</td>
+<td>日志框架</td>
+<td>SF4J and logback选型为默认日志库。</td>
+</tr>
+<tr>
+<td>监控和故障排查</td>
+<td>日志规范</td>
+<td>日志规范</td>
+<td>INFO级别为默认配置。<br/>长时间处理任务必须打印日志。<br/>日志打印点和数据必须review。</td>
+</tr>
+<tr>
+<td>监控和故障排查</td>
+<td>日志配置和输出</td>
+<td>日志配置和输出</td>
+<td>提供公共日志配置和公共抽象接口，异常时将打印erro并返回规定error schema。</td>
+</tr>
+<tr>
+<td>监控和故障排查</td>
+<td>日志追踪</td>
+<td>日志追踪</td>
+<td>日志必须记录异常出现信息和Trace ID，不能吞掉异常信息。</td>
+</tr>
+<tr>
+<td>监控和故障排查</td>
+<td>Info和Health端点</td>
+<td>Info和Health端点</td>
+<td>提供公共库endpoint。<br/>info端点必须提供当前应用基础信息。<br/>health端点必须保护应用当前状态。</td>
+</tr>
+<tr>
+<td>监控和故障排查</td>
+<td>Splunk集成</td>
+<td>Splunk集成</td>
+<td>通过CICD pipeline配置namespace lable完成集成。<br/>在控制台必须符合监控规范。</td>
+</tr>
+<tr>
+<td>监控和故障排查</td>
+<td>AppDynamic集成</td>
+<td>AppDynamic集成</td>
+<td>在容器里配置JAVAOPS AppDynamic参数和agent集成。</td>
+</tr>
+<tr>
+<td>支持</td>
+<td>发布配置</td>
+<td>发布配置</td>
+<td>推荐发布配置不要参合到应用代码。<br/>通过属性外部化配置，如容器环境变量，通过不修改代码和重新部署情况下方便重新调整配置。</td>
+</tr>
+<tr>
+<td>支持</td>
+<td>多区域发布支持</td>
+<td>多区域发布支持</td>
+<td>同一套代码支持不同数据中心。</td>
+</tr>
+<tr>
+<td>测试</td>
+<td>单元测试和代码覆盖率</td>
+<td>单元测试和代码覆盖率</td>
+<td>使用Junit 5 单元测试框架。<br/>提供公共库完成API功能测试。<br/>行和分支测试覆盖率不能低于100%。</td>
+</tr>
+<tr>
+<td>测试</td>
+<td>集成测试</td>
+<td>集成测试</td>
+<td>做测试渗透率和压力测试。<br/>提供jemeter压测脚本和框架，通过Prometheus控制面板集成Jenkins报告和AppDynamic jvm性能指标。</td>
+</tr>
+<tr>
+<td>审计</td>
+<td>Checkmax, Nexus IQ,SonarQube和Jacoco</td>
+<td>代码质量测量</td>
+<td>Checkmax能检查应用代码漏洞，要求必须为零。<br/>Nexus IQ扫描安全和license法务风险，超低级必须低于5个，中高级风险必须为零，否则提供审计报告。<br/>SonarQube和jacoco测量代码和测试质量，漏洞和错误必须为零，测试覆盖必须100%。</td>
+</tr>
+<tr>
+<td>审计</td>
+<td>README.md</td>
+<td>项目文档规范</td>
+<td>READMED.md必须强制记录关键信息。</td>
+</tr>
+<tr>
+<td>其他</td>
+<td>架构演变历史</td>
+<td>架构演变历史</td>
+<td>记录架构随年度变化演变历史背景。</td>
+</tr>
+<tr>
+<td>其他</td>
+<td>支持插件</td>
+<td>支持插件</td>
+<td>提供插件支持根据预定义规则扫描Maven构建过程中的源码，上传到分析服务，生成对应报告，验证当前代码是否符合整套架构规范。</td>
+</tr>
+</tbody></table>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2021-08-01T07:30:37.660Z" itemprop="dateUpdated">2021-08-01 15:30:37</time>
+</span><br>
+
+
+        
+        欢迎各位看官留言，如有不正之处望指教，私活私聊我😘
+        
+    </div>
+    
+    <footer>
+        <a href="https://caochikai.github.io">
+            <img src="/img/avatar.jpg" alt="ChiKai">
+            ChiKai
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%9E%B6%E6%9E%84/" rel="tag">架构</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://caochikai.github.io/2021/08/01/API-Standard/&title=《API Standard》 — 天道酬勤&pic=https://caochikai.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://caochikai.github.io/2021/08/01/API-Standard/&title=《API Standard》 — 天道酬勤&source=喜欢java，死忠工具派" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://caochikai.github.io/2021/08/01/API-Standard/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《API Standard》 — 天道酬勤&url=https://caochikai.github.io/2021/08/01/API-Standard/&via=https://caochikai.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://caochikai.github.io/2021/08/01/API-Standard/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between flex-row-reverse">
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2021/08/01/%E8%A1%8C%E4%B8%BA%E9%A9%B1%E5%8A%A8%E6%B5%8B%E8%AF%95BDD-Cucumber%E6%96%B9%E6%A1%88/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">行为驱动测试BDD Cucumber方案</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'true' == 'true',
+            verify: 'false' == 'true',
+            appId: "o8xTya29DFK9WYa0VDGv47ge-gzGzoHsz",
+            appKey: "D4gSyRHCJFOjX19uaHYWz0Fa",
+            avatar: "mm",
+            placeholder: "Just go go",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
+
+
+
+
+
+
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        谢谢大爷~
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/img/wechat.jpg" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="/img/wechat.jpg" data-alipay="/img/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p>
+    <span id="busuanzi_container_site_uv" style='display:none'>
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style='display:none'>
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>ChiKai &copy; 2018 - 2021</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://caochikai.github.io/2021/08/01/API-Standard/&title=《API Standard》 — 天道酬勤&pic=https://caochikai.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://caochikai.github.io/2021/08/01/API-Standard/&title=《API Standard》 — 天道酬勤&source=喜欢java，死忠工具派" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://caochikai.github.io/2021/08/01/API-Standard/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《API Standard》 — 天道酬勤&url=https://caochikai.github.io/2021/08/01/API-Standard/&via=https://caochikai.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://caochikai.github.io/2021/08/01/API-Standard/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="//api.qrserver.com/v1/create-qr-code/?data=https://caochikai.github.io/2021/08/01/API-Standard/" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '死鬼去哪里了！';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '(つェ⊂)咦!又好了!';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
