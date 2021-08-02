@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>接口测试 Rest-assured | 天道酬勤 | 劳逸结合</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Test">
+    <meta name="description" content="接口测试 Rest-assured一、如何确保 API 的稳定性与正确性呢？ 全面系统的测试是必不可少的。Java 开发者常常借助于 JUnit或者TestNg做单元测试！但是从REST API来讲，开发者知道正在测试的是哪个类、哪个方法，测试的是哪个 REST API，所以就需要由一套 Java 实现的 REST API 测试框架。虽然它不是从用户的角度出发，但是结合BDD行为驱动测试，就能保证">
+<meta property="og:type" content="article">
+<meta property="og:title" content="接口测试 Rest-assured">
+<meta property="og:url" content="https:&#x2F;&#x2F;caochikai.github.io&#x2F;2021&#x2F;08&#x2F;02&#x2F;%E6%8E%A5%E5%8F%A3%E6%B5%8B%E8%AF%95-Rest-assured&#x2F;index.html">
+<meta property="og:site_name" content="天道酬勤">
+<meta property="og:description" content="接口测试 Rest-assured一、如何确保 API 的稳定性与正确性呢？ 全面系统的测试是必不可少的。Java 开发者常常借助于 JUnit或者TestNg做单元测试！但是从REST API来讲，开发者知道正在测试的是哪个类、哪个方法，测试的是哪个 REST API，所以就需要由一套 Java 实现的 REST API 测试框架。虽然它不是从用户的角度出发，但是结合BDD行为驱动测试，就能保证">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-08-02T14:31:00.000Z">
+<meta property="article:modified_time" content="2021-08-02T14:32:08.044Z">
+<meta property="article:author" content="ChiKai">
+<meta property="article:tag" content="Test">
+<meta name="twitter:card" content="summary">
+    
+        <link rel="alternate" type="application/atom+xml" title="天道酬勤" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+<meta name="generator" content="Hexo 4.1.1"></head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">ChiKai</h5>
+          <a href="mailto:992691009@qq.com" title="992691009@qq.com" class="mail">992691009@qq.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/caochikai" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://caochikai.github.io/" target="_blank" >
+                <i class="icon icon-lg icon-weibo"></i>
+                Weibo
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="http://129.211.67.107" target="_blank" rel="noopener"  >
+                <i class="icon icon-lg icon-link"></i>
+                个人网站
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">接口测试 Rest-assured</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">接口测试 Rest-assured</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2021-08-02T14:31:00.000Z" itemprop="datePublished" class="page-time">
+  2021-08-02
+</time>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#接口测试-Rest-assured"><span class="post-toc-number">1.</span> <span class="post-toc-text">接口测试 Rest-assured</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#一、如何确保-API-的稳定性与正确性呢？"><span class="post-toc-number">2.</span> <span class="post-toc-text">一、如何确保 API 的稳定性与正确性呢？</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#什么是Rest-assured"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">什么是Rest-assured?</span></a></li></ol></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#二、Rest-assured好特性"><span class="post-toc-number">3.</span> <span class="post-toc-text">二、Rest-assured好特性</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#三、集成"><span class="post-toc-number">4.</span> <span class="post-toc-text">三、集成</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Maven-Dependencies"><span class="post-toc-number">4.1.</span> <span class="post-toc-text">Maven Dependencies</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#完整例子"><span class="post-toc-number">4.1.1.</span> <span class="post-toc-text">完整例子</span></a></li></ol></li></ol></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#五、参考资料"><span class="post-toc-number">5.</span> <span class="post-toc-text">五、参考资料</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-接口测试-Rest-assured"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">接口测试 Rest-assured</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2021-08-02 22:31:00" datetime="2021-08-02T14:31:00.000Z"  itemprop="datePublished">2021-08-02</time>
+
+            
+
+
+            
+<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
+    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+</span>
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h1 id="接口测试-Rest-assured"><a href="#接口测试-Rest-assured" class="headerlink" title="接口测试 Rest-assured"></a>接口测试 Rest-assured</h1><h1 id="一、如何确保-API-的稳定性与正确性呢？"><a href="#一、如何确保-API-的稳定性与正确性呢？" class="headerlink" title="一、如何确保 API 的稳定性与正确性呢？"></a>一、如何确保 API 的稳定性与正确性呢？</h1><blockquote>
+<p>全面系统的测试是必不可少的。Java 开发者常常借助于 JUnit或者TestNg做单元测试！但是从REST API来讲，开发者知道正在测试的是哪个类、哪个方法，测试的是哪个 REST API，所以就需要由一套 Java 实现的 REST API 测试框架。虽然它不是从用户的角度出发，但是结合BDD行为驱动测试，就能保证接口的稳定性和功能的正确性！当然本章还是以rest-assured为主。</p>
+</blockquote>
+<h2 id="什么是Rest-assured"><a href="#什么是Rest-assured" class="headerlink" title="什么是Rest-assured?"></a>什么是Rest-assured?</h2><blockquote>
+<p>Rest-Assured 是一套由 Java 实现的 REST API 测试框架，它是一个现代化轻量级的 REST API 客户端，可以简化HTTP Builder向服务器端发起 HTTP 请求，并验证和校对返回结果；它的语法非常简洁，是一种专为测试 REST API 而设计的 DSL（针对某一领域，具有受限表达性的一种计算机程序设计语言）。这套写测试代码方案适合比较复杂切不成熟的接口，另外还有一套以JSON测试方案适合成熟简洁的系统，后面再写。</p>
+</blockquote>
+<h1 id="二、Rest-assured好特性"><a href="#二、Rest-assured好特性" class="headerlink" title="二、Rest-assured好特性"></a>二、Rest-assured好特性</h1><ul>
+<li>现代化简洁的语法，针对JSON、XML和身份认证有非常多的语法糖（疯狂链式调用，非常Groovy）。</li>
+<li>JSON Schema Validation：特别是校验返回的JSON结构体，初期设计往往会落后于实际，最后需要做回归测试，同步修改初期的设计。</li>
+<li>Spring Mock Mvc和Spring Web Test Client有集成模块，生态成熟。</li>
+</ul>
+<h1 id="三、集成"><a href="#三、集成" class="headerlink" title="三、集成"></a>三、集成</h1><h2 id="Maven-Dependencies"><a href="#Maven-Dependencies" class="headerlink" title="Maven Dependencies"></a>Maven Dependencies</h2><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>io.rest-assured<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>rest-assured<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">version</span>&gt;</span>4.4.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">scope</span>&gt;</span>test<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>io.rest-assured<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>json-schema-validator<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>4.4.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>io.rest-assured<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>json-path<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">version</span>&gt;</span>4.4.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">scope</span>&gt;</span>test<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- Testng  --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.testng<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>testng<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>7.0.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">scope</span>&gt;</span>test<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">build</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">plugins</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- 测试插件 surefire --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.maven.plugins<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>maven-surefire-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;surefire-plugin.version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">                <span class="comment">&lt;!-- allure 2 配置 --&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">argLine</span>&gt;</span></span><br><span class="line">                    -javaagent:"$&#123;settings.localRepository&#125;/org/aspectj/aspectjweaver/$&#123;aspectj.version&#125;/aspectjweaver-$&#123;aspectj.version&#125;.jar"</span><br><span class="line">                <span class="tag">&lt;/<span class="name">argLine</span>&gt;</span></span><br><span class="line">                <span class="comment">&lt;!-- 指定 xml 文件 --&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">suiteXmlFiles</span>&gt;</span></span><br><span class="line">                    <span class="comment">&lt;!-- 通过美元符的形式可以将 jenkins 中参数传递过来，指定要运行的 xml 名 --&gt;</span></span><br><span class="line">                    <span class="comment">&lt;!-- &lt;suiteXmlFile&gt;$&#123;xml.file&#125;&lt;/suiteXmlFile&gt; --&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">suiteXmlFile</span>&gt;</span>testng.xml<span class="tag">&lt;/<span class="name">suiteXmlFile</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">suiteXmlFiles</span>&gt;</span></span><br><span class="line">                <span class="comment">&lt;!--Jenkins参数传递给Maven，mvn command使用 -D参数名称 将参数传递至所运行项目 --&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">systemPropertyVariables</span>&gt;</span></span><br><span class="line">                    <span class="comment">&lt;!-- jenkins 参数一 --&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">param1</span>&gt;</span>$&#123;param1&#125;<span class="tag">&lt;/<span class="name">param1</span>&gt;</span></span><br><span class="line">                    <span class="comment">&lt;!-- jenkins 参数二 --&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">param2</span>&gt;</span>$&#123;param2&#125;<span class="tag">&lt;/<span class="name">param2</span>&gt;</span></span><br><span class="line">                    <span class="comment">&lt;!-- jenkins 参数三 --&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">param3</span>&gt;</span>$&#123;param3&#125;<span class="tag">&lt;/<span class="name">param3</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">systemPropertyVariables</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">argLine</span>&gt;</span>-Dfile.encoding=UTF-8<span class="tag">&lt;/<span class="name">argLine</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">                <span class="comment">&lt;!-- allure 2 配置依赖 --&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.aspectj<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>aspectjweaver<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">version</span>&gt;</span>$&#123;aspectj.version&#125;<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">plugins</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">build</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="完整例子"><a href="#完整例子" class="headerlink" title="完整例子"></a>完整例子</h3><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"$schema"</span>: <span class="string">"http://json-schema.org/draft-04/schema#"</span>,</span><br><span class="line">    <span class="attr">"title"</span>: <span class="string">"Product set"</span>,</span><br><span class="line">    <span class="attr">"type"</span>: <span class="string">"array"</span>,</span><br><span class="line">    <span class="attr">"items"</span>: &#123;</span><br><span class="line">        <span class="attr">"title"</span>: <span class="string">"Product"</span>,</span><br><span class="line">        <span class="attr">"type"</span>: <span class="string">"object"</span>,</span><br><span class="line">        <span class="attr">"properties"</span>: &#123;</span><br><span class="line">            <span class="attr">"id"</span>: &#123;</span><br><span class="line">                <span class="attr">"description"</span>: <span class="string">"The unique identifier for a product"</span>,</span><br><span class="line">                <span class="attr">"type"</span>: <span class="string">"number"</span></span><br><span class="line">            &#125;,</span><br><span class="line">            <span class="attr">"name"</span>: &#123;</span><br><span class="line">                <span class="attr">"type"</span>: <span class="string">"string"</span></span><br><span class="line">            &#125;,</span><br><span class="line">            <span class="attr">"price"</span>: &#123;</span><br><span class="line">                <span class="attr">"type"</span>: <span class="string">"number"</span>,</span><br><span class="line">                <span class="attr">"minimum"</span>: <span class="number">0</span>,</span><br><span class="line">                <span class="attr">"exclusiveMinimum"</span>: <span class="literal">true</span></span><br><span class="line">            &#125;,</span><br><span class="line">            <span class="attr">"tags"</span>: &#123;</span><br><span class="line">                <span class="attr">"type"</span>: <span class="string">"array"</span>,</span><br><span class="line">                <span class="attr">"items"</span>: &#123;</span><br><span class="line">                    <span class="attr">"type"</span>: <span class="string">"string"</span></span><br><span class="line">                &#125;,</span><br><span class="line">                <span class="attr">"minItems"</span>: <span class="number">1</span>,</span><br><span class="line">                <span class="attr">"uniqueItems"</span>: <span class="literal">true</span></span><br><span class="line">            &#125;,</span><br><span class="line">            <span class="attr">"dimensions"</span>: &#123;</span><br><span class="line">                <span class="attr">"type"</span>: <span class="string">"object"</span>,</span><br><span class="line">                <span class="attr">"properties"</span>: &#123;</span><br><span class="line">                    <span class="attr">"length"</span>: &#123;<span class="attr">"type"</span>: <span class="string">"number"</span>&#125;,</span><br><span class="line">                    <span class="attr">"width"</span>: &#123;<span class="attr">"type"</span>: <span class="string">"number"</span>&#125;,</span><br><span class="line">                    <span class="attr">"height"</span>: &#123;<span class="attr">"type"</span>: <span class="string">"number"</span>&#125;</span><br><span class="line">                &#125;,</span><br><span class="line">                <span class="attr">"required"</span>: [<span class="string">"length"</span>, <span class="string">"width"</span>, <span class="string">"height"</span>]</span><br><span class="line">            &#125;,</span><br><span class="line">            <span class="attr">"warehouseLocation"</span>: &#123;</span><br><span class="line">                <span class="attr">"description"</span>: <span class="string">"Coordinates of the warehouse with the product"</span>,</span><br><span class="line">                <span class="attr">"$ref"</span>: <span class="string">"http://json-schema.org/geo"</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="attr">"required"</span>: [<span class="string">"id"</span>, <span class="string">"name"</span>, <span class="string">"price"</span>]</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> io.restassured.<span class="keyword">module</span>.mockmvc.RestAssuredMockMvc;</span><br><span class="line"><span class="keyword">import</span> org.junit.After;</span><br><span class="line"><span class="keyword">import</span> org.junit.Before;</span><br><span class="line"><span class="keyword">import</span> org.junit.Test;</span><br><span class="line"><span class="keyword">import</span> org.junit.runner.RunWith;</span><br><span class="line"><span class="keyword">import</span> org.springframework.beans.factory.annotation.Autowired;</span><br><span class="line"><span class="keyword">import</span> org.springframework.test.context.ContextConfiguration;</span><br><span class="line"><span class="keyword">import</span> org.springframework.test.context.junit4.SpringJUnit4ClassRunner;</span><br><span class="line"><span class="keyword">import</span> org.springframework.test.context.web.WebAppConfiguration;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.context.WebApplicationContext;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="keyword">static</span> io.restassured.<span class="keyword">module</span>.mockmvc.RestAssuredMockMvc.given;</span><br><span class="line"><span class="keyword">import</span> <span class="keyword">static</span> org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;</span><br><span class="line"><span class="keyword">import</span> <span class="keyword">static</span> org.springframework.security.test.web.servlet.response.SecurityMockMvcResultMatchers.authenticated;</span><br><span class="line"></span><br><span class="line"><span class="meta">@RunWith</span>(SpringJUnit4ClassRunner<span class="class">.<span class="keyword">class</span>)</span></span><br><span class="line"><span class="class">@<span class="title">ContextConfiguration</span>(<span class="title">classes</span> </span>= MyConfiguration<span class="class">.<span class="keyword">class</span>)</span></span><br><span class="line"><span class="class">@<span class="title">WebAppConfiguration</span></span></span><br><span class="line"><span class="class"><span class="title">public</span> <span class="title">class</span> <span class="title">BasicAuthExample</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> WebApplicationContext context;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Before</span> <span class="keyword">public</span> <span class="keyword">void</span></span><br><span class="line">    rest_assured_is_initialized_with_the_web_application_context_before_each_test() &#123;</span><br><span class="line">        RestAssuredMockMvc.webAppContextSetup(context);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@After</span> <span class="keyword">public</span> <span class="keyword">void</span></span><br><span class="line">    rest_assured_is_reset_after_each_test() &#123;</span><br><span class="line">        RestAssuredMockMvc.reset();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span> <span class="keyword">public</span> <span class="keyword">void</span></span><br><span class="line">    basic_auth_example() &#123;</span><br><span class="line">        given().</span><br><span class="line">                auth().with(httpBasic(<span class="string">"username"</span>, <span class="string">"password"</span>)).</span><br><span class="line">        when().</span><br><span class="line">                get(<span class="string">"/products"</span>).</span><br><span class="line">        then().</span><br><span class="line">                statusCode(<span class="number">200</span>)</span><br><span class="line">                                .body(matchesJsonSchemaInClasspath(<span class="string">"products-schema.json"</span>))</span><br><span class="line">                .expect(authenticated().withUsername(<span class="string">"username"</span>));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="五、参考资料"><a href="#五、参考资料" class="headerlink" title="五、参考资料"></a>五、参考资料</h1><ol>
+<li><a href="https://rest-assured.io/" target="_blank" rel="noopener">官方文档</a></li>
+<li><a href="https://github.com/rest-assured/rest-assured/wiki/Usage" target="_blank" rel="noopener">WIKI</a></li>
+</ol>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2021-08-02T14:32:08.044Z" itemprop="dateUpdated">2021-08-02 22:32:08</time>
+</span><br>
+
+
+        
+        欢迎各位看官留言，如有不正之处望指教，私活私聊我😘
+        
+    </div>
+    
+    <footer>
+        <a href="https://caochikai.github.io">
+            <img src="/img/avatar.jpg" alt="ChiKai">
+            ChiKai
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Test/" rel="tag">Test</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://caochikai.github.io/2021/08/02/%E6%8E%A5%E5%8F%A3%E6%B5%8B%E8%AF%95-Rest-assured/&title=《接口测试 Rest-assured》 — 天道酬勤&pic=https://caochikai.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://caochikai.github.io/2021/08/02/%E6%8E%A5%E5%8F%A3%E6%B5%8B%E8%AF%95-Rest-assured/&title=《接口测试 Rest-assured》 — 天道酬勤&source=喜欢java，死忠工具派" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://caochikai.github.io/2021/08/02/%E6%8E%A5%E5%8F%A3%E6%B5%8B%E8%AF%95-Rest-assured/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《接口测试 Rest-assured》 — 天道酬勤&url=https://caochikai.github.io/2021/08/02/%E6%8E%A5%E5%8F%A3%E6%B5%8B%E8%AF%95-Rest-assured/&via=https://caochikai.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://caochikai.github.io/2021/08/02/%E6%8E%A5%E5%8F%A3%E6%B5%8B%E8%AF%95-Rest-assured/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between flex-row-reverse">
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2021/08/01/API-Standard/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">API Standard</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'true' == 'true',
+            verify: 'false' == 'true',
+            appId: "o8xTya29DFK9WYa0VDGv47ge-gzGzoHsz",
+            appKey: "D4gSyRHCJFOjX19uaHYWz0Fa",
+            avatar: "mm",
+            placeholder: "Just go go",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
+
+
+
+
+
+
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        谢谢大爷~
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/img/wechat.jpg" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="/img/wechat.jpg" data-alipay="/img/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p>
+    <span id="busuanzi_container_site_uv" style='display:none'>
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style='display:none'>
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>ChiKai &copy; 2018 - 2021</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://caochikai.github.io/2021/08/02/%E6%8E%A5%E5%8F%A3%E6%B5%8B%E8%AF%95-Rest-assured/&title=《接口测试 Rest-assured》 — 天道酬勤&pic=https://caochikai.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://caochikai.github.io/2021/08/02/%E6%8E%A5%E5%8F%A3%E6%B5%8B%E8%AF%95-Rest-assured/&title=《接口测试 Rest-assured》 — 天道酬勤&source=喜欢java，死忠工具派" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://caochikai.github.io/2021/08/02/%E6%8E%A5%E5%8F%A3%E6%B5%8B%E8%AF%95-Rest-assured/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《接口测试 Rest-assured》 — 天道酬勤&url=https://caochikai.github.io/2021/08/02/%E6%8E%A5%E5%8F%A3%E6%B5%8B%E8%AF%95-Rest-assured/&via=https://caochikai.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://caochikai.github.io/2021/08/02/%E6%8E%A5%E5%8F%A3%E6%B5%8B%E8%AF%95-Rest-assured/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="//api.qrserver.com/v1/create-qr-code/?data=https://caochikai.github.io/2021/08/02/%E6%8E%A5%E5%8F%A3%E6%B5%8B%E8%AF%95-Rest-assured/" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '死鬼去哪里了！';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '(つェ⊂)咦!又好了!';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
