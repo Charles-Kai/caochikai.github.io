@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>RAML API生成器 | 天道酬勤 | 劳逸结合</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="架构">
+    <meta name="description" content="RAML API生成器 springmvc-raml-plugin是一个Maven插件，用以从RAML文件生成Spring框架的Controller和POJO代码，结合mybatis-plus就能实现接口设计到数据库。后面就是结合start.spring.io定制化的快速代码生成平台，国内阿里巴巴就定制化了Aliyun Java Initialize ，为所有开发者提供Springboot企业化代">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RAML API生成器">
+<meta property="og:url" content="https:&#x2F;&#x2F;caochikai.github.io&#x2F;2021&#x2F;08&#x2F;08&#x2F;RAML-API%E7%94%9F%E6%88%90%E5%99%A8&#x2F;index.html">
+<meta property="og:site_name" content="天道酬勤">
+<meta property="og:description" content="RAML API生成器 springmvc-raml-plugin是一个Maven插件，用以从RAML文件生成Spring框架的Controller和POJO代码，结合mybatis-plus就能实现接口设计到数据库。后面就是结合start.spring.io定制化的快速代码生成平台，国内阿里巴巴就定制化了Aliyun Java Initialize ，为所有开发者提供Springboot企业化代">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-08-08T04:22:00.000Z">
+<meta property="article:modified_time" content="2021-08-08T04:23:02.952Z">
+<meta property="article:author" content="ChiKai">
+<meta property="article:tag" content="架构">
+<meta name="twitter:card" content="summary">
+    
+        <link rel="alternate" type="application/atom+xml" title="天道酬勤" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+<meta name="generator" content="Hexo 4.1.1"></head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">ChiKai</h5>
+          <a href="mailto:992691009@qq.com" title="992691009@qq.com" class="mail">992691009@qq.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/caochikai" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://caochikai.github.io/" target="_blank" >
+                <i class="icon icon-lg icon-weibo"></i>
+                Weibo
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="http://129.211.67.107" target="_blank" rel="noopener"  >
+                <i class="icon icon-lg icon-link"></i>
+                个人网站
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">RAML API生成器</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">RAML API生成器</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2021-08-08T04:22:00.000Z" itemprop="datePublished" class="page-time">
+  2021-08-08
+</time>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#RAML-API生成器"><span class="post-toc-number">1.</span> <span class="post-toc-text">RAML API生成器</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#从RAML文件生成Spring代码实现"><span class="post-toc-number">1.0.1.</span> <span class="post-toc-text">从RAML文件生成Spring代码实现</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#RAML"><span class="post-toc-number">1.0.2.</span> <span class="post-toc-text">RAML</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#生成的Controller和POJO"><span class="post-toc-number">1.0.3.</span> <span class="post-toc-text">生成的Controller和POJO</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Maven-plugin-goals-generate-springmvc-endpoints"><span class="post-toc-number">1.0.4.</span> <span class="post-toc-text">Maven plugin goals: generate-springmvc-endpoints</span></a></li></ol></li></ol></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#参考资料"><span class="post-toc-number">2.</span> <span class="post-toc-text">参考资料</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-RAML-API生成器"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">RAML API生成器</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2021-08-08 12:22:00" datetime="2021-08-08T04:22:00.000Z"  itemprop="datePublished">2021-08-08</time>
+
+            
+
+
+            
+<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
+    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+</span>
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h1 id="RAML-API生成器"><a href="#RAML-API生成器" class="headerlink" title="RAML API生成器"></a>RAML API生成器</h1><blockquote>
+<p>springmvc-raml-plugin是一个Maven插件，用以从RAML文件生成Spring框架的Controller和POJO代码，结合mybatis-plus就能实现接口设计到数据库。后面就是结合<a href="http://start.spring.io/" target="_blank" rel="noopener"><strong>start.spring.io</strong></a>定制化的快速代码生成平台，国内阿里巴巴就定制化了<a href="https://start.aliyun.com/bootstrap.html" target="_blank" rel="noopener"><strong>Aliyun Java Initialize</strong></a> ，为所有开发者提供Springboot企业化代码平台。</p>
+</blockquote>
+<h3 id="从RAML文件生成Spring代码实现"><a href="#从RAML文件生成Spring代码实现" class="headerlink" title="从RAML文件生成Spring代码实现"></a>从RAML文件生成Spring代码实现</h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.phoenixnap.oss<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>springmvc-raml-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.0.5<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">ramlPath</span>&gt;</span>src/main/api/version.raml<span class="tag">&lt;/<span class="name">ramlPath</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">schemaLocation</span>&gt;</span>src/main/api/schemas<span class="tag">&lt;/<span class="name">schemaLocation</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">outputRelativePath</span>&gt;</span>src/main/java<span class="tag">&lt;/<span class="name">outputRelativePath</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">addTimestampFolder</span>&gt;</span>false<span class="tag">&lt;/<span class="name">addTimestampFolder</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">basePackage</span>&gt;</span>com.example.demo<span class="tag">&lt;/<span class="name">basePackage</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">baseUri</span>&gt;</span>/api<span class="tag">&lt;/<span class="name">baseUri</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">generateUnreferencedObjects</span>&gt;</span>true<span class="tag">&lt;/<span class="name">generateUnreferencedObjects</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">generationConfig</span>&gt;</span></span><br><span class="line">              <span class="tag">&lt;<span class="name">includeAdditionalProperties</span>&gt;</span>false<span class="tag">&lt;/<span class="name">includeAdditionalProperties</span>&gt;</span></span><br><span class="line">              ...</span><br><span class="line">          <span class="tag">&lt;/<span class="name">generationConfig</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">seperateMethodsByContentType</span>&gt;</span>false<span class="tag">&lt;/<span class="name">seperateMethodsByContentType</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">rule</span>&gt;</span>com.phoenixnap.oss.ramlplugin.raml2code.rules.Spring4ControllerStubRule<span class="tag">&lt;/<span class="name">rule</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">ruleConfiguration</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;/<span class="name">ruleConfiguration</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">executions</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">execution</span>&gt;</span></span><br><span class="line">              <span class="tag">&lt;<span class="name">id</span>&gt;</span>generate-springmvc-endpoints<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">              <span class="tag">&lt;<span class="name">phase</span>&gt;</span>compile<span class="tag">&lt;/<span class="name">phase</span>&gt;</span></span><br><span class="line">              <span class="tag">&lt;<span class="name">goals</span>&gt;</span></span><br><span class="line">                  <span class="tag">&lt;<span class="name">goal</span>&gt;</span>generate-springmvc-endpoints<span class="tag">&lt;/<span class="name">goal</span>&gt;</span></span><br><span class="line">              <span class="tag">&lt;/<span class="name">goals</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;/<span class="name">execution</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">executions</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="RAML"><a href="#RAML" class="headerlink" title="RAML"></a>RAML</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">#%RAML 1.0</span><br><span class="line">title: Hello world # required title</span><br><span class="line">baseUri: http:<span class="comment">//localhost:8080/api</span></span><br><span class="line">version: <span class="number">1.0</span></span><br><span class="line"></span><br><span class="line">schemas:</span><br><span class="line">  VersionInline: |</span><br><span class="line">    &#123;</span><br><span class="line">      <span class="string">"type"</span>: <span class="string">"object"</span>,</span><br><span class="line">      <span class="string">"$schema"</span>: <span class="string">"http://json-schema.org/draft-03/schema"</span>,</span><br><span class="line">      <span class="string">"title"</span>: <span class="string">"Greeting"</span>,</span><br><span class="line">      <span class="string">"description"</span>: <span class="string">"Will greet you"</span>,</span><br><span class="line">      <span class="string">"properties"</span>: &#123;</span><br><span class="line">        <span class="string">"firstName"</span>: &#123;</span><br><span class="line">          <span class="string">"type"</span>: <span class="string">"string"</span>,</span><br><span class="line">          <span class="string">"description"</span>: <span class="string">"名字"</span></span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="string">"lastName"</span>: &#123;</span><br><span class="line">          <span class="string">"type"</span>: <span class="string">"string"</span>,</span><br><span class="line">          <span class="string">"description"</span>: <span class="string">"姓"</span></span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="string">"version"</span>: &#123;</span><br><span class="line">          <span class="string">"type"</span>: <span class="string">"string"</span>,</span><br><span class="line">          <span class="string">"description"</span>: <span class="string">"版本号"</span></span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">/version: # optional resource</span><br><span class="line">  get: # HTTP method declaration</span><br><span class="line">    queryParameters:</span><br><span class="line">      version:</span><br><span class="line">        type: string</span><br><span class="line">        example: <span class="string">"1.0"</span></span><br><span class="line">    responses: # declare a response</span><br><span class="line">      200: # HTTP status code</span><br><span class="line">        body: # declare content of response</span><br><span class="line">          application/json: # media type</span><br><span class="line">            schema: VersionInline # can also be used with 'type'</span><br><span class="line">            example: !include example/version-example.json</span><br></pre></td></tr></table></figure>
+
+<p><strong>example/version-example.json</strong></p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"firstName"</span>: <span class="string">"Charles"</span>,</span><br><span class="line">  <span class="attr">"lastName"</span>: <span class="string">"Cao"</span>,</span><br><span class="line">  <span class="attr">"version"</span>: <span class="string">"1.0"</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="生成的Controller和POJO"><a href="#生成的Controller和POJO" class="headerlink" title="生成的Controller和POJO"></a>生成的Controller和POJO</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.example.demo;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.example.demo.model.VersionInline;</span><br><span class="line"><span class="keyword">import</span> org.springframework.http.ResponseEntity;</span><br><span class="line"><span class="keyword">import</span> org.springframework.validation.annotation.Validated;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.RequestMapping;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.RequestMethod;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.RequestParam;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.RestController;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * No description</span></span><br><span class="line"><span class="comment"> * (Generated with springmvc-raml-parser v.2.0.5)</span></span><br><span class="line"><span class="comment"> * </span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="meta">@RequestMapping</span>(<span class="string">"/api/version"</span>)</span><br><span class="line"><span class="meta">@Validated</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">VersionController</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * No description</span></span><br><span class="line"><span class="comment">     * </span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@RequestMapping</span>(value = <span class="string">""</span>, method = RequestMethod.GET)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> ResponseEntity&lt;VersionInline&gt; <span class="title">getVersionInlineByVersion</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">        @RequestParam</span></span></span><br><span class="line"><span class="function"><span class="params">        String version)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>; <span class="comment">//TODO Autogenerated Method Stub. Implement me please.</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.example.demo.model;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.fasterxml.jackson.annotation.JsonInclude;</span><br><span class="line"><span class="keyword">import</span> com.fasterxml.jackson.annotation.JsonProperty;</span><br><span class="line"><span class="keyword">import</span> com.fasterxml.jackson.annotation.JsonPropertyDescription;</span><br><span class="line"><span class="keyword">import</span> com.fasterxml.jackson.annotation.JsonPropertyOrder;</span><br><span class="line"><span class="keyword">import</span> org.apache.commons.lang.builder.EqualsBuilder;</span><br><span class="line"><span class="keyword">import</span> org.apache.commons.lang.builder.HashCodeBuilder;</span><br><span class="line"><span class="keyword">import</span> org.apache.commons.lang.builder.ToStringBuilder;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Greeting</span></span><br><span class="line"><span class="comment"> * &lt;p&gt;</span></span><br><span class="line"><span class="comment"> * Will greet you</span></span><br><span class="line"><span class="comment"> * </span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@JsonInclude</span>(JsonInclude.Include.NON_NULL)</span><br><span class="line"><span class="meta">@JsonPropertyOrder</span>(&#123;</span><br><span class="line">    <span class="string">"firstName"</span>,</span><br><span class="line">    <span class="string">"lastName"</span>,</span><br><span class="line">    <span class="string">"version"</span></span><br><span class="line">&#125;)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">VersionInline</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 名字</span></span><br><span class="line"><span class="comment">     * </span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@JsonProperty</span>(<span class="string">"firstName"</span>)</span><br><span class="line">    <span class="meta">@JsonPropertyDescription</span>(<span class="string">"\u540d\u5b57"</span>)</span><br><span class="line">    <span class="keyword">private</span> String firstName;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 姓</span></span><br><span class="line"><span class="comment">     * </span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@JsonProperty</span>(<span class="string">"lastName"</span>)</span><br><span class="line">    <span class="meta">@JsonPropertyDescription</span>(<span class="string">"\u59d3"</span>)</span><br><span class="line">    <span class="keyword">private</span> String lastName;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 版本号</span></span><br><span class="line"><span class="comment">     * </span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@JsonProperty</span>(<span class="string">"version"</span>)</span><br><span class="line">    <span class="meta">@JsonPropertyDescription</span>(<span class="string">"\u7248\u672c\u53f7"</span>)</span><br><span class="line">    <span class="keyword">private</span> String version;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 名字</span></span><br><span class="line"><span class="comment">     * </span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@JsonProperty</span>(<span class="string">"firstName"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getFirstName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> firstName;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 名字</span></span><br><span class="line"><span class="comment">     * </span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@JsonProperty</span>(<span class="string">"firstName"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setFirstName</span><span class="params">(String firstName)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.firstName = firstName;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 姓</span></span><br><span class="line"><span class="comment">     * </span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@JsonProperty</span>(<span class="string">"lastName"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getLastName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> lastName;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 姓</span></span><br><span class="line"><span class="comment">     * </span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@JsonProperty</span>(<span class="string">"lastName"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setLastName</span><span class="params">(String lastName)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.lastName = lastName;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 版本号</span></span><br><span class="line"><span class="comment">     * </span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@JsonProperty</span>(<span class="string">"version"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getVersion</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> version;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 版本号</span></span><br><span class="line"><span class="comment">     * </span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@JsonProperty</span>(<span class="string">"version"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setVersion</span><span class="params">(String version)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.version = version;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> ToStringBuilder(<span class="keyword">this</span>).append(<span class="string">"firstName"</span>, firstName).append(<span class="string">"lastName"</span>, lastName).append(<span class="string">"version"</span>, version).toString();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">hashCode</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> HashCodeBuilder().append(firstName).append(lastName).append(version).toHashCode();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">equals</span><span class="params">(Object other)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (other == <span class="keyword">this</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> ((other <span class="keyword">instanceof</span> VersionInline) == <span class="keyword">false</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        VersionInline rhs = ((VersionInline) other);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> EqualsBuilder().append(firstName, rhs.firstName).append(lastName, rhs.lastName).append(version, rhs.version).isEquals();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Maven-plugin-goals-generate-springmvc-endpoints"><a href="#Maven-plugin-goals-generate-springmvc-endpoints" class="headerlink" title="Maven plugin goals: generate-springmvc-endpoints"></a>Maven plugin goals: generate-springmvc-endpoints</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">[INFO] Scanning <span class="keyword">for</span> projects...</span><br><span class="line">[INFO] </span><br><span class="line">[INFO] -----------------&lt; com.example:cucumber-rest-assured &gt;------------------</span><br><span class="line">[INFO] Building demo <span class="number">0.0</span><span class="number">.1</span>-SNAPSHOT</span><br><span class="line">[INFO] --------------------------------[ jar ]---------------------------------</span><br><span class="line">[INFO] </span><br><span class="line">[INFO] --- springmvc-raml-plugin:<span class="number">2.0</span><span class="number">.5</span>:help (<span class="keyword">default</span>-cli) @ cucumber-rest-assured ---</span><br><span class="line">[INFO] RAML to Spring MVC code generator <span class="number">2.0</span><span class="number">.5</span></span><br><span class="line">  Component is Maven plugin that reads RAML documents and creates Spring MVC</span><br><span class="line">  endpoints</span><br><span class="line"></span><br><span class="line">This plugin has <span class="number">2</span> goals:</span><br><span class="line"></span><br><span class="line">springmvc-raml:generate-springmvc-endpoints</span><br><span class="line">  Maven Plugin MOJO specific to Generation of Spring MVC Endpoints from RAML</span><br><span class="line">  documents.</span><br><span class="line"></span><br><span class="line">springmvc-raml:help</span><br><span class="line">  Display help information on springmvc-raml-plugin.</span><br><span class="line">  Call mvn springmvc-raml:help -Ddetail=<span class="keyword">true</span> -Dgoal=&lt;goal-name&gt; to display</span><br><span class="line">  parameter details.</span><br><span class="line"></span><br><span class="line">[INFO] ------------------------------------------------------------------------</span><br><span class="line">[INFO] BUILD SUCCESS</span><br><span class="line">[INFO] ------------------------------------------------------------------------</span><br><span class="line">[INFO] Total time:  <span class="number">0.843</span> s</span><br><span class="line">[INFO] Finished at: <span class="number">2021</span>-<span class="number">08</span>-<span class="number">08</span>T12:<span class="number">03</span>:<span class="number">21</span>+<span class="number">08</span>:<span class="number">00</span></span><br><span class="line">[INFO] ------------------------------------------------------------------------</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><ul>
+<li><a href="https://github.com/phoenixnap/springmvc-raml-plugin" target="_blank" rel="noopener">springmvc-raml-plugin</a></li>
+<li><a href="https://github.com/caochikai/cucumber-rest-assured" target="_blank" rel="noopener"><strong>配套代码</strong></a></li>
+<li><a href="https://blog.csdn.net/taiyangdao/article/details/75014027" target="_blank" rel="noopener">Spring MVC - RAML Spec Synchroniser简介</a></li>
+</ul>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2021-08-08T04:23:02.952Z" itemprop="dateUpdated">2021-08-08 12:23:02</time>
+</span><br>
+
+
+        
+        欢迎各位看官留言，如有不正之处望指教，私活私聊我😘
+        
+    </div>
+    
+    <footer>
+        <a href="https://caochikai.github.io">
+            <img src="/img/avatar.jpg" alt="ChiKai">
+            ChiKai
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E6%9E%B6%E6%9E%84/" rel="tag">架构</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://caochikai.github.io/2021/08/08/RAML-API%E7%94%9F%E6%88%90%E5%99%A8/&title=《RAML API生成器》 — 天道酬勤&pic=https://caochikai.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://caochikai.github.io/2021/08/08/RAML-API%E7%94%9F%E6%88%90%E5%99%A8/&title=《RAML API生成器》 — 天道酬勤&source=喜欢java，死忠工具派" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://caochikai.github.io/2021/08/08/RAML-API%E7%94%9F%E6%88%90%E5%99%A8/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《RAML API生成器》 — 天道酬勤&url=https://caochikai.github.io/2021/08/08/RAML-API%E7%94%9F%E6%88%90%E5%99%A8/&via=https://caochikai.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://caochikai.github.io/2021/08/08/RAML-API%E7%94%9F%E6%88%90%E5%99%A8/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2021/08/11/Controller%E8%87%AA%E5%AE%9A%E4%B9%89%E5%8F%82%E6%95%B0%E7%B1%BB%E5%9E%8B/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">Controller自定义参数类型</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2021/08/07/API%E8%AE%BE%E8%AE%A1%E8%AF%AD%E8%A8%80%E4%B9%8BRaml/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">API设计语言之Raml</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'true' == 'true',
+            verify: 'false' == 'true',
+            appId: "o8xTya29DFK9WYa0VDGv47ge-gzGzoHsz",
+            appKey: "D4gSyRHCJFOjX19uaHYWz0Fa",
+            avatar: "mm",
+            placeholder: "Just go go",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
+
+
+
+
+
+
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        谢谢大爷~
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/img/wechat.jpg" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="/img/wechat.jpg" data-alipay="/img/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p>
+    <span id="busuanzi_container_site_uv" style='display:none'>
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style='display:none'>
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>ChiKai &copy; 2018 - 2021</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://caochikai.github.io/2021/08/08/RAML-API%E7%94%9F%E6%88%90%E5%99%A8/&title=《RAML API生成器》 — 天道酬勤&pic=https://caochikai.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://caochikai.github.io/2021/08/08/RAML-API%E7%94%9F%E6%88%90%E5%99%A8/&title=《RAML API生成器》 — 天道酬勤&source=喜欢java，死忠工具派" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://caochikai.github.io/2021/08/08/RAML-API%E7%94%9F%E6%88%90%E5%99%A8/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《RAML API生成器》 — 天道酬勤&url=https://caochikai.github.io/2021/08/08/RAML-API%E7%94%9F%E6%88%90%E5%99%A8/&via=https://caochikai.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://caochikai.github.io/2021/08/08/RAML-API%E7%94%9F%E6%88%90%E5%99%A8/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="//api.qrserver.com/v1/create-qr-code/?data=https://caochikai.github.io/2021/08/08/RAML-API%E7%94%9F%E6%88%90%E5%99%A8/" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '死鬼去哪里了！';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '(つェ⊂)咦!又好了!';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
