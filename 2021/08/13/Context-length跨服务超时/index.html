@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+
+    
+
+    
+
+
+
+    <meta charset="utf-8">
+    
+    
+    
+    
+    <title>Context-length跨服务超时 | 天道酬勤 | 劳逸结合</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+    <meta name="theme-color" content="#3F51B5">
+    
+    
+    <meta name="keywords" content="Spring">
+    <meta name="description" content="Context-length跨服务超时一、背景 今天被拉进远程会议，博主是热心提供疑难bug解决的顾问，情况是跨语言接口客户端调用超时并且服务端打印内部错误500，reactor-netty封装的DefaultWebClient调用Python flash接口，DefaultWebClient无论加大多少时间都会超时，Python接口只打印报错500，打印无提供更加详细信息。前端发送POST请求调">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Context-length跨服务超时">
+<meta property="og:url" content="https:&#x2F;&#x2F;caochikai.github.io&#x2F;2021&#x2F;08&#x2F;13&#x2F;Context-length%E8%B7%A8%E6%9C%8D%E5%8A%A1%E8%B6%85%E6%97%B6&#x2F;index.html">
+<meta property="og:site_name" content="天道酬勤">
+<meta property="og:description" content="Context-length跨服务超时一、背景 今天被拉进远程会议，博主是热心提供疑难bug解决的顾问，情况是跨语言接口客户端调用超时并且服务端打印内部错误500，reactor-netty封装的DefaultWebClient调用Python flash接口，DefaultWebClient无论加大多少时间都会超时，Python接口只打印报错500，打印无提供更加详细信息。前端发送POST请求调">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-08-13T15:13:00.000Z">
+<meta property="article:modified_time" content="2021-08-14T03:14:12.506Z">
+<meta property="article:author" content="ChiKai">
+<meta property="article:tag" content="Spring">
+<meta name="twitter:card" content="summary">
+    
+        <link rel="alternate" type="application/atom+xml" title="天道酬勤" href="/atom.xml">
+    
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="stylesheet" href="//unpkg.com/hexo-theme-material-indigo@latest/css/style.css">
+    <script>window.lazyScripts=[]</script>
+
+    <!-- custom head -->
+    
+
+<meta name="generator" content="Hexo 4.1.1"></head>
+
+<body>
+    <div id="loading" class="active"></div>
+
+    <aside id="menu" class="hide" >
+  <div class="inner flex-row-vertical">
+    <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menu-off">
+        <i class="icon icon-lg icon-close"></i>
+    </a>
+    <div class="brand-wrap" style="background-image:url(/img/brand.jpg)">
+      <div class="brand">
+        <a href="/" class="avatar waves-effect waves-circle waves-light">
+          <img src="/img/avatar.jpg">
+        </a>
+        <hgroup class="introduce">
+          <h5 class="nickname">ChiKai</h5>
+          <a href="mailto:992691009@qq.com" title="992691009@qq.com" class="mail">992691009@qq.com</a>
+        </hgroup>
+      </div>
+    </div>
+    <div class="scroll-wrap flex-col">
+      <ul class="nav">
+        
+            <li class="waves-block waves-effect">
+              <a href="/"  >
+                <i class="icon icon-lg icon-home"></i>
+                主页
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/archives"  >
+                <i class="icon icon-lg icon-archives"></i>
+                Archives
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/tags"  >
+                <i class="icon icon-lg icon-tags"></i>
+                Tags
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="/categories"  >
+                <i class="icon icon-lg icon-th-list"></i>
+                Categories
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://github.com/caochikai" target="_blank" >
+                <i class="icon icon-lg icon-github"></i>
+                Github
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="https://caochikai.github.io/" target="_blank" >
+                <i class="icon icon-lg icon-weibo"></i>
+                Weibo
+              </a>
+            </li>
+        
+            <li class="waves-block waves-effect">
+              <a href="http://129.211.67.107" target="_blank" rel="noopener"  >
+                <i class="icon icon-lg icon-link"></i>
+                个人网站
+              </a>
+            </li>
+        
+      </ul>
+    </div>
+  </div>
+</aside>
+
+    <main id="main">
+        <header class="top-header" id="header">
+    <div class="flex-row">
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light on" id="menu-toggle">
+          <i class="icon icon-lg icon-navicon"></i>
+        </a>
+        <div class="flex-col header-title ellipsis">Context-length跨服务超时</div>
+        
+        <div class="search-wrap" id="search-wrap">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="back">
+                <i class="icon icon-lg icon-chevron-left"></i>
+            </a>
+            <input type="text" id="key" class="search-input" autocomplete="off" placeholder="输入感兴趣的关键字">
+            <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="search">
+                <i class="icon icon-lg icon-search"></i>
+            </a>
+        </div>
+        
+        
+        <a href="javascript:;" class="header-icon waves-effect waves-circle waves-light" id="menuShare">
+            <i class="icon icon-lg icon-share-alt"></i>
+        </a>
+        
+    </div>
+</header>
+<header class="content-header post-header">
+
+    <div class="container fade-scale">
+        <h1 class="title">Context-length跨服务超时</h1>
+        <h5 class="subtitle">
+            
+                <time datetime="2021-08-13T15:13:00.000Z" itemprop="datePublished" class="page-time">
+  2021-08-13
+</time>
+
+
+            
+        </h5>
+    </div>
+
+    
+
+
+</header>
+
+
+<div class="container body-wrap">
+    
+    <aside class="post-widget">
+        <nav class="post-toc-wrap post-toc-shrink" id="post-toc">
+            <h4>TOC</h4>
+            <ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#Context-length跨服务超时"><span class="post-toc-number">1.</span> <span class="post-toc-text">Context-length跨服务超时</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#一、背景"><span class="post-toc-number">2.</span> <span class="post-toc-text">一、背景</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Content-Length"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">Content-Length: </span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#堆栈源码细究"><span class="post-toc-number">2.1.1.</span> <span class="post-toc-text">堆栈源码细究</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#提供Feign版本（内部代码无法公布，提供网络版本）"><span class="post-toc-number">2.1.2.</span> <span class="post-toc-text">提供Feign版本（内部代码无法公布，提供网络版本）</span></a></li></ol></li></ol></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#参考资料"><span class="post-toc-number">3.</span> <span class="post-toc-text">参考资料</span></a></li></ol>
+        </nav>
+    </aside>
+
+
+<article id="post-Context-length跨服务超时"
+  class="post-article article-type-post fade" itemprop="blogPost">
+
+    <div class="post-card">
+        <h1 class="post-card-title">Context-length跨服务超时</h1>
+        <div class="post-meta">
+            <time class="post-time" title="2021-08-13 23:13:00" datetime="2021-08-13T15:13:00.000Z"  itemprop="datePublished">2021-08-13</time>
+
+            
+
+
+            
+<span id="busuanzi_container_page_pv" title="文章总阅读量" style='display:none'>
+    <i class="icon icon-eye icon-pr"></i><span id="busuanzi_value_page_pv"></span>
+</span>
+
+
+        </div>
+        <div class="post-content" id="post-content" itemprop="postContent">
+            <h1 id="Context-length跨服务超时"><a href="#Context-length跨服务超时" class="headerlink" title="Context-length跨服务超时"></a>Context-length跨服务超时</h1><h1 id="一、背景"><a href="#一、背景" class="headerlink" title="一、背景"></a>一、背景</h1><blockquote>
+<p>今天被拉进远程会议，博主是热心提供疑难bug解决的顾问，情况是跨语言接口客户端调用超时并且服务端打印内部错误500，reactor-netty封装的DefaultWebClient调用Python flash接口，DefaultWebClient无论加大多少时间都会超时，Python接口只打印报错500，打印无提供更加详细信息。前端发送POST请求调用从聚合服务Process API（PAPI）中获取数据，PAPI通过DefaultWebClient发送GET请求到Python编写接口SAPI，因为调用SAPI时须要携带header（Context-length:64)，出问题地方就是Context-length原因，给team解释一下该header影响。其实本来公共封装DefaultWebClient库GET方法过滤了Context-length（驼峰命名），已经考虑到该现象，但是另一个公共库封装的RequestContext类getHeader方法全部小写化context-length（不符合http标准），这就闹了很大乌龙了，反馈给公共库贡献者修复该issue。</p>
+</blockquote>
+<h2 id="Content-Length"><a href="#Content-Length" class="headerlink" title="Content-Length: "></a>Content-Length: <length></h2><blockquote>
+<p>Content-Length 是一个实体消息首部，用来指明发送给接收方的消息主体的大小，即用十进制数字表示的八位字节的数目。Content-Length指示出报文中实体主体的字节大小，它包含了所有的编码内容； 比如， 对文本文件进行了gzip压缩的话，Content-Length指的就是压缩后的大小而不是原始大小。IETF（The Internet Engineering Task Force）发布了绝大多数国际互联网技术标准，规定HTTP发送方不得在任何消息中发送 Content-Length, 但是在微服务之间调用很容易造成误传。无论是SpringBoot内嵌的tomcat还是Python flash都实现了该http标准，Python暴露底层库error信息较少，只有个500；Tomcat NioEndpoint$NioSocketWrapper根据Content-Length读取Socket缓冲区，直到超时发现，缓冲区字节长度为-1，SpringMvc报错如下：</p>
+</blockquote>
+<p><strong>Content-Length与实际消息长度不一致, 程序会发生比较奇怪的异常:</strong></p>
+<ul>
+<li>过长则会导致无响应直到超时。</li>
+<li>过短则会截断请求被截断, 而且下一个请求解析出现错乱（上一次请求将会将入下一次请求）。</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">###实际测试命令</span></span><br><span class="line">curl --location --request GET <span class="string">'http://localhost:8080/api/version?version=1.0'</span> \</span><br><span class="line">--header <span class="string">'Content-Type: application/json'</span> \</span><br><span class="line">--header <span class="string">'Content-Length: 64'</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="number">2021</span>-<span class="number">08</span>-<span class="number">13</span> <span class="number">22</span>:<span class="number">43</span>:<span class="number">12.759</span> DEBUG <span class="number">13692</span> --- [nio-<span class="number">8080</span>-exec-<span class="number">1</span>] o.s.web.servlet.DispatcherServlet        : GET <span class="string">"/api/version?version=1.0"</span>, parameters=&#123;masked&#125;</span><br><span class="line"><span class="number">2021</span>-<span class="number">08</span>-<span class="number">13</span> <span class="number">22</span>:<span class="number">43</span>:<span class="number">12.772</span> DEBUG <span class="number">13692</span> --- [nio-<span class="number">8080</span>-exec-<span class="number">1</span>] o.a.coyote.http11.Http11InputBuffer      : <span class="function">Before <span class="title">fill</span><span class="params">()</span>: parsingHeader: [<span class="keyword">false</span>], parsingRequestLine: [<span class="keyword">false</span>], parsingRequestLinePhase: [0], parsingRequestLineStart: [0], byteBuffer.<span class="title">position</span><span class="params">()</span>: [301], byteBuffer.<span class="title">limit</span><span class="params">()</span>: [301], end: [301]</span></span><br><span class="line"><span class="function">2021-08-13 22:43:12.772 DEBUG 13692 --- [nio-8080-exec-1] o.a.tomcat.util.net.SocketWrapperBase    : Socket: [org.apache.tomcat.util.net.NioEndpoint$NioSocketWrapper@4166e5bd:org.apache.tomcat.util.net.NioChannel@2a06c6f5:java.nio.channels.SocketChannel[connected local</span>=/<span class="number">0</span>:<span class="number">0</span>:<span class="number">0</span>:<span class="number">0</span>:<span class="number">0</span>:<span class="number">0</span>:<span class="number">0</span>:<span class="number">1</span>:<span class="number">8080</span> remote=/<span class="number">0</span>:<span class="number">0</span>:<span class="number">0</span>:<span class="number">0</span>:<span class="number">0</span>:<span class="number">0</span>:<span class="number">0</span>:<span class="number">1</span>:<span class="number">52338</span>]], Read from buffer: [<span class="number">0</span>]</span><br><span class="line"><span class="number">2021</span>-<span class="number">08</span>-<span class="number">13</span> <span class="number">22</span>:<span class="number">43</span>:<span class="number">15.356</span> DEBUG <span class="number">13692</span> --- [(<span class="number">4</span>)-<span class="number">192.168</span><span class="number">.3</span><span class="number">.2</span>] sun.rmi.transport.tcp                    : <span class="function">RMI TCP <span class="title">Connection</span><span class="params">(<span class="number">4</span>)</span>-192.168.3.2: <span class="params">(port <span class="number">52325</span>)</span> connection closed</span></span><br><span class="line"><span class="function">2021-08-13 22:43:15.356 DEBUG 13692 --- [<span class="params">(<span class="number">4</span>)</span>-192.168.3.2] sun.rmi.transport.tcp                    : RMI TCP <span class="title">Connection</span><span class="params">(<span class="number">4</span>)</span>-192.168.3.2: close connection</span></span><br><span class="line"><span class="function">2021-08-13 22:43:15.356 DEBUG 13692 --- [<span class="params">(<span class="number">3</span>)</span>-192.168.3.2] sun.rmi.transport.tcp                    : RMI TCP <span class="title">Connection</span><span class="params">(<span class="number">3</span>)</span>-192.168.3.2: <span class="params">(port <span class="number">52325</span>)</span> connection closed</span></span><br><span class="line"><span class="function">2021-08-13 22:43:15.356 DEBUG 13692 --- [<span class="params">(<span class="number">3</span>)</span>-192.168.3.2] sun.rmi.transport.tcp                    : RMI TCP <span class="title">Connection</span><span class="params">(<span class="number">3</span>)</span>-192.168.3.2: close connection</span></span><br><span class="line"><span class="function">2021-08-13 22:43:15.478 DEBUG 13692 --- [<span class="params">(<span class="number">5</span>)</span>-192.168.3.2] sun.rmi.transport.tcp                    : RMI TCP <span class="title">Connection</span><span class="params">(<span class="number">5</span>)</span>-192.168.3.2: accepted socket from [192.168.3.2:52339]</span></span><br><span class="line"><span class="function">2021-08-13 22:43:15.478 DEBUG 13692 --- [<span class="params">(<span class="number">5</span>)</span>-192.168.3.2] sun.rmi.transport.tcp                    : RMI TCP <span class="title">Connection</span><span class="params">(<span class="number">5</span>)</span>-192.168.3.2: <span class="params">(port <span class="number">52325</span>)</span> op </span>= <span class="number">80</span></span><br><span class="line"><span class="number">2021</span>-<span class="number">08</span>-<span class="number">13</span> <span class="number">22</span>:<span class="number">43</span>:<span class="number">37.896</span> DEBUG <span class="number">13692</span> --- [(<span class="number">2</span>)-<span class="number">192.168</span><span class="number">.3</span><span class="number">.2</span>] sun.rmi.transport.tcp                    : <span class="function">RMI TCP <span class="title">Connection</span><span class="params">(<span class="number">2</span>)</span>-192.168.3.2: <span class="params">(port <span class="number">52325</span>)</span> connection closed</span></span><br><span class="line"><span class="function">2021-08-13 22:43:37.896 DEBUG 13692 --- [<span class="params">(<span class="number">2</span>)</span>-192.168.3.2] sun.rmi.transport.tcp                    : RMI TCP <span class="title">Connection</span><span class="params">(<span class="number">2</span>)</span>-192.168.3.2: close connection</span></span><br><span class="line"><span class="function">2021-08-13 22:43:38.563 DEBUG 13692 --- [<span class="params">(<span class="number">5</span>)</span>-192.168.3.2] sun.rmi.transport.tcp                    : RMI TCP <span class="title">Connection</span><span class="params">(<span class="number">5</span>)</span>-192.168.3.2: <span class="params">(port <span class="number">52325</span>)</span> connection closed</span></span><br><span class="line"><span class="function">2021-08-13 22:43:38.563 DEBUG 13692 --- [<span class="params">(<span class="number">5</span>)</span>-192.168.3.2] sun.rmi.transport.tcp                    : RMI TCP <span class="title">Connection</span><span class="params">(<span class="number">5</span>)</span>-192.168.3.2: close connection</span></span><br><span class="line"><span class="function">2021-08-13 22:44:08.274 DEBUG 13692 --- [alina-utility-1] org.apache.catalina.session.ManagerBase  : Start expire sessions StandardManager at 1628865848274 sessioncount 0</span></span><br><span class="line"><span class="function">2021-08-13 22:44:08.274 DEBUG 13692 --- [alina-utility-1] org.apache.catalina.session.ManagerBase  : End expire sessions StandardManager processingTime 0 expired sessions: 0</span></span><br><span class="line"><span class="function">2021-08-13 22:44:12.776 DEBUG 13692 --- [nio-8080-exec-1] o.s.web.method.HandlerMethod             : Could not resolve parameter [0] in org.springframework.http.ResponseEntity&lt;com.example.demo.Greeting&gt; com.example.demo.TestController.<span class="title">test</span><span class="params">(com.example.demo.raml.RequestContext&lt;java.lang.Void&gt;)</span>: I/O error <span class="keyword">while</span> reading input message</span>; nested exception is org.apache.catalina.connector.ClientAbortException: java.net.SocketTimeoutException</span><br><span class="line"><span class="number">2021</span>-<span class="number">08</span>-<span class="number">13</span> <span class="number">22</span>:<span class="number">44</span>:<span class="number">12.778</span>  WARN <span class="number">13692</span> --- [nio-<span class="number">8080</span>-exec-<span class="number">1</span>] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.http.converter.HttpMessageNotReadableException: I/O error <span class="keyword">while</span> reading input message; nested exception is org.apache.catalina.connector.ClientAbortException: java.net.SocketTimeoutException]</span><br><span class="line"><span class="number">2021</span>-<span class="number">08</span>-<span class="number">13</span> <span class="number">22</span>:<span class="number">57</span>:<span class="number">36.398</span> DEBUG <span class="number">13692</span> --- [nio-<span class="number">8080</span>-exec-<span class="number">5</span>] o.apache.coyote.http11.Http11Processor   : Error parsing HTTP request header</span><br><span class="line"></span><br><span class="line">java.io.EOFException: <span class="keyword">null</span></span><br><span class="line">	at org.apache.tomcat.util.net.NioEndpoint$NioSocketWrapper.fillReadBuffer(NioEndpoint.java:<span class="number">1345</span>) ~[tomcat-embed-core-<span class="number">9.0</span><span class="number">.45</span>.jar:<span class="number">9.0</span><span class="number">.45</span>]</span><br><span class="line">	at org.apache.tomcat.util.net.NioEndpoint$NioSocketWrapper.read(NioEndpoint.java:<span class="number">1255</span>) ~[tomcat-embed-core-<span class="number">9.0</span><span class="number">.45</span>.jar:<span class="number">9.0</span><span class="number">.45</span>]</span><br><span class="line">	at org.apache.coyote.http11.Http11InputBuffer.fill(Http11InputBuffer.java:<span class="number">794</span>) ~[tomcat-embed-core-<span class="number">9.0</span><span class="number">.45</span>.jar:<span class="number">9.0</span><span class="number">.45</span>]</span><br><span class="line">	at org.apache.coyote.http11.Http11InputBuffer.parseRequestLine(Http11InputBuffer.java:<span class="number">359</span>) ~[tomcat-embed-core-<span class="number">9.0</span><span class="number">.45</span>.jar:<span class="number">9.0</span><span class="number">.45</span>]</span><br><span class="line">	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:<span class="number">261</span>) ~[tomcat-embed-core-<span class="number">9.0</span><span class="number">.45</span>.jar:<span class="number">9.0</span><span class="number">.45</span>]</span><br><span class="line">	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:<span class="number">65</span>) [tomcat-embed-core-<span class="number">9.0</span><span class="number">.45</span>.jar:<span class="number">9.0</span><span class="number">.45</span>]</span><br><span class="line">	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:<span class="number">893</span>) [tomcat-embed-core-<span class="number">9.0</span><span class="number">.45</span>.jar:<span class="number">9.0</span><span class="number">.45</span>]</span><br><span class="line">	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:<span class="number">1707</span>) [tomcat-embed-core-<span class="number">9.0</span><span class="number">.45</span>.jar:<span class="number">9.0</span><span class="number">.45</span>]</span><br><span class="line">	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:<span class="number">49</span>) [tomcat-embed-core-<span class="number">9.0</span><span class="number">.45</span>.jar:<span class="number">9.0</span><span class="number">.45</span>]</span><br><span class="line">	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:<span class="number">1149</span>) [na:<span class="number">1.8</span><span class="number">.0_231</span>]</span><br><span class="line">	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:<span class="number">624</span>) [na:<span class="number">1.8</span><span class="number">.0_231</span>]</span><br><span class="line">	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:<span class="number">61</span>) [tomcat-embed-core-<span class="number">9.0</span><span class="number">.45</span>.jar:<span class="number">9.0</span><span class="number">.45</span>]</span><br><span class="line">	at java.lang.Thread.run(Thread.java:<span class="number">748</span>) [na:<span class="number">1.8</span><span class="number">.0_231</span>]</span><br></pre></td></tr></table></figure>
+
+<h3 id="堆栈源码细究"><a href="#堆栈源码细究" class="headerlink" title="堆栈源码细究"></a>堆栈源码细究</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">fillReadBuffer</span><span class="params">(<span class="keyword">boolean</span> block, ByteBuffer to)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> nRead;</span><br><span class="line">    NioChannel socket = getSocket();</span><br><span class="line">    <span class="keyword">if</span> (socket == NioChannel.CLOSED_NIO_CHANNEL) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> ClosedChannelException();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (block) &#123;</span><br><span class="line">        Selector selector = <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            selector = pool.get();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException x) &#123;</span><br><span class="line">            <span class="comment">// Ignore</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            nRead = pool.read(to, socket, selector, getReadTimeout());</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (selector != <span class="keyword">null</span>) &#123;</span><br><span class="line">                pool.put(selector);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line"><span class="comment">//从此通道读取字节序列到给定缓冲区。</span></span><br><span class="line"><span class="comment">//参数：to – 要传输字节的缓冲区</span></span><br><span class="line"><span class="comment">//返回：读取的字节数，可能为零，如果通道已到达流结束，则为 -1：</span></span><br><span class="line">        nRead = socket.read(to);</span><br><span class="line">        <span class="keyword">if</span> (nRead == -<span class="number">1</span>) &#123;</span><br><span class="line"><span class="comment">//满足nRead == -1，抛出该异常！</span></span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> EOFException();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> nRead;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="提供Feign版本（内部代码无法公布，提供网络版本）"><a href="#提供Feign版本（内部代码无法公布，提供网络版本）" class="headerlink" title="提供Feign版本（内部代码无法公布，提供网络版本）"></a>提供Feign版本（内部代码无法公布，提供网络版本）</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">import</span> feign.RequestInterceptor;</span><br><span class="line"><span class="keyword">import</span> feign.RequestTemplate;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.annotation.Configuration;</span><br><span class="line"><span class="keyword">import</span> org.springframework.http.HttpHeaders;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.context.request.RequestContextHolder;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.context.request.ServletRequestAttributes;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpServletRequest;</span><br><span class="line"><span class="keyword">import</span> java.util.Enumeration;</span><br><span class="line"><span class="keyword">import</span> java.util.LinkedHashMap;</span><br><span class="line"><span class="keyword">import</span> java.util.Map;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FeginInterceptor</span> <span class="keyword">implements</span> <span class="title">RequestInterceptor</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">apply</span><span class="params">(RequestTemplate requestTemplate)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            Map&lt;String,String&gt; headers = getHeaders();</span><br><span class="line">            <span class="keyword">for</span>(String headerName : headers.keySet())&#123;</span><br><span class="line">                requestTemplate.header(headerName, headers.get(headerName));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;<span class="keyword">catch</span> (Exception e)&#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> Map&lt;String, String&gt; <span class="title">getHeaders</span><span class="params">()</span></span>&#123;</span><br><span class="line">        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();</span><br><span class="line">        Map&lt;String, String&gt; map = <span class="keyword">new</span> LinkedHashMap&lt;&gt;();</span><br><span class="line">        Enumeration&lt;String&gt; enumeration = request.getHeaderNames();</span><br><span class="line">        <span class="keyword">while</span> (enumeration.hasMoreElements()) &#123;</span><br><span class="line">            String key = enumeration.nextElement();</span><br><span class="line">            String value = request.getHeader(key);</span><br><span class="line"><span class="comment">//改动优化使用标准HttpHeaders</span></span><br><span class="line">            <span class="keyword">if</span> (HttpHeaders.CONTENT_LENGTH.equals(key)) &#123;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            map.put(key, value);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> map;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><ul>
+<li><a href="https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Headers/Content-Length" target="_blank" rel="noopener">MDN Content-Length</a></li>
+<li><a href="https://datatracker.ietf.org/doc/html/rfc7230#section-3.3.2" target="_blank" rel="noopener">Http协议标准</a></li>
+<li><a href="https://www.shangmayuan.com/a/d8d96b2efa0a4836b6b87f5b.html" target="_blank" rel="noopener">springCloud 使用feign复制请求头调用其余服务 content-length不一致致使调用失败</a></li>
+<li><a href="https://blog.piaoruiqing.com/2019/09/08/do-you-know-content-length/" target="_blank" rel="noopener">用了这么久HTTP, 你是否了解Content-Length和Transfer-Encoding ?</a></li>
+<li><a href="https://github.com/caochikai/cucumber-rest-assured" target="_blank" rel="noopener"><strong>配套代码</strong></a></li>
+</ul>
+<p>字节的</p>
+
+        </div>
+
+        <blockquote class="post-copyright">
+    
+    <div class="content">
+        
+<span class="post-time">
+    最后更新时间：<time datetime="2021-08-14T03:14:12.506Z" itemprop="dateUpdated">2021-08-14 11:14:12</time>
+</span><br>
+
+
+        
+        欢迎各位看官留言，如有不正之处望指教，私活私聊我😘
+        
+    </div>
+    
+    <footer>
+        <a href="https://caochikai.github.io">
+            <img src="/img/avatar.jpg" alt="ChiKai">
+            ChiKai
+        </a>
+    </footer>
+</blockquote>
+
+        
+<div class="page-reward">
+    <a id="rewardBtn" href="javascript:;" class="page-reward-btn waves-effect waves-circle waves-light">赏</a>
+</div>
+
+
+
+        <div class="post-footer">
+            
+	<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spring/" rel="tag">Spring</a></li></ul>
+
+
+            
+<div class="page-share-wrap">
+    
+
+<div class="page-share" id="pageShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://caochikai.github.io/2021/08/13/Context-length%E8%B7%A8%E6%9C%8D%E5%8A%A1%E8%B6%85%E6%97%B6/&title=《Context-length跨服务超时》 — 天道酬勤&pic=https://caochikai.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://caochikai.github.io/2021/08/13/Context-length%E8%B7%A8%E6%9C%8D%E5%8A%A1%E8%B6%85%E6%97%B6/&title=《Context-length跨服务超时》 — 天道酬勤&source=喜欢java，死忠工具派" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://caochikai.github.io/2021/08/13/Context-length%E8%B7%A8%E6%9C%8D%E5%8A%A1%E8%B6%85%E6%97%B6/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Context-length跨服务超时》 — 天道酬勤&url=https://caochikai.github.io/2021/08/13/Context-length%E8%B7%A8%E6%9C%8D%E5%8A%A1%E8%B6%85%E6%97%B6/&via=https://caochikai.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://caochikai.github.io/2021/08/13/Context-length%E8%B7%A8%E6%9C%8D%E5%8A%A1%E8%B6%85%E6%97%B6/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+
+    <a href="javascript:;" id="shareFab" class="page-share-fab waves-effect waves-circle">
+        <i class="icon icon-share-alt icon-lg"></i>
+    </a>
+</div>
+
+
+
+        </div>
+    </div>
+
+    
+<nav class="post-nav flex-row flex-justify-between">
+  
+    <div class="waves-block waves-effect prev">
+      <a href="/2021/08/14/SpringBoot%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86%E4%BD%93%E7%B3%BB/" id="post-prev" class="post-nav-link">
+        <div class="tips"><i class="icon icon-angle-left icon-lg icon-pr"></i> Prev</div>
+        <h4 class="title">SpringBoot异常处理体系</h4>
+      </a>
+    </div>
+  
+
+  
+    <div class="waves-block waves-effect next">
+      <a href="/2021/08/11/Controller%E8%87%AA%E5%AE%9A%E4%B9%89%E5%8F%82%E6%95%B0%E7%B1%BB%E5%9E%8B/" id="post-next" class="post-nav-link">
+        <div class="tips">Next <i class="icon icon-angle-right icon-lg icon-pl"></i></div>
+        <h4 class="title">Controller自定义参数类型</h4>
+      </a>
+    </div>
+  
+</nav>
+
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+    <!-- Valine Comments -->
+    <div class="comments vcomment" id="comments"></div>
+    <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+    <script src="//unpkg.com/valine@latest/dist/Valine.min.js"></script>
+    <!-- Valine Comments script -->
+    <script>
+        var GUEST_INFO = ['nick','mail','link'];
+        var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+          return GUEST_INFO.indexOf(item) > -1
+        });
+        new Valine({
+            el: '#comments',
+            notify: 'true' == 'true',
+            verify: 'false' == 'true',
+            appId: "o8xTya29DFK9WYa0VDGv47ge-gzGzoHsz",
+            appKey: "D4gSyRHCJFOjX19uaHYWz0Fa",
+            avatar: "mm",
+            placeholder: "Just go go",
+            guest_info: guest_info.length == 0 ? GUEST_INFO : guest_info,
+            pageSize: "10"
+        })
+    </script>
+    <!-- Valine Comments end -->
+
+
+
+
+
+
+
+
+
+
+</article>
+
+<div id="reward" class="page-modal reward-lay">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <h3 class="reward-title">
+        <i class="icon icon-quote-left"></i>
+        谢谢大爷~
+        <i class="icon icon-quote-right"></i>
+    </h3>
+    <div class="reward-content">
+        
+        <div class="reward-code">
+            <img id="rewardCode" src="/img/wechat.jpg" alt="打赏二维码">
+        </div>
+        
+        <label class="reward-toggle">
+            <input id="rewardToggle" type="checkbox" class="reward-toggle-check"
+                data-wechat="/img/wechat.jpg" data-alipay="/img/alipay.jpg">
+            <div class="reward-toggle-ctrol">
+                <span class="reward-toggle-item wechat">微信</span>
+                <span class="reward-toggle-label"></span>
+                <span class="reward-toggle-item alipay">支付宝</span>
+            </div>
+        </label>
+        
+    </div>
+</div>
+
+
+
+</div>
+
+        <footer class="footer">
+    <div class="top">
+        
+<p>
+    <span id="busuanzi_container_site_uv" style='display:none'>
+        站点总访客数：<span id="busuanzi_value_site_uv"></span>
+    </span>
+    <span id="busuanzi_container_site_pv" style='display:none'>
+        站点总访问量：<span id="busuanzi_value_site_pv"></span>
+    </span>
+</p>
+
+
+        <p>
+            
+                <span><a href="/atom.xml" target="_blank" class="rss" title="rss"><i class="icon icon-lg icon-rss"></i></a></span>
+            
+            <span>博客内容遵循 <a rel="license noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank">知识共享 署名 - 非商业性 - 相同方式共享 4.0 国际协议</a></span>
+        </p>
+    </div>
+    <div class="bottom">
+        <p><span>ChiKai &copy; 2018 - 2021</span>
+            <span>
+                
+                Power by <a href="http://hexo.io/" target="_blank">Hexo</a> Theme <a href="https://github.com/yscoder/hexo-theme-indigo" target="_blank">indigo</a>
+            </span>
+        </p>
+    </div>
+</footer>
+
+    </main>
+    <div class="mask" id="mask"></div>
+<a href="javascript:;" id="gotop" class="waves-effect waves-circle waves-light"><span class="icon icon-lg icon-chevron-up"></span></a>
+
+
+
+<div class="global-share" id="globalShare">
+    <ul class="reset share-icons">
+      <li>
+        <a class="weibo share-sns" target="_blank" href="http://service.weibo.com/share/share.php?url=https://caochikai.github.io/2021/08/13/Context-length%E8%B7%A8%E6%9C%8D%E5%8A%A1%E8%B6%85%E6%97%B6/&title=《Context-length跨服务超时》 — 天道酬勤&pic=https://caochikai.github.io/img/avatar.jpg" data-title="微博">
+          <i class="icon icon-weibo"></i>
+        </a>
+      </li>
+      <li>
+        <a class="weixin share-sns wxFab" href="javascript:;" data-title="微信">
+          <i class="icon icon-weixin"></i>
+        </a>
+      </li>
+      <li>
+        <a class="qq share-sns" target="_blank" href="http://connect.qq.com/widget/shareqq/index.html?url=https://caochikai.github.io/2021/08/13/Context-length%E8%B7%A8%E6%9C%8D%E5%8A%A1%E8%B6%85%E6%97%B6/&title=《Context-length跨服务超时》 — 天道酬勤&source=喜欢java，死忠工具派" data-title=" QQ">
+          <i class="icon icon-qq"></i>
+        </a>
+      </li>
+      <li>
+        <a class="facebook share-sns" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https://caochikai.github.io/2021/08/13/Context-length%E8%B7%A8%E6%9C%8D%E5%8A%A1%E8%B6%85%E6%97%B6/" data-title=" Facebook">
+          <i class="icon icon-facebook"></i>
+        </a>
+      </li>
+      <li>
+        <a class="twitter share-sns" target="_blank" href="https://twitter.com/intent/tweet?text=《Context-length跨服务超时》 — 天道酬勤&url=https://caochikai.github.io/2021/08/13/Context-length%E8%B7%A8%E6%9C%8D%E5%8A%A1%E8%B6%85%E6%97%B6/&via=https://caochikai.github.io" data-title=" Twitter">
+          <i class="icon icon-twitter"></i>
+        </a>
+      </li>
+      <li>
+        <a class="google share-sns" target="_blank" href="https://plus.google.com/share?url=https://caochikai.github.io/2021/08/13/Context-length%E8%B7%A8%E6%9C%8D%E5%8A%A1%E8%B6%85%E6%97%B6/" data-title=" Google+">
+          <i class="icon icon-google-plus"></i>
+        </a>
+      </li>
+    </ul>
+ </div>
+
+
+<div class="page-modal wx-share" id="wxShare">
+    <a class="close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <img src="//api.qrserver.com/v1/create-qr-code/?data=https://caochikai.github.io/2021/08/13/Context-length%E8%B7%A8%E6%9C%8D%E5%8A%A1%E8%B6%85%E6%97%B6/" alt="微信分享二维码">
+</div>
+
+
+
+
+    <script src="//cdn.bootcss.com/node-waves/0.7.4/waves.min.js"></script>
+<script>
+var BLOG = { ROOT: '/', SHARE: true, REWARD: true };
+
+
+</script>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/main.min.js"></script>
+
+
+<div class="search-panel" id="search-panel">
+    <ul class="search-result" id="search-result"></ul>
+</div>
+<template id="search-tpl">
+<li class="item">
+    <a href="{path}" class="waves-block waves-effect">
+        <div class="title ellipsis" title="{title}">{title}</div>
+        <div class="flex-row flex-middle">
+            <div class="tags ellipsis">
+                {tags}
+            </div>
+            <time class="flex-col time">{date}</time>
+        </div>
+    </a>
+</li>
+</template>
+
+<script src="//unpkg.com/hexo-theme-material-indigo@latest/js/search.min.js" async></script>
+
+
+
+
+
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+(function() {
+    var OriginTitile = document.title, titleTime;
+    document.addEventListener('visibilitychange', function() {
+        if (document.hidden) {
+            document.title = '死鬼去哪里了！';
+            clearTimeout(titleTime);
+        } else {
+            document.title = '(つェ⊂)咦!又好了!';
+            titleTime = setTimeout(function() {
+                document.title = OriginTitile;
+            },2000);
+        }
+    });
+})();
+</script>
+
+
+
+</body>
+</html>
